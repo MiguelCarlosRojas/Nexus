@@ -307,6 +307,7 @@ default persistent.janken_wins = 0
 default persistent.janken_losses = 0
 default persistent.janken_draws = 0
 
+default persistent.selected_gender = None
 default persistent.theme_name = "Carmesí"
 default persistent.theme_color = "#b82626"
 default persistent.theme_hover = "#501217ee"
@@ -333,6 +334,12 @@ init python:
             persistent.theme_border = "#9e1b1b"
             gui.accent_color = "#b82626"
             gui.hover_color = "#e63946"
+        elif name == "Amatista Sakura":
+            persistent.theme_color = "#9333ea"
+            persistent.theme_hover = "#581c87ee"
+            persistent.theme_border = "#c084fc"
+            gui.accent_color = "#9333ea"
+            gui.hover_color = "#f472b6"
         elif name == "Azul Noche":
             persistent.theme_color = "#1d4ed8"
             persistent.theme_hover = "#14254dee"
@@ -351,6 +358,14 @@ init python:
             persistent.theme_border = "#059669"
             gui.accent_color = "#059669"
             gui.hover_color = "#34d399"
+        renpy.restart_interaction()
+
+    def set_protagonist_gender(gender):
+        persistent.selected_gender = gender
+        if gender == "mujer":
+            set_theme("Amatista Sakura")
+        else:
+            set_theme("Carmesí")
         renpy.restart_interaction()
 
     def set_dialogue_size(size):
@@ -432,6 +447,33 @@ screen navigation():
                     kerning 3
 
             # Separador estético sutil
+            null height 2
+
+            # --- SELECTOR DE PROTAGONISTA Y DESTINO ---
+            button:
+                xalign 0.5
+                xsize 380
+                action Show("protagonist_selection")
+                style "nav_icon_button"
+                hbox:
+                    spacing 14
+                    yalign 0.5
+                    text ("♀" if persistent.selected_gender == "mujer" else "♂"):
+                        size 22
+                        color (persistent.theme_border or "#e63946")
+                        bold True
+                        yalign 0.5
+                    vbox:
+                        spacing 1
+                        yalign 0.5
+                        text ("PROTAGONISTA: MUJER (AOI)" if persistent.selected_gender == "mujer" else "PROTAGONISTA: HOMBRE (SHINSHU)"):
+                            size 11
+                            color "#f8fafc"
+                            bold True
+                        text "Clic para cambiar perspectiva y destino":
+                            size 10
+                            color "#94a3b8"
+
             null height 2
 
             # --- BOTONES DE ACCIÓN (CON ICONOS MÁS GRANDES: 24px) ---
@@ -615,6 +657,188 @@ style nav_return_friendly_text is gui_button_text:
     yalign 0.5
 
 
+## Pantalla de Selección de Protagonista (Hombre / Mujer) ########################
+screen protagonist_selection():
+    modal True
+    tag menu
+
+    add "#07080d"
+
+    # Marco ambiental estilizado
+    frame:
+        xfill True
+        yfill True
+        background Frame(Solid("#02030588"), 0, 0)
+
+    vbox:
+        xalign 0.5
+        yalign 0.07
+        spacing 8
+
+        text "NEXUS • SELECCIÓN DE DESTINO Y PROTAGONISTA":
+            font gui.interface_text_font
+            size 14
+            color "#94a3b8"
+            kerning 5
+            xalign 0.5
+
+        text "ELIGE TU PERSPECTIVA TEMPORAL":
+            font gui.name_text_font
+            size 36
+            color "#f8fafc"
+            bold True
+            xalign 0.5
+
+        text "Tu elección transforma el diseño de la interfaz, la paleta cromática y el destino de la historia.":
+            font gui.interface_text_font
+            size 15
+            color "#64748b"
+            xalign 0.5
+
+    # Contenedor de selección dual
+    hbox:
+        xalign 0.5
+        yalign 0.57
+        spacing 45
+
+        # --- OPCIÓN 1: HOMBRE (SHINSHU KAZAMA / REN) ---
+        button:
+            xsize 520
+            ysize 630
+            action [
+                Function(set_protagonist_gender, "hombre"),
+                Return()
+            ]
+            background Frame(Solid("#0d111bf2"), 10, 10)
+            hover_background Frame(Solid("#180f15f8"), 10, 10)
+            padding (28, 26, 28, 26)
+
+            vbox:
+                spacing 14
+                xfill True
+                yfill True
+
+                frame:
+                    background Solid("#e6394628")
+                    padding (12, 4, 12, 4)
+                    xalign 0.0
+                    text "PERSPECTIVA ORIGINAL • CARMESÍ":
+                        size 11
+                        color "#e63946"
+                        bold True
+
+                frame:
+                    xsize 464
+                    ysize 260
+                    background Solid("#06080e")
+                    add "images/silueta_ren.png":
+                        xalign 0.5
+                        yalign 1.0
+                        zoom 0.58
+
+                vbox:
+                    spacing 4
+                    text "SHINSHU KAZAMA (REN)":
+                        size 22
+                        color "#f8fafc"
+                        bold True
+                    text "「 瞳 の 奥 に 、 死 が 映 る 」":
+                        size 13
+                        color "#e63946"
+                        bold True
+
+                text "Despiertas con la aguja del destino y la maldición del Nexus tras proteger a tu hermana. Investiga el envenenamiento en el hospital de Shinshu.":
+                    size 13
+                    color "#94a3b8"
+                    line_spacing 4
+
+                null height 6
+
+                frame:
+                    xfill True
+                    ysize 42
+                    background Solid("#e63946")
+                    text "JUGAR COMO HOMBRE (SHINSHU)":
+                        size 13
+                        color "#ffffff"
+                        bold True
+                        xalign 0.5
+                        yalign 0.5
+
+        # --- OPCIÓN 2: MUJER (AOI KAZAMA) ---
+        button:
+            xsize 520
+            ysize 630
+            action [
+                Function(set_protagonist_gender, "mujer"),
+                Return()
+            ]
+            background Frame(Solid("#120d1cf2"), 10, 10)
+            hover_background Frame(Solid("#201032f8"), 10, 10)
+            padding (28, 26, 28, 26)
+
+            vbox:
+                spacing 14
+                xfill True
+                yfill True
+
+                frame:
+                    background Solid("#9333ea28")
+                    padding (12, 4, 12, 4)
+                    xalign 0.0
+                    text "NUEVA REALIDAD CUÁNTICA • AMATISTA":
+                        size 11
+                        color "#c084fc"
+                        bold True
+
+                frame:
+                    xsize 464
+                    ysize 260
+                    background Solid("#08050e")
+                    add "images/silueta_aoi.png":
+                        xalign 0.5
+                        yalign 1.0
+                        zoom 0.58
+
+                vbox:
+                    spacing 4
+                    text "AOI KAZAMA":
+                        size 22
+                        color "#f8fafc"
+                        bold True
+                    text "「 運 命 の 瞳 、 輪 廻 の 淵 」":
+                        size 13
+                        color "#c084fc"
+                        bold True
+
+                text "Despiertas un mes después en coma. Tu hermano saltó de la azotea devorado por la culpa. Al borde del suicidio, tus ojos despiertan ante el espejo para alterar la muerte.":
+                    size 13
+                    color "#94a3b8"
+                    line_spacing 4
+
+                null height 6
+
+                frame:
+                    xfill True
+                    ysize 42
+                    background Solid("#9333ea")
+                    text "JUGAR COMO MUJER (AOI)":
+                        size 13
+                        color "#ffffff"
+                        bold True
+                        xalign 0.5
+                        yalign 0.5
+
+    if persistent.selected_gender is not None:
+        textbutton _("← VOLVER AL MENÚ"):
+            xalign 0.5
+            yalign 0.96
+            text_size 13
+            text_color "#64748b"
+            text_hover_color "#ffffff"
+            action Return()
+
+
 ## Pantalla del menú principal #################################################
 screen main_menu():
 
@@ -630,12 +854,19 @@ screen main_menu():
         ysize 1080
         background "images/main_menu_bg.png"
 
-        # Silueta anime de Ren en la penumbra observando la noche
-        add "images/silueta_ren.png":
-            xalign 0.90
-            yalign 1.0
-            zoom 0.85
-            alpha 0.85
+        # Silueta anime adaptada según el protagonista seleccionado
+        if persistent.selected_gender == "mujer":
+            add "images/silueta_aoi.png":
+                xalign 0.90
+                yalign 1.0
+                zoom 0.85
+                alpha 0.85
+        else:
+            add "images/silueta_ren.png":
+                xalign 0.90
+                yalign 1.0
+                zoom 0.85
+                alpha 0.85
 
         # Capa de oscurecimiento suave central para máxima legibilidad del logo
         frame:
@@ -656,19 +887,34 @@ screen main_menu():
                     ysize 175
                     fit "contain"
 
-                text "「 瞳 の 奥 に 、 死 が 映 る 」":
-                    size 22
-                    color (persistent.theme_border or "#e63946")
-                    xalign 0.5
-                    bold True
-                    kerning 4
+                if persistent.selected_gender == "mujer":
+                    text "「 運 命 の 瞳 、 輪 廻 の 淵 」":
+                        size 22
+                        color (persistent.theme_border or "#c084fc")
+                        xalign 0.5
+                        bold True
+                        kerning 4
 
-                text "En el corazón de Nagano, la muerte aguarda en cada mirada.\nUn don que nació de una herida. Una elección que decide quién respira mañana.":
-                    size 16
-                    color "#a4adbe"
-                    xalign 0.5
-                    text_align 0.5
-                    line_spacing 6
+                    text "Despertaste del coma tras la pérdida de tu hermano.\nUn reflejo en el espejo del hospital revela la muerte antes de que ocurra.":
+                        size 16
+                        color "#d8b4fe"
+                        xalign 0.5
+                        text_align 0.5
+                        line_spacing 6
+                else:
+                    text "「 瞳 の 奥 に 、 死 が 映 る 」":
+                        size 22
+                        color (persistent.theme_border or "#e63946")
+                        xalign 0.5
+                        bold True
+                        kerning 4
+
+                    text "En el corazón de Nagano, la muerte aguarda en cada mirada.\nUn don que nació de una herida. Una elección que decide quién respira mañana.":
+                        size 16
+                        color "#a4adbe"
+                        xalign 0.5
+                        text_align 0.5
+                        line_spacing 6
 
     use navigation
 
@@ -1067,6 +1313,10 @@ screen preferences():
                         textbutton _("Carmesí Japón"):
                             action Function(set_theme, "Carmesí")
                             selected (persistent.theme_name == "Carmesí")
+                            style "pref_tab_btn"
+                        textbutton _("Amatista Sakura"):
+                            action Function(set_theme, "Amatista Sakura")
+                            selected (persistent.theme_name == "Amatista Sakura")
                             style "pref_tab_btn"
                         textbutton _("Azul Noche"):
                             action Function(set_theme, "Azul Noche")
