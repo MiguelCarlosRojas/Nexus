@@ -23,13 +23,10 @@ jobs:
       - name: Verificar Integridad de Archivos RPY y Python
         run: |
           python -c '
-          import os, sys, ast
+          import os, sys
           print("Validando estructura de scripts...")
-          base_dir = "Nexus/game"
-          if not os.path.exists(base_dir):
-              print("Directorio de juego encontrado en la raíz.")
-              base_dir = "game"
-          
+          base_dir = "game"
+          assert os.path.exists(base_dir), "Directorio game no encontrado en la raiz"
           files = [f for f in os.listdir(base_dir) if f.endswith(".rpy")]
           print(f"Archivos RPY encontrados: {files}")
           assert len(files) >= 4, "Faltan archivos rpy clave"
@@ -40,9 +37,7 @@ jobs:
         run: |
           python -c '
           import os
-          audio_dir = "Nexus/game/audio"
-          if not os.path.exists(audio_dir):
-              audio_dir = "game/audio"
+          audio_dir = "game/audio"
           required_audio = ["piano_sad_theme.wav", "eye_vision.wav", "heartbeat.wav", "crash.wav"]
           for f in required_audio:
               assert os.path.exists(os.path.join(audio_dir, f)), f"Asset faltante: {f}"

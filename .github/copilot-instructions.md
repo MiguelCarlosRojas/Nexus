@@ -5,7 +5,7 @@ Este documento define las directrices y normas de diseño para todos los agentes
 ---
 
 ## 🎯 Directrices de Arquitectura
-1. **Motor Ren'Py:** Todo el código principal reside en archivos `.rpy` dentro de `Nexus/game/`.
+1. **Motor Ren'Py:** Todo el código principal reside en archivos `.rpy` dentro de `game/`.
 2. **Sintaxis Estricta:**
    - La sentencia `menu:` nunca debe llevar `:` al final de los textos descriptivos.
    - Preservar la resolución base de 1920x1080 Full HD.
