@@ -13,24 +13,29 @@
 ##
 ## El _() que rodea la cadena de texto la señala como traducible.
 
-define config.name = _("Nexus")
+define config.name = _("NEXUS: 宿命の瞳")
 
 
 ## Determina si el título dado más arriba se muestra en el menú principal.
 ## Ajústalo a 'False' para ocultar el título.
 
-define gui.show_name = True
+define gui.show_name = False
 
 
 ## Versión del juego.
 
-define config.version = "1.0"
+define config.version = "1.0.0"
 
 
 ## Texto situado en la pantalla 'Acerca de' del juego. Sitúa el texto entre
 ## comillas triples y deja una línea en blanco entre párrafos.
 
 define gui.about = _p("""
+NEXUS: 宿命の瞳 (Los Ojos del Destino)
+Novela visual de suspenso psicológico y thriller sobrenatural ambientada en la región central de Japón.
+
+Dirección y Guion Original: Miguel Carlos Rojas.
+Motor: Ren'Py Visual Novel Engine.
 """)
 
 
