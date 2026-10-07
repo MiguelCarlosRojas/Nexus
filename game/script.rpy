@@ -5,6 +5,9 @@
 # -----------------------------------------------------------------------------
 # Declaración de Personajes
 # -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
+# Declaración de Personajes - Ruta Shinshu (Hombre)
+# -----------------------------------------------------------------------------
 define p = Character("Ren", color="#e63946", who_outlines=[(1, "#2b0709", 0, 0)], what_color="#ffffff")
 define aoi = Character("Aoi", color="#38bdf8", who_outlines=[(1, "#082f49", 0, 0)], what_color="#f8fafc")
 define madre = Character("Madre", color="#f472b6", who_outlines=[(1, "#500724", 0, 0)], what_color="#f8fafc")
@@ -13,6 +16,14 @@ define enf = Character("Enfermera Sato", color="#c084fc", who_outlines=[(1, "#3b
 define doc = Character("Dr. Moriyama", color="#34d399", who_outlines=[(1, "#022c22", 0, 0)], what_color="#f8fafc")
 define kuroda = Character("Sr. Kuroda", color="#94a3b8", who_outlines=[(1, "#0f172a", 0, 0)], what_color="#f8fafc")
 define misterio = Character("???", color="#f87171", who_outlines=[(1, "#450a0a", 0, 0)], what_color="#fecaca")
+
+# -----------------------------------------------------------------------------
+# Declaración de Personajes - Ruta Aoi (Mujer)
+# -----------------------------------------------------------------------------
+define aoi_p = Character("Aoi", color="#c084fc", who_outlines=[(1, "#3b0764", 0, 0)], what_color="#ffffff")
+define shinshu = Character("Shinshu", color="#e63946", who_outlines=[(1, "#2b0709", 0, 0)], what_color="#ffffff")
+define yuna = Character("Yuna", color="#38bdf8", who_outlines=[(1, "#0c4a6e", 0, 0)], what_color="#f0f9ff")
+define padre_yuna = Character("Sr. Tachibana", color="#94a3b8", who_outlines=[(1, "#1e293b", 0, 0)], what_color="#f8fafc")
 
 # -----------------------------------------------------------------------------
 # Siluetas de los Personajes
@@ -49,19 +60,65 @@ image bg hospital_dia = Solid("#181b24")
 image bg hospital_tarde = Solid("#231a1a")
 image bg hospital_noche = Solid("#0d0f14")
 image bg hospital_pasillo = Solid("#11151f")
+image bg hospital_morado = Solid("#181026")
+image bg hospital_habitacion_aoi = Solid("#130f1e")
+image bg bano_espejo = Solid("#0d121c")
 image bg destello_rojo = Solid("#7a0b0b")
+image bg destello_morado = Solid("#581c87")
 image bg sangre_visceral = Solid("#4a0505")
+image bg sangre_espejo = Solid("#3b0764")
+image bg habitacion_aislamiento = Solid("#110a1c")
 
 # Efectos de transición personalizados
 define eye_pulse = Fade(0.2, 0.1, 0.3, color="#8a0f0f")
 define vision_flash = Fade(0.15, 0.2, 0.4, color="#a30e0e")
+define eye_pulse_aoi = Fade(0.2, 0.1, 0.3, color="#6b21a8")
+define vision_flash_aoi = Fade(0.15, 0.2, 0.4, color="#9333ea")
 define fade_muerte = Fade(1.5, 1.2, 2.0, color="#050000")
 define fade_lento = Fade(1.0, 0.5, 1.0, color="#000000")
 
 # -----------------------------------------------------------------------------
-# Inicio de la Historia
+# Entrada Inicial del Juego (Antes del Menú Principal)
+# -----------------------------------------------------------------------------
+label splashscreen:
+    if persistent.selected_gender is None:
+        call screen protagonist_selection
+    return
+
+# -----------------------------------------------------------------------------
+# Inicio de la Partida - Prólogo Conceptual
 # -----------------------------------------------------------------------------
 label start:
+
+    # -------------------------------------------------------------------------
+    # PRÓLOGO CONCEPTUAL: EL EFECTO MARIPOSA Y EL EVENTO NEXUS
+    # -------------------------------------------------------------------------
+    scene bg negro
+    with fade_lento
+
+    stop music fadeout 1.5
+
+    play sound "audio/heartbeat.wav"
+
+    "{i}«El aleteo de una sola mariposa en el corazón de Japón es capaz de desatar un tifón al otro confín del océano.»{/i}"
+
+    "{b}EL EFECTO MARIPOSA.{/b}\nUna ley matemática y cósmica irrevocable: una variación infinitesimal, una pisada apresurada en un paso de peatones o un segundo de retraso... desvía la causalidad universal hacia un abismo completamente nuevo."
+
+    play sound "audio/glass_break.wav"
+
+    "{b}EL EVENTO NEXUS.{/b}\nUna rasgadura en el tejido del espacio-tiempo. Una bifurcación cuántica donde dos destinos colisionan: la realidad de quien corrió para salvar... y la realidad de quien cayó en la sombra del impacto."
+
+    if persistent.selected_gender == "mujer":
+        "{color=#c084fc}{b}LÍNEA TEMPORAL ALPHA: PERSPECTIVA DE AOI KAZAMA{/b}{/color}\nHas despertado en la fractura donde el peso de la culpa consumió a tu familia."
+        jump chapter1_aoi
+    else:
+        "{color=#e63946}{b}LÍNEA TEMPORAL OMEGA: PERSPECTIVA DE SHINSHU KAZAMA (REN){/b}{/color}\nHas despertado en la fractura donde la muerte quedó grabada en tus pupilas."
+        jump chapter1_shinshu
+
+# -----------------------------------------------------------------------------
+# CAPÍTULO 1 (HOMBRE): SHINSHU KAZAMA (REN)
+# -----------------------------------------------------------------------------
+label chapter1_shinshu:
 
     # -------------------------------------------------------------------------
     # PRÓLOGO: EL ECO DEL ASFALTO Y LA NIEBLA DE CHŪBU
@@ -710,3 +767,498 @@ label final_capitulo_esperanza:
     with Dissolve(2.5)
     "{b}FIN DEL CAPÍTULO 1 - EL HILO DEL DESTINO ROTO{/b}"
     return
+
+
+# =============================================================================
+# CAPÍTULO 1 (MUJER): AOI KAZAMA - LA HERMANA DEL DESTINO
+# =============================================================================
+label chapter1_aoi:
+
+    # -------------------------------------------------------------------------
+    # PARTE 1: EL DESPERTAR TRAS UN MES DE SILENCIO
+    # -------------------------------------------------------------------------
+    scene bg negro
+    with fade_lento
+
+    stop music fadeout 2.0
+    play sound "audio/monitor.wav" loop
+
+    "Un pitido rítmico, lejano y metálico..."
+    "El olor penetrante a antiséptico, sábanas almidonadas y ozono."
+
+    scene bg hospital_habitacion_aoi
+    with Dissolve(2.0)
+
+    "Abro los párpados con un esfuerzo que parece desgarrar mis músculos."
+    "La luz fluorescente del techo del Hospital General de Nagano hiere mis pupilas como cristales rotos."
+    "Tengo la garganta reseca, vendajes oprimiendo mi frente y cables fríos conectados a mi pecho."
+
+    aoi_p "D... ¿dónde...?"
+
+    show silueta_madre at silueta_center with Dissolve(1.2)
+
+    "Un rostro desencajado se abalanza sobre la barandilla de la cama."
+    "Las lágrimas de mi madre empapan las sábanas antes de que pueda articular una sola palabra."
+
+    madre "¡Aoi...! ¡Hija mía...! ¡Dios mío, despertaste...! ¡Por fin abriste los ojos...!"
+
+    aoi_p "Mamá... ¿qué hora es? El paso de peatones... la lluvia en la estación... ¿dónde está mi hermano? ¿Dónde está Shinshu?"
+
+    "La madre se petrifica al instante."
+    "El llanto de alivio se transforma de golpe en una mueca de espanto y dolor incontenible. Sus manos comienzan a temblar sobre mi manta."
+
+    aoi_p "Mamá... ¿por qué no contesta? ¿Por qué no vino a verme? Shinshu siempre me cuidaba... ¿dónde está?"
+
+    # -------------------------------------------------------------------------
+    # PARTE 2: LA CONFESIÓN DE LA MADRE Y EL SALTO DEL HERMANO
+    # -------------------------------------------------------------------------
+    stop sound fadeout 1.5
+    play music "audio/piano_sad_theme.wav" loop fadein 2.0
+
+    madre "Aoi... mi pequeña... no han pasado unas horas..."
+    madre "Has estado en coma profundo... durante un mes entero."
+
+    aoi_p "¿U-un mes...?"
+
+    madre "Aquel día... el camión derrapó en la curva de Matsumoto. Shinshu corrió desesperado hacia ti... pero no llegó a tiempo. El golpe te destrozó la cabeza contra el bordillo."
+
+    scene bg hospital_tarde
+    with Dissolve(1.5)
+
+    "Mi madre se cubre el rostro, convulsionando en sollozos ahogados."
+
+    madre "Durante semanas, Shinshu no salió de este hospital. No dormía. No comía. Se quedaba de rodillas junto a tu camilla sosteniendo tu mano inerte, repitiéndose una y otra vez que todo había sido culpa suya..."
+    madre "{i}«Si hubiera corrido más rápido... si la hubiera tomado del brazo antes de cruzar... Aoi estaría despierta»{/i}... ese veneno se le metió en la cabeza..."
+
+    aoi_p "No... Shinshu no tuvo la culpa... ¡yo fui la que corrió adelante jugando en las líneas blancas...!"
+
+    show silueta_madre at silueta_center with Dissolve(0.8)
+
+    madre "Y yo... ciega de dolor y desesperación... en lugar de abrazarlo, le grité."
+    madre "Le grité en este mismo pasillo: {i}«¡Todo es culpa tuya! ¡Tú eres el hermano mayor! ¡Era tu deber proteger a tu hermana menor!»{/i}"
+
+    scene bg azotea_lluvia
+    with Dissolve(1.8)
+    play sound "audio/rain.wav" loop
+
+    "La voz de mi madre se quiebra en un susurro fantasmal. En mi mente, veo la silueta de mi hermano bajo el aguacero torrencial de la noche..."
+
+    "Solo en la azotea de un bloque de viviendas en Nagano. El viento helado de los Alpes japoneses azotando su uniforme empapado."
+    "Sin el perdón de nuestra madre. Sin mi voz para decirle que lo amaba."
+    "Devorado por la culpa y el remordimiento de haber llegado un segundo tarde."
+
+    play sound "audio/flatline.wav"
+    scene bg destello_rojo
+    with Dissolve(0.5)
+
+    "Shinshu dio un paso al frente sobre el alféizar de cemento... y se dejó caer hacia el vacío infinito de la noche."
+
+    stop sound fadeout 1.0
+
+    scene bg hospital_habitacion_aoi
+    with Dissolve(1.5)
+
+    madre "Murió en el acto al estrellarse contra el pavimento... Hace tres semanas enterramos a tu hermano. ¡Y yo lo empujé a esa azotea, Aoi! ¡Fui yo...!"
+
+    $ grant_achievement("despertar_aoi")
+
+    "Las palabras caen sobre mi pecho como toneladas de plomo ardiente."
+    "No puedo respirar. El aire no entra en mis pulmones."
+    "Shinshu murió. Mi hermano... mi guardián... está bajo tierra. Y murió creyendo que fue su culpa, cuando fui yo quien dio el paso imprudente bajo la lluvia."
+
+    aoi_p "(Si yo no hubiera caminado tan deprisa... si no me hubiera adelantado... Shinshu estaría vivo. Yo lo maté. Yo soy su asesina.)"
+
+    # -------------------------------------------------------------------------
+    # PARTE 3: LA ESPIRAL DE CULPA Y LA RETENCIÓN HOSPITALARIA
+    # -------------------------------------------------------------------------
+    scene bg negro
+    with fade_muerte
+
+    "Los días posteriores al despertar se convirtieron en un infierno sin fondo."
+    "El hospital no era un lugar de recuperación: era una jaula de remordimientos donde cada respiración me quemaba el alma."
+
+    scene bg hospital_pasillo
+    with Dissolve(1.0)
+
+    "Quería morir. Quería reunirme con Shinshu y pedirle perdón en la penumbra."
+    "Varias veces intenté arrancarme los sueros para desangrarme en silencio. En dos ocasiones corrí hacia las ventanas del cuarto piso intentando abrir los pestillos para saltar al vacío, igual que hizo él."
+
+    show silueta_enfermera at silueta_left
+    show silueta_doctor at silueta_right
+    with Dissolve(0.8)
+
+    doc "¡Sujétenla de los brazos! ¡Administren cinco miligramos de diazepam de inmediato!"
+    enf "¡Tranquila, Aoi! ¡Por favor, no lo hagas!"
+
+    "Los enfermeros y doctores tuvieron que placarme contra el suelo en más de una guardia nocturna."
+    "Me sujetaron con correas a la camilla. Me colocaron vigilancia estricta las veinticuatro horas. Mi madre apenas podía mirarme sin desmoronarse."
+
+    hide silueta_enfermera
+    hide silueta_doctor
+    with Dissolve(0.8)
+
+    # -------------------------------------------------------------------------
+    # PARTE 4: LA NOCHE DEL LAVABO Y EL FILO OCULTO
+    # -------------------------------------------------------------------------
+    scene bg hospital_noche
+    with Dissolve(1.5)
+
+    "Una medianoche espesa y silenciosa en el pabellón oeste."
+    "La enfermera de guardia acababa de pasar su ronda de control y cerró la puerta batiente."
+    "En la camilla de al lado duerme Yuna Tachibana, mi compañera de habitación. Una chica ingresada por dolencias pulmonares que siempre intentaba hablarme con una sonrisa amable, aunque yo solo le respondía con monosílabos gélidos."
+
+    "Me deslizo fuera de las sábanas sin hacer ruido."
+    "Bajo una tablilla suelta del rodapié del lavabo, había escondido días atrás un pequeño filo metálico: una hoja de bisturí descartada que conseguí hurtar durante un cambio de apósitos."
+
+    scene bg bano_espejo
+    with Dissolve(1.2)
+
+    "Entro al cuarto de baño y cierro el pestillo despacio."
+    "Abro el grifo. Me lavo la cara con agua helada para detener el temblor de mis manos."
+    "Saco el pequeño filo de mi bolsillo. El metal despide un destello plateado bajo el tubo fluorescente."
+
+    aoi_p "(Shinshu... espérame. Ya voy a buscarte.)"
+
+    "Alzo la vista hacia el espejo frente a mí con el filo apoyado contra la piel de mi muñeca."
+    "Y entonces..."
+
+    play sound "audio/eye_vision.wav"
+    scene bg destello_morado
+    with eye_pulse_aoi
+
+    "El espejo del lavabo no devuelve mi rostro demacrado."
+    "El cristal se ondula como agua hirviente y una punzada eléctrica atraviesa mis dos globos oculares con la violencia de un relámpago."
+
+    $ grant_achievement("espejo_premonicion")
+
+    # -------------------------------------------------------------------------
+    # LA VISIÓN PREMONITORIA EN EL ESPEJO
+    # -------------------------------------------------------------------------
+    play sound "audio/heartbeat.wav"
+    scene bg vacio_mental
+    with Dissolve(0.6)
+
+    "En la superficie del espejo presencio una escena que aún no ha ocurrido:"
+    "Es la tarde de mañana. El sol entra oblicuo por los ventanales de nuestra habitación."
+
+    show silueta_doctor at silueta_right with Dissolve(0.5)
+    "Un hombre corpulento y con el rostro crispado de furia entra al cuarto: el padre de Yuna."
+
+    padre_yuna "¡Estoy harto de tus quejas y de tus gastos médicos! ¡Desde que naciste no has hecho más que arruinar a esta familia!"
+
+    show silueta_aoi at silueta_left with Dissolve(0.5)
+    yuna "¡Tú nunca estuviste para mí! ¡Ojalá mamá no te hubiera conocido jamás!"
+
+    "El padre pierde por completo el control. Con un alarido de cólera, extiende ambos brazos y empuja a Yuna con fuerza brutal hacia atrás."
+
+    play sound "audio/crash.wav"
+    scene bg destello_rojo
+    with eye_pulse
+
+    "Yuna sale despedida de la cama y cae de espaldas hacia el suelo."
+    "Y justo allí... en el espacio ciego entre la pata metálica de su cama y el rodapié... hay una varilla metálica afilada, rota de un antiguo soporte de suero, apuntando hacia arriba."
+
+    play sound "audio/glass_break.wav"
+    scene bg sangre_espejo
+    with vision_flash_aoi
+
+    "El impacto es espeluznante."
+    "La varilla de acero perfora la base del cráneo de Yuna, penetrando directamente en la masa cerebral."
+    "Yuna ni siquiera alcanza a gritar. Sus pupilas se dilatan instantáneamente y un reguero espeso de sangre carmesí inunda las baldosas blancas."
+
+    padre_yuna "¡¿Y-Yuna...?! ¡Yuna, levántate! ¡¿Qué es esto?! ¡¡AYUDA!! ¡¡ENFERMERAS, POR FAVOR, UN MÉDICO!!"
+
+    play sound "audio/flatline.wav"
+
+    "El padre retrocede aterrorizado al ver sus manos empapadas de sangre."
+    "Entran enfermeros y médicos corriendo a toda velocidad. Intentan maniobras de reanimación, gritan por una camilla de quirófano... pero el electrocardiógrafo marca una línea plana irremediable."
+    "Dos vigilantes de seguridad reducen al padre contra el suelo mientras el doctor grita al teléfono: {i}«¡Llamen a la policía del distrito! ¡Ha matado a su hija!»{/i}"
+
+    stop sound fadeout 1.0
+
+    # -------------------------------------------------------------------------
+    # RETORNO A LA REALIDAD DEL LAVABO
+    # -------------------------------------------------------------------------
+    scene bg bano_espejo
+    with Dissolve(1.5)
+
+    "El espejo vuelve a la normalidad de golpe. Jadeo sobre el lavabo con el corazón golpeando mi pecho a doscientos latidos por minuto."
+    "Mis ojos arden como brasas encendidas. No fue una alucinación... fue una premonición exacta del futuro."
+    "Mañana por la tarde... Yuna morirá perforada por ese objeto oculto debajo de su cama si nadie interviene."
+
+    aoi_p "(He visto la muerte antes de que ocurra... igual que si el hilo del destino se hubiera dibujado delante de mis ojos.)"
+
+    # -------------------------------------------------------------------------
+    # LA TRIPLE ENCRUCIJADA DE AOI
+    # -------------------------------------------------------------------------
+    "Miro el filo que sostengo en mis dedos temblorosos. La muerte me rodea, pero por primera vez desde el coma... tengo el poder de actuar."
+    "¿Qué debo hacer con este don maldito?"
+
+    menu:
+        "¿Qué camino eliges para enfrentar la muerte inminente de Yuna?":
+            pass
+
+        "1. Advertir desesperadamente a Yuna sobre la discusión con su padre y el objeto mortal.":
+            jump aoi_decision_advertir
+
+        "2. Tirar mi propio filo, esperar a la noche y retirar el objeto punzante debajo de la cama de Yuna.":
+            jump aoi_decision_retirar
+
+        "3. No intervenir; convencerme de que solo fue una pesadilla o un delirio provocado por mi trauma.":
+            jump aoi_decision_ignorar
+
+
+# -----------------------------------------------------------------------------
+# RAMA 1: ADVERTIR A YUNA
+# -----------------------------------------------------------------------------
+label aoi_decision_advertir:
+
+    scene bg hospital_dia
+    with Dissolve(1.2)
+
+    "A la mañana siguiente, me acerco a la cama de Yuna con las manos temblando de ansiedad."
+    "Ella está sentada leyendo una revista, sorprendida de verme dar el primer paso para hablarle."
+
+    aoi_p "Yuna... escúchame bien. Tienes que creerme. Esta tarde vendrá tu padre a visitarte."
+
+    show silueta_aoi at silueta_center with Dissolve(0.8)
+
+    yuna "¿Mi padre? Sí... dijo que pasaría después del trabajo. ¿Cómo lo sabes?"
+
+    aoi_p "¡Van a discutir fuertemente! Él te empujará de la cama... y debajo hay un metal afilado que te perforará la cabeza si caes. ¡Por favor, no discutas con él, aléjate de esa cama o sal de la habitación!"
+
+    "Yuna baja la revista despacio. Sus ojos no muestran gratitud ni asombro: muestran desconcierto, pena y temor."
+
+    yuna "Aoi... sé por lo que estás pasando. Sé lo de tu hermano Shinshu... y las enfermeras me contaron las veces que tuvieron que retenerte por intentar hacerte daño..."
+    yuna "Estás medicada y muy sensible. Por favor... no te metas en las cosas de mi familia. Mi padre tiene mal genio, pero jamás me haría daño. Estás delirando."
+
+    aoi_p "¡No estoy loca, Yuna! ¡Lo vi con mis propios ojos en el espejo!"
+
+    yuna "¡Basta, Aoi! ¡Por favor, déjame en paz o llamaré a la enfermera!"
+
+    hide silueta_aoi with Dissolve(0.6)
+
+    "Nadie me cree. Para el mundo, soy solo una paciente rota por el duelo con alucinaciones paranoides."
+
+    # La tragedia se consuma
+    scene bg hospital_tarde
+    with Dissolve(1.5)
+
+    "La tarde cae inexorable sobre Nagano."
+    "La puerta se abre de golpe. El padre de Yuna entra con paso pesado y ceño fruncido."
+    "La discusión empieza con las mismas frases exactas que presencié en el reflejo."
+
+    padre_yuna "¡Estoy harto de tus quejas y de tus gastos médicos! ¡Desde que naciste no has hecho más que arruinar a esta familia!"
+    yuna "¡Tú nunca estuviste para mí! ¡Ojalá mamá no te hubiera conocido jamás!"
+
+    aoi_p "¡¡YUNA, CUIDADO, ATRÁS!!"
+
+    "Intento saltar de mi camilla para interponerme, pero mis piernas débiles por el coma ceden contra el suelo."
+
+    play sound "audio/crash.wav"
+    scene bg destello_rojo
+    with eye_pulse
+
+    "El empujón ocurre en una fracción de segundo. El cuerpo de Yuna vuela de espaldas hacia el hueco bajo la cama."
+
+    play sound "audio/glass_break.wav"
+    scene bg sangre_visceral
+    with vision_flash_aoi
+
+    "El crujido óseo resuena en toda la habitación."
+    "La varilla de hierro oculta perfora su cráneo al instante. La sangre inunda las baldosas idéntica a la visión."
+
+    padre_yuna "¡¡YUNA!! ¡¡NO, DIOS MÍO, QUÉ HICE... AYUDA!!"
+
+    $ grant_achievement("tragedia_yuna")
+
+    jump final_capitulo_aoi_tragedia
+
+
+# -----------------------------------------------------------------------------
+# RAMA 2: RETIRAR EL OBJETO EN LA NOCHE (SALVACIÓN Y SACRIFICIO)
+# -----------------------------------------------------------------------------
+label aoi_decision_retirar:
+
+    scene bg bano_espejo
+    with Dissolve(1.0)
+
+    "Comprendo la amarga verdad: nadie creerá la palabra de una chica suicida que acaba de despertar de un coma."
+    "Si quiero salvarla, no puedo confiar en las palabras. Debo actuar con hechos."
+
+    "Miro el filo que guardaba para cortarme... y lo arrojo al cubo de basura del lavabo sin dudar."
+
+    aoi_p "(Shinshu... si no pude salvarte a ti, al menos no permitiré que otra vida se apague delante de mis ojos.)"
+
+    scene bg hospital_noche
+    with Dissolve(1.5)
+
+    "Son las dos de la madrugada. El hospital duerme bajo un silencio sepulcral."
+    "Me deslizo como una sombra fuera de mi cama. El suelo helado quema la planta de mis pies descalzos."
+    "Me arrastro lentamente hacia la cama de Yuna. Me agacho en la penumbra y deslizo mi brazo bajo el armazón de hierro."
+
+    "Mis dedos tantean el polvo y los cables... hasta que rozan un borde frío y punzante."
+    "Es la varilla metálica rota de soporte. Afilada como un arpón oxidado."
+    "La aferro con fuerza y comienzo a extraerla despacio..."
+
+    # Yuna despierta
+    play sound "audio/heartbeat.wav"
+
+    "Pero el metal raspa contra el marco de la cama produciendo un leve chillido."
+    "Yuna abre los ojos de golpe en la oscuridad."
+    "Me ve agachada a escasos centímetros de su rostro, con la mirada desorbitada y un objeto largo y afilado de metal empuñado en mi mano."
+
+    yuna "¡¡¡AAAAAAAHHHH!!! ¡¡¡SOCORRO!!! ¡¡ME QUIERE MATAR!! ¡¡¡AUXILIO!!!"
+
+    play sound "audio/flatline.wav"
+
+    "Las luces de emergencia se encienden al unísono. La puerta se abre de par en par con estrépito."
+
+    show silueta_doctor at silueta_right
+    show silueta_enfermera at silueta_left
+    with Dissolve(0.5)
+
+    doc "¡Sujétenla! ¡Tiene un objeto punzante! ¡Aseguren a la paciente Tachibana!"
+    enf "¡Aoi, suelta eso por favor! ¡No te muevas!"
+
+    "Tres enfermeros se abalanzan sobre mí, arrojándome contra el suelo linóleo."
+    "Me arrancan el hierro de las manos mientras un pinchazo ardiente atraviesa mi brazo: un sedante de choque."
+
+    aoi_p "¡No... no entienden...! ¡La varilla... estaba debajo de su cama...!"
+
+    "Mi vista se nubla en un torbellino púrpura mientras pierdo el conocimiento..."
+
+    # Aislamiento y salvación al día siguiente
+    scene bg habitacion_aislamiento
+    with Dissolve(2.0)
+
+    "Despierto horas después en una habitación acolchada de aislamiento preventivo en el pabellón psiquiátrico."
+    "Tengo las muñecas aseguradas a la cama. Mi madre llora al otro lado del cristal tras ser notificada del incidente."
+    "Para todos los médicos y para mi madre, he sufrido un brote psicótico homicida."
+
+    "Pero a través de la pequeña ventanilla con barrotes de mi celda, puedo ver hacia el pabellón contiguo."
+    "Es media tarde. El padre de Yuna acaba de llegar."
+    "Discuten con la misma ferocidad."
+    "El padre extiende los brazos con furia y empuja violentamente a Yuna fuera de la cama."
+
+    play sound "audio/crash.wav"
+    scene bg hospital_morado
+    with Dissolve(0.5)
+
+    "Yuna cae de espaldas exactamente en el mismo rincón..."
+    "El golpe de su espalda contra el suelo plano retumba seco... pero no hay perforación. No hay varilla metálica. No hay sangre brotando de su cabeza."
+
+    "Yuna llora de rabia y se frota la espalda magullada. Su padre se detiene avergonzado de haberla empujado, asustado de su propia violencia."
+    "¡Está viva! ¡La muerte no pudo reclamar su tributo!"
+
+    $ grant_achievement("salvar_yuna")
+
+    jump final_capitulo_aoi_esperanza
+
+
+# -----------------------------------------------------------------------------
+# RAMA 3: NO HACER NADA (OMISIÓN)
+# -----------------------------------------------------------------------------
+label aoi_decision_ignorar:
+
+    scene bg hospital_dia
+    with Dissolve(1.2)
+
+    "Me quedo inmóvil en mi cama toda la mañana, temblando bajo las mantas."
+    "Intento convencerme de que mi mente traumatizada por la muerte de Shinshu me está jugando una mala pasada."
+
+    aoi_p "(Fue solo un delirio... la falta de oxígeno del coma. Los espejos no muestran el futuro. No puedo volverme loca...)"
+
+    scene bg hospital_tarde
+    with Dissolve(1.5)
+
+    "Las horas transcurren como una condena silenciosa."
+    "A las cinco de la tarde, la puerta de la habitación se abre."
+    "El padre de Yuna entra con la misma gabardina gris y los puños apretados."
+    "Cada reproche, cada alarido y cada insulto se reproducen con una exactitud matemática aterradora."
+
+    padre_yuna "¡Desde que naciste no has hecho más que arruinar a esta familia!"
+    yuna "¡Ojalá mamá no te hubiera conocido jamás!"
+
+    "El padre levanta las manos. En ese instante de terror puro, comprendo con horror que todo era real... pero ya es demasiado tarde."
+
+    play sound "audio/crash.wav"
+    scene bg destello_rojo
+    with eye_pulse
+
+    "El empujón violento lanza a Yuna hacia atrás."
+
+    play sound "audio/glass_break.wav"
+    scene bg sangre_visceral
+    with vision_flash_aoi
+
+    "El objeto punzante atraviesa la base de su cráneo en el suelo. La sangre salpica la pared blanca."
+    "El padre entra en shock y los médicos no logran reanimarla. La policía lo esposa frente a mi camilla."
+
+    $ grant_achievement("omision_yuna")
+
+    jump final_capitulo_aoi_omision
+
+
+# -----------------------------------------------------------------------------
+# FINALES DEL CAPÍTULO 1 DE AOI
+# -----------------------------------------------------------------------------
+label final_capitulo_aoi_tragedia:
+
+    stop music fadeout 2.5
+    scene bg negro
+    with fade_muerte
+
+    "La habitación fue acordonada por la policía de la prefectura de Nagano."
+    "El padre de Yuna fue detenido e imputado por homicidio involuntario."
+    "Nadie me escuchó cuando intenté advertirle. Todos creyeron que mis advertencias eran desvaríos de una mente quebrada."
+
+    "Comprendí con una amargura insoportable que ver el futuro no sirve de nada si las palabras no tienen fuerza para cambiarlo."
+    "Shinshu murió por la culpa... y ahora yo cargo con la culpa de saber y no haber podido evitar la tragedia."
+
+    scene bg negro
+    with Dissolve(2.5)
+    "{b}FIN DEL CAPÍTULO 1 (AOI) - ADVERTENCIA EN EL VACÍO{/b}"
+    return
+
+
+label final_capitulo_aoi_esperanza:
+
+    stop music fadeout 2.5
+    scene bg negro
+    with fade_lento
+
+    "Sola en la habitación de aislamiento, apoyé mi frente contra el cristal frío de la puerta."
+    "Los médicos piensan que soy peligrosa. Mi expediente clínico ahora me etiqueta como paciente psiquiátrica inestable. Probablemente pasaré meses encerrada bajo vigilancia estricta."
+
+    "Pero en el rincón de mi alma, una lágrima de paz rodó por mi mejilla."
+    "Yuna está viva. La muerte extendió sus garras y yo se las arranqué con mis propias manos en la oscuridad de la noche."
+
+    "Mis ojos no son una simple secuela del coma. Son un arma capaz de torcer el tejido del destino."
+    "Y por primera vez desde que perdí a mi hermano... encontré una razón para seguir viviendo en este mundo."
+
+    scene bg negro
+    with Dissolve(2.5)
+    "{b}FIN DEL CAPÍTULO 1 (AOI) - EL SACRIFICIO QUE BURLÓ A LA MUERTE{/b}"
+    return
+
+
+label final_capitulo_aoi_omision:
+
+    stop music fadeout 2.5
+    scene bg negro
+    with fade_muerte
+
+    "La imagen de los ojos vacíos de Yuna se grabó en mi retina para siempre."
+    "Tuve la oportunidad de salvarla. Tuve la premonición en mis manos y elegí la cobardía de creer que solo era una pesadilla."
+
+    "Mi hermano Shinshu saltó al vacío porque creyó que no llegó a tiempo para salvarme."
+    "Y yo... teniendo el tiempo a mi favor, me quedé de brazos cruzados."
+
+    "En la penumbra helada del hospital de Nagano, supe que el abismo del Nexus nunca me dejará en paz..."
+
+    scene bg negro
+    with Dissolve(2.5)
+    "{b}FIN DEL CAPÍTULO 1 (AOI) - EL PESO DE LA OMISIÓN{/b}"
+    return
+

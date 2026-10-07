@@ -88,6 +88,47 @@ init python:
             "chapter": "Capítulo 1",
             "secret": False
         },
+        # --- RUTA DE AOI KAZAMA (CAPÍTULO 1 - LA HERMANA DEL DESTINO) ---
+        {
+            "id": "despertar_aoi",
+            "name": "Despertar en la Penumbra",
+            "desc": "Despierta tras un mes de coma en el hospital y descubre la trágica partida de Shinshu.",
+            "xp": 25,
+            "chapter": "Capítulo 1 (Aoi)",
+            "secret": False
+        },
+        {
+            "id": "espejo_premonicion",
+            "name": "El Reflejo Premonitorio",
+            "desc": "Presencia a través del espejo del lavabo la fatal visión de la muerte de tu compañera Yuna.",
+            "xp": 25,
+            "chapter": "Capítulo 1 (Aoi)",
+            "secret": False
+        },
+        {
+            "id": "salvar_yuna",
+            "name": "Sacrificio Silencioso",
+            "desc": "Acepta la sedación y el aislamiento médico con tal de retirar el objeto letal y salvar a Yuna.",
+            "xp": 50,
+            "chapter": "Capítulo 1 (Aoi)",
+            "secret": False
+        },
+        {
+            "id": "tragedia_yuna",
+            "name": "Palabras al Vacío",
+            "desc": "Intenta advertir a Yuna sobre la discusión, pero tus palabras son desestimadas como delirio.",
+            "xp": 35,
+            "chapter": "Capítulo 1 (Aoi)",
+            "secret": False
+        },
+        {
+            "id": "omision_yuna",
+            "name": "La Culpa del Silencio",
+            "desc": "Crees que la visión fue solo una pesadilla, presenciando la tragedia exacta sin haber actuado.",
+            "xp": 35,
+            "chapter": "Capítulo 1 (Aoi)",
+            "secret": False
+        },
 
         # --- PRÓXIMOS CAPÍTULOS (PRÓXIMOS A DESBLOQUEAR / BLOQUEADOS) ---
         {
