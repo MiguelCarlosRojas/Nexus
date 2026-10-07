@@ -96,20 +96,32 @@ style frame:
 ##
 ## https://www.renpy.org/doc/html/screen_special.html#say
 
+## Animación de pulso para el indicador de diálogo (CTC)
+transform ctc_pulse:
+    alpha 0.35
+    easein 0.65 alpha 1.0 yoffset 2
+    easeout 0.65 alpha 0.35 yoffset 0
+    repeat
+
 screen say(who, what):
 
     window:
         id "window"
+        style "say_window"
 
         if who is not None:
-
             window:
                 id "namebox"
                 style "namebox"
-                text who id "who"
+                text who id "who" style "say_label"
 
-        text what id "what"
+        text what id "what" style "say_dialogue"
 
+        # Indicador de continuación de línea de diálogo (CTC)
+        add "gui/ctc.png":
+            at ctc_pulse
+            xalign 0.965
+            yalign 0.82
 
     ## Si hay una imagen lateral, la muestra encima del texto. No la muestra en
     ## la variante de teléfono - no hay lugar.
@@ -121,7 +133,7 @@ screen say(who, what):
 init python:
     config.character_id_prefixes.append('namebox')
 
-style window is default
+style say_window is default
 style say_label is default
 style say_dialogue is default
 style say_thought is say_dialogue
@@ -130,7 +142,7 @@ style namebox is default
 style namebox_label is say_label
 
 
-style window:
+style say_window:
     xalign 0.5
     xfill True
     yalign gui.textbox_yalign
@@ -149,18 +161,30 @@ style namebox:
     padding gui.namebox_borders.padding
 
 style say_label:
-    properties gui.text_properties("name", accent=True)
-    xalign gui.name_xalign
+    font gui.name_text_font
+    size gui.name_text_size
+    bold True
+    color "#ffffff"
+    outlines [(1, "#000000aa", 0, 0)]
+    xalign 0.0
     yalign 0.5
 
 style say_dialogue:
-    properties gui.text_properties("dialogue")
+    font gui.text_font
+    size gui.text_size
+    color gui.text_color
+    outlines [(1, "#00000088", 0, 0)]
+    line_spacing 6
 
     xpos gui.dialogue_xpos
     xsize gui.dialogue_width
     ypos gui.dialogue_ypos
 
     adjust_spacing False
+
+style say_thought:
+    italic True
+    color "#cbd5e1"
 
 ## Pantalla de introducción de texto ###########################################
 ##
