@@ -350,3 +350,23 @@ init python:
             if persistent.player_in_ranking:
                 update_player_in_ranking()
         renpy.restart_interaction()
+
+    def reset_all_progress():
+        """Restablece todo el progreso del jugador, logros, ranking y XP a cero absoluto."""
+        persistent.unlocked_achievements = []
+        persistent.recent_achievements = []
+        persistent.player_nickname = ""
+        persistent.player_in_ranking = False
+        persistent.ranking_list = []
+        persistent.janken_played = 0
+        persistent.janken_won = 0
+        try:
+            renpy.save_persistent()
+        except:
+            pass
+        try:
+            renpy.notify(_("Progreso restablecido: 0 Logros, 0 XP (Nivel 1)."))
+        except:
+            pass
+        renpy.restart_interaction()
+
