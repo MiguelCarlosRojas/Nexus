@@ -82,9 +82,7 @@ Nexus/
 ├── CODE_OF_CONDUCT.md         # Normas comunitarias (Contributor Covenant v2.1)
 ├── COPYRIGHT.md               # Derechos de autor y licencias de assets
 ├── README.md                  # Documentación central del proyecto
-├── errors.txt                 # Registro de diagnóstico de compilación Ren'Py
-├── log.txt                    # Log de ejecución del motor
-└── .gitignore                 # Exclusión de archivos compilados y temporales
+└── .gitignore                 # Exclusión de archivos compilados, logs y temporales
 ```
 
 ---
