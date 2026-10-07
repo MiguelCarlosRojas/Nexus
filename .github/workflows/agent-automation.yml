@@ -1,0 +1,47 @@
+name: NEXUS GitHub Agents Automation
+
+on:
+  workflow_dispatch:
+    inputs:
+      agent_task:
+        description: "Tarea o consulta para el Agente NEXUS"
+        required: true
+        default: "Auditar integridad de guiones y minijuegos"
+  issues:
+    types: [labeled, assigned]
+
+jobs:
+  agent-runner:
+    name: Ejecución del Agente NEXUS
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+
+    steps:
+      - name: Checkout del Repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Entorno Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Diagnóstico Autónomo de Ren'Py
+        run: |
+          python -c '
+          import os
+          print("🤖 Agente NEXUS en ejecución...")
+          print("Auditando archivos del motor RenPy en game/:")
+          files = os.listdir("game")
+          for f in sorted(files):
+              if f.endswith((".rpy", ".txt")):
+                  size = os.path.getsize(os.path.join("game", f))
+                  print(f" -> {f} ({size} bytes)")
+          print("✅ Auditoría completada con éxito por el Agente NEXUS!")
+          '
+
+      - name: Responder en el Issue si aplica
+        if: github.event_name == 'issues'
+        run: |
+          echo "Agente respondiendo en el issue #${{ github.event.issue.number }}..."

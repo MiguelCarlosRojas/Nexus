@@ -87,11 +87,18 @@ Nexus/
 
 ---
 
-## 🛠️ Flujo de Trabajo Git (GitFlow)
+## 🛠️ Flujo de Trabajo y Ecosistema GitHub
 
-* `main`: Rama de producción estable. Cada cambio se etiqueta con un **Tag/Release**.
-* `develop`: Rama principal de integración y desarrollo continuo.
-* `feature/*`: Ramas dedicadas para módulos, capítulos y componentes grandes. Cada cambio se promueve vía **Pull Request** a `develop` y posteriormente a `main`.
+El proyecto utiliza de forma integral todas las capacidades de GitHub:
+
+* 💻 **Code:** Estructura modular con arquitectura clara en la raíz y ramas GitFlow (`main`, `develop`, `feature/*`).
+* 📋 **Issues:** Seguimiento estructurado con plantillas oficiales para bugs y features.
+* 🔀 **Pull Requests:** Revisiones de código guiadas con plantillas estandarizadas hacia `develop` y promoción controlada a `main`.
+* 🤖 **Agents:** Integración nativa con la pestaña **Agents** y Copilot Workspace mediante agentes especializados en `.github/agents/`:
+  * `narrative-agent.md`: Especialista en trama sobrenatural, psicología de Shinshu y guion de Ren'Py.
+  * `gameplay-agent.md`: Especialista en interfaces de usuario, minijuegos interactivos y sistema de logros/XP.
+* ⚡ **Actions:** Pipelines automatizados de CI (`ci.yml`) y empaquetado de distribución con releases (`release.yml`).
+* 🏷️ **Releases & Tags:** Distribución de paquetes de juego comprimidos con todos los assets listos para jugar.
 
 ---
 
