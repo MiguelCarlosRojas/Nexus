@@ -189,6 +189,9 @@ init python:
     build.classify('**/.**', None)
     build.classify('**/#**', None)
     build.classify('**/thumbs.db', None)
+    build.classify('game/saves/**', None)
+    build.classify('game/cache/**', None)
+    build.classify('**.save', None)
 
     ## Para archivar, se clasifican como 'archive'.
 
