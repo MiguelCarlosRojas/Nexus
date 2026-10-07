@@ -114,12 +114,12 @@ define gui.name_xalign = 0.0
 
 ## La anchura, altura y bordes de la caja que contiene el nombre del personaje,
 ## o 'None' para dimensión automática.
-define gui.namebox_width = 320
-define gui.namebox_height = 56
+define gui.namebox_width = 340
+define gui.namebox_height = 58
 
 ## Los bordes de la caja que contiene el nombre del personaje, en orden:
 ## izquierda, arriba, derecha, abajo.
-define gui.namebox_borders = Borders(20, 10, 20, 10)
+define gui.namebox_borders = Borders(26, 8, 22, 8)
 
 ## Si es 'True, el fondo de la caja del nombre será en mosaico, si es 'False',
 ## el fondo, si la caja del nombre es escalada.

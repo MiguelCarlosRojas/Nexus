@@ -193,7 +193,9 @@ label start:
 
         "Jugar limpiamente confiando en tu intuición fraternal":
             "Decido ignorar el extraño hormigueo en mis pupilas y confío en mis reflejos humanos ordinarios."
+            window hide
             $ ren_choice = renpy.call_screen("janken_minigame", aoi_choice=aoi_juega, foresight_active=False)
+            window auto
 
         "Concentrarte e intentar usar la visión carmesí de tus ojos para anticipar su jugada":
             play sound "audio/eye_vision.wav"
@@ -202,7 +204,9 @@ label start:
             "Una descarga incandescente atraviesa tu nervio óptico con el filo de un escalpelo."
             "El mundo pierde toda saturación: las paredes del hospital se vuelven cenicientas, y sobre la mano derecha de Aoi se dibujan tenues filamentos escarlatas que trazan la contracción exacta de sus tendones antes de moverse."
             "Por una fracción de segundo, vislumbras el eco espectral de su jugada proyectado en el aire."
+            window hide
             $ ren_choice = renpy.call_screen("janken_minigame", aoi_choice=aoi_juega, foresight_active=True)
+            window auto
 
     $ grant_achievement("janken_jugar")
 
