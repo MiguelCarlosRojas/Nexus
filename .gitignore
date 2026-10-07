@@ -18,6 +18,8 @@ image_cache.txt
 save_dump.txt
 traceback.txt
 profile_screen.txt
+errors.txt
+log.txt
 
 # Launcher-generated files
 dialogue.tab
