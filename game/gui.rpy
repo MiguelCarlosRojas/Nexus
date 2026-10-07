@@ -48,7 +48,7 @@ define gui.muted_color = '#4a1518'
 define gui.hover_muted_color = '#782227'
 
 ## Colores del texto del diálogo y menú.
-define gui.text_color = '#1f2329'
+define gui.text_color = '#f8fafc'
 define gui.interface_text_color = '#e8ecf2'
 
 
@@ -64,10 +64,10 @@ define gui.name_text_font = "DejaVuSans.ttf"
 define gui.interface_text_font = "DejaVuSans.ttf"
 
 ## El tamaño normal del texto del diálogo.
-define gui.text_size = 33
+define gui.text_size = 29
 
 ## El tamaño de los nombres de los personajes
-define gui.name_text_size = 45
+define gui.name_text_size = 32
 
 ## El tamaño del texto en la interfaz.
 define gui.interface_text_size = 33
@@ -95,7 +95,7 @@ define gui.game_menu_background = "gui/game_menu.png"
 ## línea cada vez.
 
 ## Altura de la caja de texto que contiene el diálogo.
-define gui.textbox_height = 278
+define gui.textbox_height = 290
 
 ## Colocación vertical de la caja de texto en la pantalla. 0.0 para la parte
 ## superior, 0.5 para el centro y 1.0 para la parte inferior.
@@ -105,8 +105,8 @@ define gui.textbox_yalign = 1.0
 ## Colocación del nombre del personaje hablante, relativa a la caja de texto.
 ## Puede ser el númerode píxels desde la esquina superior izquierda, o 0.5 para
 ## centrar.
-define gui.name_xpos = 360
-define gui.name_ypos = 0
+define gui.name_xpos = 320
+define gui.name_ypos = -18
 
 ## La alineación horizontal del nombre del personaje. (0.0 es izquierda, 0.5 es
 ## centro, 1.0 es derecha).
@@ -114,12 +114,12 @@ define gui.name_xalign = 0.0
 
 ## La anchura, altura y bordes de la caja que contiene el nombre del personaje,
 ## o 'None' para dimensión automática.
-define gui.namebox_width = None
-define gui.namebox_height = None
+define gui.namebox_width = 320
+define gui.namebox_height = 56
 
 ## Los bordes de la caja que contiene el nombre del personaje, en orden:
 ## izquierda, arriba, derecha, abajo.
-define gui.namebox_borders = Borders(5, 5, 5, 5)
+define gui.namebox_borders = Borders(20, 10, 20, 10)
 
 ## Si es 'True, el fondo de la caja del nombre será en mosaico, si es 'False',
 ## el fondo, si la caja del nombre es escalada.
@@ -128,11 +128,11 @@ define gui.namebox_tile = False
 
 ## Colocación del diálogo relativa a la caja de texto. Puede ser el número de
 ## píxels relativos a la esquina superor izquierda o 0.5 para centrar.
-define gui.dialogue_xpos = 402
-define gui.dialogue_ypos = 75
+define gui.dialogue_xpos = 340
+define gui.dialogue_ypos = 65
 
 ## La anchura máxima del texto del diálogo, en píxels.
-define gui.dialogue_width = 1116
+define gui.dialogue_width = 1240
 
 ## La alineación horizontal del texto del diálogo. (0.0 es izquierda, 0.5 es
 ## centro, 1.0 es derecha).

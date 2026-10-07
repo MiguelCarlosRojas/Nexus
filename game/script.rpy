@@ -5,14 +5,14 @@
 # -----------------------------------------------------------------------------
 # Declaración de Personajes
 # -----------------------------------------------------------------------------
-define p = Character("Ren", color="#e63946")
-define aoi = Character("Aoi", color="#61a0af")
-define madre = Character("Madre", color="#c2948a")
-define kenji = Character("Kenji", color="#4a90e2")
-define enf = Character("Enfermera Sato", color="#8e9aaf")
-define doc = Character("Dr. Moriyama", color="#2a9d8f")
-define kuroda = Character("Sr. Kuroda", color="#9ca3af")
-define misterio = Character("???", color="#7f8c8d")
+define p = Character("Ren", color="#e63946", who_outlines=[(1, "#2b0709", 0, 0)], what_color="#ffffff")
+define aoi = Character("Aoi", color="#38bdf8", who_outlines=[(1, "#082f49", 0, 0)], what_color="#f8fafc")
+define madre = Character("Madre", color="#f472b6", who_outlines=[(1, "#500724", 0, 0)], what_color="#f8fafc")
+define kenji = Character("Dr. Kenji Ogata", color="#60a5fa", who_outlines=[(1, "#172554", 0, 0)], what_color="#f8fafc")
+define enf = Character("Enfermera Sato", color="#c084fc", who_outlines=[(1, "#3b0764", 0, 0)], what_color="#f8fafc")
+define doc = Character("Dr. Moriyama", color="#34d399", who_outlines=[(1, "#022c22", 0, 0)], what_color="#f8fafc")
+define kuroda = Character("Sr. Kuroda", color="#94a3b8", who_outlines=[(1, "#0f172a", 0, 0)], what_color="#f8fafc")
+define misterio = Character("???", color="#f87171", who_outlines=[(1, "#450a0a", 0, 0)], what_color="#fecaca")
 
 # -----------------------------------------------------------------------------
 # Siluetas de los Personajes
