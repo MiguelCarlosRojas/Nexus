@@ -164,10 +164,11 @@ style say_label:
     font gui.name_text_font
     size gui.name_text_size
     bold True
-    color "#ffffff"
-    outlines [(1, "#000000aa", 0, 0)]
+    color "#f8fafc"
+    outlines [(1, "#020617ee", 0, 0), (2, "#0f172a66", 0, 0)]
     xalign 0.0
     yalign 0.5
+    xoffset 8
 
 style say_dialogue:
     font gui.text_font
@@ -266,25 +267,9 @@ style nexus_choice_btn_text is gui_button_text:
 
 screen quick_menu():
 
-    ## Asegura que esto aparezca en la parte superior de otras pantallas.
+    ## Pantalla de menú rápido deshabilitada conforme a la preferencia visual del usuario
     zorder 100
-
-    if quick_menu:
-
-        frame:
-            style "nexus_quick_bar_frame"
-            hbox:
-                spacing 8
-                yalign 0.5
-
-                textbutton _("Atrás") action Rollback() style "nexus_quick_btn"
-                textbutton _("Historial") action ShowMenu('history') style "nexus_quick_btn"
-                textbutton _("Saltar") action Skip() alternate Skip(fast=True, confirm=True) style "nexus_quick_btn"
-                textbutton _("Auto") action Preference("auto-forward", "toggle") style "nexus_quick_btn"
-                textbutton _("Guardar") action ShowMenu('save') style "nexus_quick_btn"
-                textbutton _("R.Guardar") action QuickSave() style "nexus_quick_btn"
-                textbutton _("R.Cargar") action QuickLoad() style "nexus_quick_btn"
-                textbutton _("Opciones") action ShowMenu('preferences') style "nexus_quick_btn"
+    pass
 
 
 ## Este código asegura que la pantalla 'quick_menu' se muestra en el juego,
@@ -2313,19 +2298,8 @@ style pref_vbox:
 ## con menos botones y más grandes, más fáciles de tocar.
 screen quick_menu():
     variant "touch"
-
     zorder 100
-
-    if quick_menu:
-
-        hbox:
-            style "quick_menu"
-            style_prefix "quick"
-
-            textbutton _("Atrás") action Rollback()
-            textbutton _("Saltar") action Skip() alternate Skip(fast=True, confirm=True)
-            textbutton _("Auto") action Preference("auto-forward", "toggle")
-            textbutton _("Menú") action ShowMenu()
+    pass
 
 
 style window:
@@ -2828,94 +2802,93 @@ screen janken_minigame(aoi_choice, foresight_active=False):
 
     modal True
 
-    # Fondo oscuro cinemático con atmósfera japonesa y desenfoque
+    # Marco a Pantalla Completa Total 1920x1080 (Sin cajas de dialogo visibles)
     frame:
         xpos 0
         ypos 0
         xsize 1920
         ysize 1080
-        background Frame(Solid("#060810ee"), 0, 0)
-
-    # Panel Central Flotante "El Duelo de Manos / 宿命のじゃんけん"
-    frame:
-        xalign 0.5
-        yalign 0.48
-        xsize 1240
-        ysize 820
-        padding (45, 35, 45, 35)
-        background Frame("gui/custom_btn/btn_idle.png", 12, 12)
+        background Frame(Solid("#070a13fa"), 0, 0)
+        padding (70, 40, 70, 35)
 
         vbox:
-            spacing 20
             xfill True
-            yalign 0.5
+            yfill True
+            spacing 20
 
-            # --- CABECERA DEL MINIJUEGO ---
+            # --- 1. CABECERA EXPANDIDA FULLSCREEN ---
             hbox:
                 xfill True
                 yalign 0.5
 
                 vbox:
-                    spacing 2
-                    text "じゃんけん • DUELO DEL DESTINO":
-                        size 22
+                    spacing 4
+                    text "じゃんけん • DUELO DEL DESTINO: PIEDRA, PAPEL O TIJERA":
+                        size 26
                         bold True
                         color (persistent.theme_color or "#e63946")
                         kerning 3
-                    text "Desafío fraternal en el Hospital de Shinshu":
-                        size 13
+                    text "Desafío fraternal en la habitación 304 del Hospital de Matsumoto":
+                        size 14
                         color "#94a3b8"
 
-                # Marcador de victorias
+                # Marcador extendido
                 hbox:
                     spacing 16
                     yalign 0.5
                     xalign 1.0
                     frame:
-                        padding (14, 6, 14, 6)
-                        background Frame(Solid("#141926"), 4, 4)
+                        padding (16, 8, 16, 8)
+                        background Frame(Solid("#111827"), 6, 6)
                         text "Victorias: [persistent.janken_wins]":
-                            size 13
+                            size 14
                             bold True
                             color "#4ade80"
                     frame:
-                        padding (14, 6, 14, 6)
-                        background Frame(Solid("#141926"), 4, 4)
+                        padding (16, 8, 16, 8)
+                        background Frame(Solid("#111827"), 6, 6)
+                        text "Empates: [persistent.janken_draws]":
+                            size 14
+                            bold True
+                            color "#38bdf8"
+                    frame:
+                        padding (16, 8, 16, 8)
+                        background Frame(Solid("#111827"), 6, 6)
                         text "Derrotas: [persistent.janken_losses]":
-                            size 13
+                            size 14
                             bold True
                             color "#f87171"
 
-            # Línea decorativa
+            # Línea decorativa horizontal
             frame:
                 xfill True
-                ysize 1
-                background "#232a3d"
+                ysize 2
+                background Frame(Solid("#1e293b"), 0, 0)
 
-            # --- ZONA SUPERIOR: AOI (RIVAL) ---
+            # --- 2. ZONA DEL RIVAL (AOI) DE ANCHO COMPLETO ---
             frame:
                 style "janken_rival_card"
                 hbox:
                     xfill True
                     yalign 0.5
-                    spacing 24
+                    spacing 28
 
-                    # Avatar silueta de Aoi
+                    # Retrato / Silueta de Aoi ampliada
                     add "images/silueta_aoi.png":
-                        ysize 120
+                        ysize 140
                         fit "contain"
                         yalign 0.5
 
                     vbox:
-                        spacing 4
+                        spacing 6
                         yalign 0.5
-                        text "Aoi Kazama (Hermana Menor)":
-                            size 18
+                        text "Aoi Kazama (妹 • Hermana Menor)":
+                            size 22
                             bold True
                             color "#ffffff"
                         text "«¡Te toca elegir, hermanito! ¡Esta vez no pienso perder contra ti!»":
-                            size 14
-                            color "#cbd5e1"
+                            size 16
+                            color "#e2e8f0"
                             italic True
 
                     # Habilidad del Ojo Carmesí: Predicción del Futuro
@@ -2923,46 +2896,47 @@ screen janken_minigame(aoi_choice, foresight_active=False):
                         frame:
                             style "janken_foresight_badge"
                             hbox:
-                                spacing 12
+                                spacing 16
                                 yalign 0.5
-                                add "gui/janken/eye_foresight.png" ysize 32 fit "contain" yalign 0.5
+                                add "gui/janken/eye_foresight.png" ysize 44 fit "contain" yalign 0.5
                                 vbox:
-                                    spacing 1
+                                    spacing 2
                                     text "VISIÓN DEL DESTINO ACTIVA":
-                                        size 11
+                                        size 12
                                         bold True
                                         color "#ff3355"
-                                        kerning 1.5
+                                        kerning 2
                                     if aoi_choice == "piedra":
-                                        text "Ves que Aoi sacará: PIEDRA":
-                                            size 13
+                                        text "PREMONICIÓN: Aoi sacará PIEDRA":
+                                            size 15
                                             bold True
                                             color "#ffffff"
                                     elif aoi_choice == "papel":
-                                        text "Ves que Aoi sacará: PAPEL":
-                                            size 13
+                                        text "PREMONICIÓN: Aoi sacará PAPEL":
+                                            size 15
                                             bold True
                                             color "#ffffff"
                                     else:
-                                        text "Ves que Aoi sacará: TIJERA":
-                                            size 13
+                                        text "PREMONICIÓN: Aoi sacará TIJERA":
+                                            size 15
                                             bold True
                                             color "#ffffff"
 
-            # --- ZONA CENTRAL: CARTAS DE ACCIÓN TÁCTIL (PIEDRA, PAPEL, TIJERA) ---
+            # --- 3. ZONA CENTRAL: CARTAS DE ACCIÓN A PANTALLA COMPLETA ---
             vbox:
-                spacing 12
-                xalign 0.5
+                spacing 16
+                xfill True
+                yalign 0.5
 
-                text "¿QUÉ DECIDES JUGAR?":
-                    size 14
+                text "SELECCIONA TU JUGADA PARA ALTERAR LA LÍNEA TEMPORAL":
+                    size 15
                     bold True
                     color "#94a3b8"
-                    kerning 2
+                    kerning 3
                     xalign 0.5
 
                 hbox:
-                    spacing 30
+                    spacing 45
                     xalign 0.5
 
                     # Opción 1: PIEDRA (Guu)
@@ -2970,17 +2944,18 @@ screen janken_minigame(aoi_choice, foresight_active=False):
                         action Return("piedra")
                         style "janken_card_btn"
                         vbox:
-                            spacing 10
+                            spacing 14
                             xalign 0.5
-                            add "gui/janken/hand_rock.png" ysize 110 fit "contain" xalign 0.5
+                            yalign 0.5
+                            add "gui/janken/hand_rock.png" ysize 170 fit "contain" xalign 0.5
                             text "PIEDRA (グー)":
-                                size 16
+                                size 22
                                 bold True
                                 color "#ffffff"
                                 xalign 0.5
                             text "Vence a Tijera":
-                                size 12
-                                color "#8392a5"
+                                size 14
+                                color "#94a3b8"
                                 xalign 0.5
 
                     # Opción 2: PAPEL (Paa)
@@ -2988,17 +2963,18 @@ screen janken_minigame(aoi_choice, foresight_active=False):
                         action Return("papel")
                         style "janken_card_btn"
                         vbox:
-                            spacing 10
+                            spacing 14
                             xalign 0.5
-                            add "gui/janken/hand_paper.png" ysize 110 fit "contain" xalign 0.5
+                            yalign 0.5
+                            add "gui/janken/hand_paper.png" ysize 170 fit "contain" xalign 0.5
                             text "PAPEL (パー)":
-                                size 16
+                                size 22
                                 bold True
                                 color "#ffffff"
                                 xalign 0.5
                             text "Vence a Piedra":
-                                size 12
-                                color "#8392a5"
+                                size 14
+                                color "#94a3b8"
                                 xalign 0.5
 
                     # Opción 3: TIJERA (Choki)
@@ -3006,42 +2982,44 @@ screen janken_minigame(aoi_choice, foresight_active=False):
                         action Return("tijera")
                         style "janken_card_btn"
                         vbox:
-                            spacing 10
+                            spacing 14
                             xalign 0.5
-                            add "gui/janken/hand_scissors.png" ysize 110 fit "contain" xalign 0.5
+                            yalign 0.5
+                            add "gui/janken/hand_scissors.png" ysize 170 fit "contain" xalign 0.5
                             text "TIJERA (チョキ)":
-                                size 16
+                                size 22
                                 bold True
                                 color "#ffffff"
                                 xalign 0.5
                             text "Vence a Papel":
-                                size 12
-                                color "#8392a5"
+                                size 14
+                                color "#94a3b8"
                                 xalign 0.5
 
-            # Pie con consejo
+            # --- 4. PIE DE PÁGINA ---
             text "«El destino puede ser alterado con una sola decisión...»":
-                size 12
+                size 13
                 color "#64748b"
                 italic True
                 xalign 0.5
+                yalign 1.0
 
 
 style janken_rival_card:
     xfill True
-    padding (24, 14, 24, 14)
-    background Frame(Solid("#0d111bf0"), 8, 8)
+    ysize 170
+    padding (32, 14, 32, 14)
+    background Frame(Solid("#0d121ff2"), 8, 8)
 
 style janken_foresight_badge:
-    padding (16, 10, 16, 10)
-    background Frame(Solid("#2a0f16f2"), 6, 6)
+    padding (20, 12, 20, 12)
+    background Frame(Solid("#3b0d1af6"), 8, 8)
     xalign 1.0
     yalign 0.5
 
 style janken_card_btn is gui_button:
-    xsize 280
-    ysize 230
-    padding (20, 20, 20, 20)
-    background Frame("gui/custom_btn/btn_idle.png", 8, 8)
-    hover_background Frame("gui/custom_btn/btn_hover.png", 8, 8)
-
+    xsize 380
+    ysize 360
+    padding (24, 24, 24, 24)
+    background Frame("gui/custom_btn/btn_idle.png", 10, 10)
+    hover_background Frame("gui/custom_btn/btn_hover.png", 10, 10)
