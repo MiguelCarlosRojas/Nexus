@@ -154,6 +154,7 @@ define config.save_directory = "Nexus-1791313901"
 ## El icono mostrado en la barra de tareas.
 
 define config.window_icon = "gui/window_icon.png"
+define config.windows_icon = "gui/window_icon.ico"
 
 
 ## Configuración de 'Build' ####################################################
@@ -192,6 +193,10 @@ init python:
     build.classify('game/saves/**', None)
     build.classify('game/cache/**', None)
     build.classify('**.save', None)
+    build.classify('errors.txt', None)
+    build.classify('log.txt', None)
+    build.classify('dist/**', None)
+    build.classify('**__pycache__/**', None)
 
     ## Para archivar, se clasifican como 'archive'.
 
