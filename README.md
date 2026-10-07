@@ -43,17 +43,25 @@ Al interactuar con su compañero de cuarto, el risueño Kenji Takahashi, Ren des
 
 ## 🎮 Descarga e Instalación
 
-Puedes descargar las versiones compiladas y los paquetes de assets listos para jugar desde la sección de **[Releases](https://github.com/MiguelCarlosRojas/Nexus/releases)**.
+Puedes descargar directamente las versiones empaquetadas desde la sección oficial de **[Releases](https://github.com/MiguelCarlosRojas/Nexus/releases)**:
 
-### Para Desarrolladores y Jugadores con Ren'Py:
+### 📦 Opciones de Descarga Disponibles:
 
-1. Clona el repositorio:
+1. 🚀 **Instalador Oficial para Windows (`Nexus-Installer-Windows.exe`):**
+   - Asistente de instalación gráfica que extrae el juego automáticamente.
+   - Crea accesos directos en el Escritorio y Menú Inicio de Windows.
+   - Incluye desinstalador integrado. ¡Descargar, instalar y jugar sin configuraciones adicionales!
+
+2. 🧰 **Versiones Portátiles Autónomas (Sin instalación):**
+   - **Windows:** `Nexus-1.0.0-win.zip` (Descomprimir y ejecutar `Nexus.exe`).
+   - **Linux:** `Nexus-1.0.0-linux.tar.bz2` (Descomprimir y ejecutar `Nexus.sh`).
+   - **macOS:** `Nexus-1.0.0-mac.zip` (Descomprimir y ejecutar `Nexus.app`).
+
+3. 🛠️ **Para Desarrolladores (Código Fuente Ren'Py):**
    ```bash
    git clone https://github.com/MiguelCarlosRojas/Nexus.git
    ```
-2. Abre **Ren'Py Launcher** (versión 8.2 o superior).
-3. Añade la carpeta del proyecto `Nexus` en la lista de proyectos.
-4. Presiona **Lanzar Proyecto (Launch Project)**.
+   Abre la carpeta en **Ren'Py Launcher** (8.2+) y pulsa **Lanzar Proyecto**.
 
 ---
 

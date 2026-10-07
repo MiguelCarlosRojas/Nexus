@@ -24,7 +24,7 @@ jobs:
       - name: Crear GitHub Release con Assets Adjuntos
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/*.zip
+          files: dist/*
           name: "NEXUS: 宿命の瞳 - ${{ github.ref_name }}"
           draft: false
           prerelease: false
