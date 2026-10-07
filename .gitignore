@@ -1,19 +1,31 @@
-# Ren'Py compiled script files
+# Ren'Py saves and cache directories
+/game/saves/
+/game/cache/
+
+# Compiled script files
 *.rpyc
 *.rpyb
 *.rpymc
 
-# Ren'Py temporary and error logs
-errors.txt
-log.txt
-traceback.txt
+# Temporary backup files
+/game/**/*.bak
+/game/**/*.new
+/game/**/*.old
+
+# Ren'Py logs and dumps
 files.txt
+image_cache.txt
+save_dump.txt
+traceback.txt
 profile_screen.txt
 
-# Saves and persistent cache
-saves/
-**/.gemini/
-**/scratch/
+# Launcher-generated files
+dialogue.tab
+dialogue.txt
+strings.json
+
+# Compressed artifacts
+dist/
 *.zip
 
 # OS / Editor temporary files

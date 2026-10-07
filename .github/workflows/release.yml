@@ -19,7 +19,7 @@ jobs:
       - name: Comprimir Assets y Proyecto Nexus
         run: |
           mkdir -p dist
-          zip -r "dist/Nexus-Game-${{ github.ref_name }}.zip" Nexus/ README.md COPYRIGHT.md CODE_OF_CONDUCT.md -x "*.git*" "*__pycache__*" "*errors.txt*" "*log.txt*"
+          zip -r "dist/Nexus-Game-${{ github.ref_name }}.zip" game/ README.md COPYRIGHT.md CODE_OF_CONDUCT.md .gitignore -x "*.git*" "*__pycache__*" "*errors.txt*" "*log.txt*"
 
       - name: Crear GitHub Release con Assets Adjuntos
         uses: softprops/action-gh-release@v2
