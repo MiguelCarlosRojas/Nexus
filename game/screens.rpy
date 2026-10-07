@@ -1336,6 +1336,33 @@ screen preferences():
                         yalign 0.5
                         bar value Preference("auto-forward time") style "pref_ecosystem_bar_wide"
 
+            # =================================================================
+            # SECCIÓN 6: GESTIÓN DE DATOS Y PERFIL (NUEVO USUARIO)
+            # =================================================================
+            vbox:
+                spacing 14
+
+                hbox:
+                    spacing 10
+                    yalign 0.5
+                    text "GESTIÓN DE PERFIL Y PROGRESO" style "pref_group_title"
+
+                frame:
+                    style "pref_audio_card"
+                    hbox:
+                        xfill True
+                        yalign 0.5
+                        vbox:
+                            spacing 3
+                            label _("Restablecer Progreso a Cero") style "pref_audio_header_label"
+                            text _("Reinicia todos los logros, puntos de XP y estadísticas para comenzar desde cero como un nuevo usuario."):
+                                size 12
+                                color "#8c96a8"
+                        textbutton _("Restablecer a Cero"):
+                            action Confirm(_("¿Deseas restablecer todo el progreso, logros y XP a cero absoluto como un nuevo usuario?"), Function(reset_all_progress))
+                            style "pref_act_button"
+                            xalign 1.0
+
 
 style pref_audio_card:
     xfill True
