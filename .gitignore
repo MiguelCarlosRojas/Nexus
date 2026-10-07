@@ -1,0 +1,24 @@
+# Ren'Py compiled script files
+*.rpyc
+*.rpyb
+*.rpymc
+
+# Ren'Py temporary and error logs
+errors.txt
+log.txt
+traceback.txt
+files.txt
+profile_screen.txt
+
+# Saves and persistent cache
+saves/
+**/.gemini/
+**/scratch/
+*.zip
+
+# OS / Editor temporary files
+.DS_Store
+Thumbs.db
+desktop.ini
+*.tmp
+.vscode/

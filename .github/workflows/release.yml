@@ -1,0 +1,31 @@
+name: NEXUS Release & Assets Packaging
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-release:
+    name: Empaquetar y Publicar Release Oficial
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout del Repositorio
+        uses: actions/checkout@v4
+
+      - name: Comprimir Assets y Proyecto Nexus
+        run: |
+          mkdir -p dist
+          zip -r "dist/Nexus-Game-${{ github.ref_name }}.zip" Nexus/ README.md COPYRIGHT.md CODE_OF_CONDUCT.md -x "*.git*" "*__pycache__*" "*errors.txt*" "*log.txt*"
+
+      - name: Crear GitHub Release con Assets Adjuntos
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*.zip
+          name: "NEXUS: 宿命の瞳 - ${{ github.ref_name }}"
+          draft: false
+          prerelease: false
+          generate_release_notes: true

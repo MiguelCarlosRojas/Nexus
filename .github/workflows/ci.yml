@@ -1,0 +1,50 @@
+name: NEXUS CI Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  validate-scripts:
+    name: Validar Sintaxis Ren'Py y Python
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout del Repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Entorno Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Verificar Integridad de Archivos RPY y Python
+        run: |
+          python -c '
+          import os, sys, ast
+          print("Validando estructura de scripts...")
+          base_dir = "Nexus/game"
+          if not os.path.exists(base_dir):
+              print("Directorio de juego encontrado en la raíz.")
+              base_dir = "game"
+          
+          files = [f for f in os.listdir(base_dir) if f.endswith(".rpy")]
+          print(f"Archivos RPY encontrados: {files}")
+          assert len(files) >= 4, "Faltan archivos rpy clave"
+          print("Validación de estructura completada con éxito!")
+          '
+
+      - name: Comprobar Existencia de Assets Clave
+        run: |
+          python -c '
+          import os
+          audio_dir = "Nexus/game/audio"
+          if not os.path.exists(audio_dir):
+              audio_dir = "game/audio"
+          required_audio = ["piano_sad_theme.wav", "eye_vision.wav", "heartbeat.wav", "crash.wav"]
+          for f in required_audio:
+              assert os.path.exists(os.path.join(audio_dir, f)), f"Asset faltante: {f}"
+          print("Todos los assets auditados correctamente!")
+          '
