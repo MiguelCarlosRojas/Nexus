@@ -110,6 +110,17 @@ El proyecto utiliza de forma integral todas las capacidades de GitHub:
 
 ---
 
+## 🛡️ Aviso de Windows Defender SmartScreen
+
+Al ser un videojuego independiente distribuido directamente desde GitHub sin certificado corporativo comercial de pago, Windows Defender SmartScreen puede mostrar una pantalla azul preventiva al ejecutar por primera vez (`Nexus.exe` o `Nexus-Installer-Windows.exe`). **El juego es 100% seguro, de código abierto y libre de cualquier software malicioso.**
+
+### ¿Cómo ejecutarlo sin problemas?
+* **Opción 1 (Recomendada):** En la pantalla azul de SmartScreen, haz clic en **"Más información"** y luego en el botón **"Ejecutar de todas formas"**.
+* **Opción 2 (Lanzador automático):** Ejecuta el archivo [`Iniciar_Nexus.bat`](file:///C:/Users/isaki/Videos/Visual%20Studio%20Code/Nexus/Iniciar_Nexus.bat) incluido en la raíz de la descarga, el cual desbloquea la marca de descarga web de Windows y arranca el juego de inmediato.
+* **Opción 3 (Manual):** Haz clic derecho en `Nexus.exe` o `Nexus-Installer-Windows.exe` ➔ **Propiedades** ➔ En la pestaña General, marca la casilla **"Desbloquear"** ➔ Haz clic en **Aceptar**.
+
+---
+
 ## 👥 Créditos y Autoría
 
 * **Dirección, Guion y Diseño:** Miguel Carlos Rojas.
