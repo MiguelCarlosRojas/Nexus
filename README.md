@@ -70,20 +70,21 @@ Nexus/
 │   │   └── release.yml            # Automatización de empaquetado y releases
 │   ├── PULL_REQUEST_TEMPLATE.md   # Estándar de Pull Requests
 │   └── copilot-instructions.md    # Guía para agentes de IA y desarrollo guiado
-├── Nexus/
-│   ├── game/
-│   │   ├── achievements.rpy       # Motor de logros, XP, nivel y ranking
-│   │   ├── gui.rpy                # Estilos visuales y configuraciones de UI
-│   │   ├── options.rpy            # Opciones de compilación y metadata
-│   │   ├── screens.rpy            # Pantallas del menú, UI moderna y minijuegos
-│   │   ├── script.rpy             # Guion literario y ramificaciones del Capítulo 1
-│   │   ├── audio/                 # Efectos de sonido y temas melancólicos de piano
-│   │   ├── gui/                   # Texturas HD de botones, barras y modales
-│   │   └── images/                # Siluetas, fondos y emblemas
-├── CODE_OF_CONDUCT.md             # Normas comunitarias (Contributor Covenant v2.1)
-├── COPYRIGHT.md                   # Derechos de autor y licencias de assets
-├── README.md                      # Documentación central del proyecto
-└── .gitignore                     # Exclusión de archivos compilados y temporales
+├── game/
+│   ├── achievements.rpy       # Motor de logros, XP, nivel y ranking
+│   ├── gui.rpy                # Estilos visuales y configuraciones de UI
+│   ├── options.rpy            # Opciones de compilación y metadata
+│   ├── screens.rpy            # Pantallas del menú, UI moderna y minijuegos
+│   ├── script.rpy             # Guion literario y ramificaciones del Capítulo 1
+│   ├── audio/                 # Efectos de sonido y temas melancólicos de piano
+│   ├── gui/                   # Texturas HD de botones, barras y modales
+│   └── images/                # Siluetas, fondos y emblemas
+├── CODE_OF_CONDUCT.md         # Normas comunitarias (Contributor Covenant v2.1)
+├── COPYRIGHT.md               # Derechos de autor y licencias de assets
+├── README.md                  # Documentación central del proyecto
+├── errors.txt                 # Registro de diagnóstico de compilación Ren'Py
+├── log.txt                    # Log de ejecución del motor
+└── .gitignore                 # Exclusión de archivos compilados y temporales
 ```
 
 ---
