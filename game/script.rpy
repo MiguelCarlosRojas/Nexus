@@ -102,6 +102,8 @@ image bg destello_morado = Solid("#581c87")
 image bg sangre_visceral = Solid("#4a0505")
 image bg sangre_espejo = Solid("#3b0764")
 image bg habitacion_aislamiento = Solid("#110a1c")
+image bg azotea_lluvia = Solid("#0b101d")
+image bg blanco = Solid("#ffffff")
 
 # Efectos de transición personalizados
 define eye_pulse = Fade(0.2, 0.1, 0.3, color="#8a0f0f")
@@ -110,6 +112,7 @@ define eye_pulse_aoi = Fade(0.2, 0.1, 0.3, color="#6b21a8")
 define vision_flash_aoi = Fade(0.15, 0.2, 0.4, color="#9333ea")
 define fade_muerte = Fade(1.5, 1.2, 2.0, color="#050000")
 define fade_lento = Fade(1.0, 0.5, 1.0, color="#000000")
+define fade_blanco = Fade(0.8, 1.0, 0.8, color="#ffffff")
 
 # -----------------------------------------------------------------------------
 # Entrada Inicial del Juego (Antes del Menú Principal)
@@ -142,6 +145,12 @@ label start:
     call screen cinematic_nexus_event
 
     play sound "audio/rain.wav" loop
+
+    # Pantalla Cinemática en Pantalla Completa: Título Oficial del Capítulo 1
+    if persistent.selected_gender == "mujer":
+        call screen cinematic_chapter_title("CAPÍTULO 1", "La Hermana del Destino y el Reflejo Mortal", "Hospital General de Chūbu • Perspectiva de Aoi Kazama")
+    else:
+        call screen cinematic_chapter_title("CAPÍTULO 1", "El Despertar de Shinshu y la Aguja del Destino", "Hospital General de Chūbu • Perspectiva de Shinshu Kazama")
 
     # -------------------------------------------------------------------------
     # EL ECO DEL ASFALTO Y LA NIEBLA DE CHŪBU (RECUERDO COMPARTIDO)
@@ -774,6 +783,7 @@ label final_capitulo_tragedia:
     with fade_muerte
 
     $ grant_achievement("fin_capitulo_1")
+    $ persistent.completed_chapter_1 = True
 
     "Aquella misma noche, la policía científica y los forenses acordonaron la habitación 304."
     "La autopsia preliminar reveló que el fármaco administrado contenía una concentración letal de un reactivo paralizante no registrado en los libros de farmacia del hospital."
@@ -784,8 +794,23 @@ label final_capitulo_tragedia:
     "Mis ojos cargan con el peso de los muertos. Y en la oscuridad helada de las montañas de Nagano, comprendí con pavor que Kenji era solo el primer nombre en una lista interminable de almas que el abismo pondrá frente a mi mirada..."
 
     scene bg negro
-    with Dissolve(2.5)
-    "{b}FIN DEL CAPÍTULO 1 - DESTINO CONSUMADO{/b}"
+    with Dissolve(1.5)
+
+    # Pantalla Cinemática en Pantalla Completa: Fin del Capítulo 1
+    call screen cinematic_chapter_end("LÍNEA CARMESÍ: DESTINO CONSUMADO (TRAGEDIA)", [
+        "Evento Nexus: Visión de causalidad en las pupilas de Kenji a las 18:00.",
+        "Efecto Mariposa: La advertencia fue desestimada o silenciada por temor.",
+        "Desenlace: Asfixia y fallecimiento de Kenji Takahashi en la Habitación 304."
+    ])
+
+    # Pantalla Cinemática: Próximamente Capítulo 2
+    call screen cinematic_chapter2_coming_soon
+
+    # Transición final en blanco y retorno al menú principal
+    scene bg blanco
+    with fade_blanco
+    pause 1.0
+
     return
 
 
@@ -797,6 +822,7 @@ label final_capitulo_esperanza:
     with fade_lento
 
     $ grant_achievement("fin_capitulo_1")
+    $ persistent.completed_chapter_1 = True
 
     "Esa misma madrugada, la inspección de farmacia del hospital confiscó el lote de suministros del pabellón oeste tras descubrirse toxinas neurobloqueantes camufladas entre los analgésicos."
     "El Dr. Moriyama se acercó a mi camilla en el silencio de la guardia nocturna."
@@ -811,8 +837,23 @@ label final_capitulo_esperanza:
     "¿Y qué fue lo que verdaderamente pacté con la muerte en la lluvia de Matsumoto...?"
 
     scene bg negro
-    with Dissolve(2.5)
-    "{b}FIN DEL CAPÍTULO 1 - EL HILO DEL DESTINO ROTO{/b}"
+    with Dissolve(1.5)
+
+    # Pantalla Cinemática en Pantalla Completa: Fin del Capítulo 1
+    call screen cinematic_chapter_end("LÍNEA CARMESÍ: EL HILO ROTO DEL DESTINO (ESPERANZA)", [
+        "Evento Nexus: Alerta frenética al Dr. Moriyama en el pasillo central de Shinshu.",
+        "Efecto Mariposa: Intervención quirúrgica y requisa de la aguja mortal a las 17:59.",
+        "Desenlace: Salvación milagrosa de Kenji Takahashi; el destino fatal fue quebrado."
+    ])
+
+    # Pantalla Cinemática: Próximamente Capítulo 2
+    call screen cinematic_chapter2_coming_soon
+
+    # Transición final en blanco y retorno al menú principal
+    scene bg blanco
+    with fade_blanco
+    pause 1.0
+
     return
 
 
@@ -1284,6 +1325,9 @@ label final_capitulo_aoi_tragedia:
     scene bg negro
     with fade_muerte
 
+    $ grant_achievement("fin_capitulo_1")
+    $ persistent.completed_chapter_1 = True
+
     "La habitación fue acordonada por la policía de la prefectura de Nagano."
     "El padre de Yuna fue detenido e imputado por homicidio involuntario."
     "Nadie me escuchó cuando intenté advertirle. Todos creyeron que mis advertencias eran desvaríos de una mente quebrada."
@@ -1294,8 +1338,23 @@ label final_capitulo_aoi_tragedia:
     "Shinshu murió por la culpa... y ahora yo cargo con la culpa de saber y no haber podido evitar la tragedia."
 
     scene bg negro
-    with Dissolve(2.5)
-    "{b}FIN DEL CAPÍTULO 1 (AOI) - ADVERTENCIA EN EL VACÍO{/b}"
+    with Dissolve(1.5)
+
+    # Pantalla Cinemática en Pantalla Completa: Fin del Capítulo 1
+    call screen cinematic_chapter_end("LÍNEA AMATISTA: ADVERTENCIA EN EL VACÍO (TRAGEDIA)", [
+        "Evento Nexus: Reflejo premonitorio de sangre en el espejo del lavabo.",
+        "Efecto Mariposa: Intento verbal directo de advertencia a Yuna Sasaki.",
+        "Desenlace: Palabras desestimadas; caída mortal contra el soporte metálico."
+    ])
+
+    # Pantalla Cinemática: Próximamente Capítulo 2
+    call screen cinematic_chapter2_coming_soon
+
+    # Transición final en blanco y retorno al menú principal
+    scene bg blanco
+    with fade_blanco
+    pause 1.0
+
     return
 
 
@@ -1304,6 +1363,9 @@ label final_capitulo_aoi_esperanza:
     stop music fadeout 2.5
     scene bg negro
     with fade_lento
+
+    $ grant_achievement("fin_capitulo_1")
+    $ persistent.completed_chapter_1 = True
 
     "Sola en la habitación de aislamiento, apoyé mi frente contra el cristal frío de la puerta."
     "Los médicos piensan que soy peligrosa. Mi expediente clínico ahora me etiqueta como paciente psiquiátrica inestable. Probablemente pasaré meses encerrada bajo vigilancia estricta."
@@ -1317,8 +1379,23 @@ label final_capitulo_aoi_esperanza:
     "Y por primera vez desde que perdí a mi hermano... encontré una razón para seguir viviendo en este mundo."
 
     scene bg negro
-    with Dissolve(2.5)
-    "{b}FIN DEL CAPÍTULO 1 (AOI) - EL SACRIFICIO QUE BURLÓ A LA MUERTE{/b}"
+    with Dissolve(1.5)
+
+    # Pantalla Cinemática en Pantalla Completa: Fin del Capítulo 1
+    call screen cinematic_chapter_end("LÍNEA AMATISTA: EL SACRIFICIO QUE BURLÓ A LA MUERTE (ESPERANZA)", [
+        "Evento Nexus: Detección y extracción nocturna de la varilla mortal.",
+        "Efecto Mariposa: Aoi es retenida en aislamiento psiquiátrico preventivo.",
+        "Desenlace: Yuna sobrevive a la discusión; el destino fatal fue quebrado."
+    ])
+
+    # Pantalla Cinemática: Próximamente Capítulo 2
+    call screen cinematic_chapter2_coming_soon
+
+    # Transición final en blanco y retorno al menú principal
+    scene bg blanco
+    with fade_blanco
+    pause 1.0
+
     return
 
 
@@ -1327,6 +1404,9 @@ label final_capitulo_aoi_omision:
     stop music fadeout 2.5
     scene bg negro
     with fade_muerte
+
+    $ grant_achievement("fin_capitulo_1")
+    $ persistent.completed_chapter_1 = True
 
     show aoi_acurrucada_llorando_mano at silueta_floor_center with Dissolve(1.5)
 
@@ -1339,7 +1419,22 @@ label final_capitulo_aoi_omision:
     "En la penumbra helada del hospital de Nagano, supe que el abismo del Nexus nunca me dejará en paz..."
 
     scene bg negro
-    with Dissolve(2.5)
-    "{b}FIN DEL CAPÍTULO 1 (AOI) - EL PESO DE LA OMISIÓN{/b}"
+    with Dissolve(1.5)
+
+    # Pantalla Cinemática en Pantalla Completa: Fin del Capítulo 1
+    call screen cinematic_chapter_end("LÍNEA AMATISTA: EL PESO DE LA OMISIÓN (TRAGEDIA)", [
+        "Evento Nexus: Reflejo premonitorio atribuido a trauma del coma.",
+        "Efecto Mariposa: Omisión de acción por miedo a la demencia.",
+        "Desenlace: Yuna Sasaki fallece exactamente como la visión anticipó."
+    ])
+
+    # Pantalla Cinemática: Próximamente Capítulo 2
+    call screen cinematic_chapter2_coming_soon
+
+    # Transición final en blanco y retorno al menú principal
+    scene bg blanco
+    with fade_blanco
+    pause 1.0
+
     return
 
