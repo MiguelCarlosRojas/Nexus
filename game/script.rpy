@@ -127,7 +127,7 @@ label splashscreen:
 label start:
 
     # -------------------------------------------------------------------------
-    # PRÓLOGO CONCEPTUAL: EL EFECTO MARIPOSA Y EL EVENTO NEXUS
+    # PRÓLOGO CONCEPTUAL EN PANTALLA COMPLETA (SIN CAJA DE DIÁLOGO)
     # -------------------------------------------------------------------------
     scene bg negro
     with fade_lento
@@ -135,14 +135,13 @@ label start:
     stop music fadeout 1.5
 
     play sound "audio/heartbeat.wav"
-
-    "{i}«El aleteo de una sola mariposa en el corazón de Japón es capaz de desatar un tifón al otro confín del océano.»{/i}"
-
-    "{b}EL EFECTO MARIPOSA.{/b}\nUna ley matemática y cósmica irrevocable: una variación infinitesimal, una pisada apresurada en un paso de peatones o un segundo de retraso... desvía la causalidad universal hacia un abismo completamente nuevo."
+    call screen cinematic_prologue_epigraph
 
     play sound "audio/glass_break.wav"
+    call screen cinematic_butterfly_effect
 
-    "{b}EL EVENTO NEXUS.{/b}\nUna rasgadura en el tejido del espacio-tiempo. Una bifurcación cuántica donde dos destinos colisionan: la realidad de quien corrió para salvar... y la realidad de quien cayó en la sombra del impacto."
+    play sound "audio/eye_vision.wav"
+    call screen cinematic_nexus_event
 
     play sound "audio/rain.wav" loop
 

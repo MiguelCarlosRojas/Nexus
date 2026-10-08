@@ -912,6 +912,178 @@ screen protagonist_selection():
         color "#475569"
 
 
+## Pantallas Cinemáticas en Pantalla Completa: Prólogo Conceptual #################
+## (Visualización en pantalla pura con diseño cinematográfico, sin caja de diálogo)
+
+screen cinematic_prologue_epigraph():
+    modal True
+    zorder 150
+
+    add "#040508"
+
+    # Permite continuar haciendo clic en cualquier parte de la pantalla o con barra espaciadora
+    key "dismiss" action Return()
+    button:
+        xfill True
+        yfill True
+        action Return()
+        background None
+
+    vbox:
+        xalign 0.5
+        yalign 0.48
+        xsize 1100
+        spacing 26
+
+        text "« EL DESTINO Y LA CAUSALIDAD »":
+            font gui.interface_text_font
+            size 14
+            color "#64748b"
+            kerning 8
+            xalign 0.5
+
+        text "«El aleteo de una sola mariposa en el corazón de Japón\nes capaz de desatar un tifón al otro confín del océano.»":
+            font gui.name_text_font
+            size 30
+            color "#f1f5f9"
+            italic True
+            text_align 0.5
+            xalign 0.5
+            line_spacing 14
+
+        null height 10
+
+        text "— Proverbio del Caos y la Predeterminación —":
+            font gui.interface_text_font
+            size 13
+            color "#475569"
+            kerning 4
+            xalign 0.5
+
+    text "Haz clic o pulsa una tecla para continuar...":
+        xalign 0.5
+        yalign 0.92
+        font gui.interface_text_font
+        size 12
+        color "#334155"
+
+
+screen cinematic_butterfly_effect():
+    modal True
+    zorder 150
+
+    add "#030407"
+
+    key "dismiss" action Return()
+    button:
+        xfill True
+        yfill True
+        action Return()
+        background None
+
+    vbox:
+        xalign 0.5
+        yalign 0.46
+        xsize 1050
+        spacing 28
+
+        text "LEY UNIVERSAL • NEXUS CAUSAL":
+            font gui.interface_text_font
+            size 13
+            color "#ef4444"
+            bold True
+            kerning 6
+            xalign 0.5
+
+        text "EL EFECTO MARIPOSA":
+            font gui.name_text_font
+            size 44
+            bold True
+            color "#ffffff"
+            kerning 5
+            xalign 0.5
+
+        # Línea divisoria de energía carmesí
+        frame:
+            xalign 0.5
+            xsize 220
+            ysize 2
+            background Solid("#dc2626")
+
+        text "Una ley matemática y cósmica irrevocable:\nuna variación infinitesimal, una pisada apresurada en un paso de peatones\no un segundo de retraso... desvía la causalidad universal hacia un abismo completamente nuevo.":
+            font gui.interface_text_font
+            size 20
+            color "#cbd5e1"
+            text_align 0.5
+            xalign 0.5
+            line_spacing 12
+
+    text "Haz clic o pulsa una tecla para continuar...":
+        xalign 0.5
+        yalign 0.92
+        font gui.interface_text_font
+        size 12
+        color "#334155"
+
+
+screen cinematic_nexus_event():
+    modal True
+    zorder 150
+
+    add "#04030a"
+
+    key "dismiss" action Return()
+    button:
+        xfill True
+        yfill True
+        action Return()
+        background None
+
+    vbox:
+        xalign 0.5
+        yalign 0.46
+        xsize 1050
+        spacing 28
+
+        text "COLISIÓN CUÁNTICA DE DESTINOS":
+            font gui.interface_text_font
+            size 13
+            color "#c084fc"
+            bold True
+            kerning 6
+            xalign 0.5
+
+        text "EL EVENTO NEXUS":
+            font gui.name_text_font
+            size 44
+            bold True
+            color "#ffffff"
+            kerning 5
+            xalign 0.5
+
+        # Línea divisoria de energía amatista
+        frame:
+            xalign 0.5
+            xsize 220
+            ysize 2
+            background Solid("#a855f7")
+
+        text "Una rasgadura en el tejido del espacio-tiempo.\nUna bifurcación cuántica donde dos destinos colisionan:\nla realidad de quien corrió para salvar... y la realidad de quien cayó en la sombra del impacto.":
+            font gui.interface_text_font
+            size 20
+            color "#cbd5e1"
+            text_align 0.5
+            xalign 0.5
+            line_spacing 12
+
+    text "Haz clic o pulsa una tecla para continuar...":
+        xalign 0.5
+        yalign 0.92
+        font gui.interface_text_font
+        size 12
+        color "#334155"
+
+
 ## Pantalla del menú principal #################################################
 screen main_menu():
 
