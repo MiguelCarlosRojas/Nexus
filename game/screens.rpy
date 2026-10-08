@@ -398,8 +398,6 @@ default persistent.flash_effects = True
 default persistent.ambient_particles = True
 default persistent.auto_save_choices = True
 default persistent.textbox_alpha = 0.90
-default persistent.player_nickname = ""
-default persistent.player_in_ranking = False
 default persistent.achievement_filter = "Todos"
 default persistent.achievement_search = ""
 
@@ -601,58 +599,6 @@ screen navigation():
             # Separador estético sutil
             null height 2
 
-            # --- IDENTIFICADOR DE DESTINO (Muestra estado si fue elegido) ---
-            if persistent.selected_gender:
-                frame:
-                    xalign 0.5
-                    xsize 380
-                    background Frame(Solid("#101422a8"), 6, 6)
-                    padding (16, 8, 16, 8)
-                    hbox:
-                        spacing 12
-                        yalign 0.5
-                        text ("♀" if persistent.selected_gender == "mujer" else "♂"):
-                            size 22
-                            color (persistent.theme_border or "#e63946")
-                            bold True
-                            yalign 0.5
-                        vbox:
-                            spacing 1
-                            yalign 0.5
-                            text ("PERSPECTIVA: MUJER (AOI)" if persistent.selected_gender == "mujer" else "PERSPECTIVA: HOMBRE (SHINSHU)"):
-                                size 11
-                                color "#f8fafc"
-                                bold True
-                            text ("Línea Temporal Amatista" if persistent.selected_gender == "mujer" else "Línea Temporal Carmesí"):
-                                size 9
-                                color "#94a3b8"
-            else:
-                frame:
-                    xalign 0.5
-                    xsize 380
-                    background Frame(Solid("#101422a8"), 6, 6)
-                    padding (16, 8, 16, 8)
-                    hbox:
-                        spacing 12
-                        yalign 0.5
-                        text "✧":
-                            size 20
-                            color "#94a3b8"
-                            bold True
-                            yalign 0.5
-                        vbox:
-                            spacing 1
-                            yalign 0.5
-                            text "PERSPECTIVA: SIN DEFINIR":
-                                size 11
-                                color "#f8fafc"
-                                bold True
-                            text "Se seleccionará al iniciar la historia":
-                                size 9
-                                color "#94a3b8"
-
-            null height 2
-
             # --- BOTONES DE ACCIÓN (CON ICONOS MÁS GRANDES: 24px) ---
             vbox:
                 spacing 8
@@ -713,14 +659,45 @@ screen navigation():
                         add "gui/icons/icon_achievements.png" yalign 0.5 ysize 24 fit "contain"
                         text _("Logros y Nivel") style "nav_icon_text"
 
-                button:
-                    action ShowMenu("character_gallery")
-                    style "nav_icon_button"
-                    hbox:
-                        spacing 18
-                        yalign 0.5
-                        add "gui/icons/icon_gallery.png" yalign 0.5 ysize 24 fit "contain"
-                        text _("Galería") style "nav_icon_text"
+                # Solo se desbloquean tras completar el Capítulo 1
+                if getattr(persistent, "completed_chapter_1", False):
+                    button:
+                        action ShowMenu("character_gallery")
+                        style "nav_icon_button"
+                        hbox:
+                            spacing 18
+                            yalign 0.5
+                            add "gui/icons/icon_gallery.png" yalign 0.5 ysize 24 fit "contain"
+                            text _("Galería") style "nav_icon_text"
+
+                    button:
+                        action ShowMenu("alternate_routes")
+                        style "nav_icon_button"
+                        hbox:
+                            spacing 18
+                            yalign 0.5
+                            add "gui/icons/icon_routes.png" yalign 0.5 ysize 24 fit "contain"
+                            text _("Líneas Alternas") style "nav_icon_text"
+                else:
+                    button:
+                        action NullAction()
+                        style "nav_icon_button"
+                        sensitive False
+                        hbox:
+                            spacing 18
+                            yalign 0.5
+                            add "gui/icons/icon_gallery.png" yalign 0.5 ysize 24 fit "contain" alpha 0.45
+                            text _("Galería 🔒") style "nav_icon_text" color "#64748b"
+
+                    button:
+                        action NullAction()
+                        style "nav_icon_button"
+                        sensitive False
+                        hbox:
+                            spacing 18
+                            yalign 0.5
+                            add "gui/icons/icon_routes.png" yalign 0.5 ysize 24 fit "contain" alpha 0.45
+                            text _("Líneas Alternas 🔒") style "nav_icon_text" color "#64748b"
 
                 if _in_replay:
                     button:
@@ -1196,6 +1173,225 @@ screen cinematic_nexus_event():
         font gui.interface_text_font
         size 12
         color "#334155"
+
+
+## Pantalla Cinemática en Pantalla Completa: Título del Capítulo 1
+screen cinematic_chapter_title(cap_num="CAPÍTULO 1", cap_title="El Despertar y la Aguja del Destino", cap_subtitle="Hospital General de Chūbu • Nagano"):
+    modal True
+    zorder 150
+
+    add "#030407"
+
+    key "dismiss" action Return()
+    button:
+        xfill True
+        yfill True
+        action Return()
+        background None
+
+    vbox:
+        xalign 0.5
+        yalign 0.48
+        xsize 1100
+        spacing 22
+
+        text "NEXUS: 宿命の瞳":
+            font gui.interface_text_font
+            size 14
+            color (persistent.theme_border or "#e63946")
+            bold True
+            kerning 8
+            xalign 0.5
+
+        text "[cap_num]":
+            font gui.name_text_font
+            size 48
+            bold True
+            color "#ffffff"
+            kerning 6
+            xalign 0.5
+
+        # Línea divisoria
+        frame:
+            xalign 0.5
+            xsize 280
+            ysize 2
+            background Solid(persistent.theme_border or "#e63946")
+
+        text "[cap_title]":
+            font gui.name_text_font
+            size 28
+            color "#f8fafc"
+            bold True
+            text_align 0.5
+            xalign 0.5
+
+        text "[cap_subtitle]":
+            font gui.interface_text_font
+            size 15
+            color "#94a3b8"
+            xalign 0.5
+            kerning 2
+
+    text "Haz clic o pulsa una tecla para comenzar...":
+        xalign 0.5
+        yalign 0.92
+        font gui.interface_text_font
+        size 12
+        color "#334155"
+
+
+## Pantalla Cinemática en Pantalla Completa: Fin del Capítulo 1 con Resumen de Rutas
+screen cinematic_chapter_end(route_summary="DESTINO CONSUMADO", choices_taken=[]):
+    modal True
+    zorder 150
+
+    add "#020306"
+
+    key "dismiss" action Return()
+    button:
+        xfill True
+        yfill True
+        action Return()
+        background None
+
+    vbox:
+        xalign 0.5
+        yalign 0.45
+        xsize 1100
+        spacing 20
+
+        text "NEXUS • INFORME CAUSAL DE LA LÍNEA TEMPORAL":
+            font gui.interface_text_font
+            size 13
+            color (persistent.theme_border or "#e63946")
+            bold True
+            kerning 6
+            xalign 0.5
+
+        text "FIN DEL CAPÍTULO 1":
+            font gui.name_text_font
+            size 44
+            bold True
+            color "#ffffff"
+            kerning 6
+            xalign 0.5
+
+        text "[route_summary]":
+            font gui.interface_text_font
+            size 18
+            bold True
+            color (persistent.theme_border or "#c084fc")
+            xalign 0.5
+            kerning 3
+
+        # Línea divisoria
+        frame:
+            xalign 0.5
+            xsize 340
+            ysize 2
+            background Solid(persistent.theme_border or "#e63946")
+
+        # Tarjeta de elecciones, efectos mariposa y eventos nexus experimentados
+        frame:
+            xalign 0.5
+            xsize 880
+            background Frame(Solid("#080c16f0"), 8, 8)
+            padding (24, 20, 24, 20)
+
+            vbox:
+                spacing 12
+                xfill True
+
+                text "REGISTRO DE DECISIONES Y EFECTO MARIPOSA:":
+                    font gui.interface_text_font
+                    size 12
+                    bold True
+                    color "#94a3b8"
+                    kerning 2
+
+                for ch in choices_taken:
+                    hbox:
+                        spacing 12
+                        text "◆":
+                            size 12
+                            color (persistent.theme_border or "#e63946")
+                        text ch:
+                            size 14
+                            color "#e2e8f0"
+                            line_spacing 4
+
+    text "Haz clic o pulsa una tecla para continuar...":
+        xalign 0.5
+        yalign 0.92
+        font gui.interface_text_font
+        size 12
+        color "#475569"
+
+
+## Pantalla Cinemática en Pantalla Completa: Próximamente Capítulo 2
+screen cinematic_chapter2_coming_soon():
+    modal True
+    zorder 150
+
+    add "#020306"
+
+    key "dismiss" action Return()
+    button:
+        xfill True
+        yfill True
+        action Return()
+        background None
+
+    vbox:
+        xalign 0.5
+        yalign 0.46
+        xsize 1000
+        spacing 24
+
+        text "NEXUS: 宿命の瞳":
+            font gui.interface_text_font
+            size 14
+            color (persistent.theme_border or "#e63946")
+            bold True
+            kerning 8
+            xalign 0.5
+
+        text "CAPÍTULO 2":
+            font gui.name_text_font
+            size 52
+            bold True
+            color "#ffffff"
+            kerning 8
+            xalign 0.5
+
+        frame:
+            xalign 0.5
+            xsize 260
+            ysize 2
+            background Solid(persistent.theme_border or "#e63946")
+
+        text "PROXIMAMENTE EN PRODUCCIÓN":
+            font gui.interface_text_font
+            size 20
+            bold True
+            color "#38bdf8"
+            kerning 6
+            xalign 0.5
+
+        text "Nuevos personajes, consecuencias del Efecto Mariposa y bifurcaciones irreversibles de la realidad.":
+            font gui.interface_text_font
+            size 15
+            color "#94a3b8"
+            xalign 0.5
+            text_align 0.5
+
+    text "Haz clic o pulsa una tecla para volver al menú principal...":
+        xalign 0.5
+        yalign 0.92
+        font gui.interface_text_font
+        size 12
+        color "#475569"
 
 
 ## Pantalla del menú principal #################################################
