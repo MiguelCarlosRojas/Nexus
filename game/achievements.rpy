@@ -15,13 +15,14 @@ init python:
     # Base de datos completa de logros de NEXUS
     # Capítulo 1 (Activos y desbloqueables durante la partida) + Próximos capítulos
     ACHIEVEMENTS_DB = [
-        # --- CAPÍTULO 1: EL DESPERTAR Y LA PRIMERA ELECCIÓN ---
+        # --- CAPÍTULO 1: EL DESPERTAR Y LA PRIMERA ELECCIÓN (HOMBRE) ---
         {
             "id": "despertar",
             "name": "El Despertar de Shinshu",
             "desc": "Sobrevive al impacto del camión, supera el coma profundo y despierta en el Hospital General de Chūbu.",
             "xp": 25,
             "chapter": "Capítulo 1",
+            "gender": "hombre",
             "secret": False
         },
         {
@@ -30,6 +31,7 @@ init python:
             "desc": "Acepta el reto de Aoi y juega una partida de Piedra, Papel o Tijera en la camilla del hospital.",
             "xp": 15,
             "chapter": "Capítulo 1",
+            "gender": "hombre",
             "secret": False
         },
         {
@@ -38,6 +40,7 @@ init python:
             "desc": "Vence limpiamente a tu hermana menor Aoi en el minijuego de Piedra, Papel o Tijera.",
             "xp": 20,
             "chapter": "Capítulo 1",
+            "gender": "hombre",
             "secret": False
         },
         {
@@ -46,6 +49,7 @@ init python:
             "desc": "Usa la visión de tus pupilas carmesíes para anticipar la jugada de Aoi.",
             "xp": 20,
             "chapter": "Capítulo 1",
+            "gender": "hombre",
             "secret": False
         },
         {
@@ -54,6 +58,7 @@ init python:
             "desc": "Presencia por primera vez la muerte en los ojos del anciano en el pasillo del hospital.",
             "xp": 30,
             "chapter": "Capítulo 1",
+            "gender": "hombre",
             "secret": False
         },
         {
@@ -62,6 +67,7 @@ init python:
             "desc": "Descubre los dos futuros divergentes de Kenji Takahashi antes de las seis de la tarde.",
             "xp": 25,
             "chapter": "Capítulo 1",
+            "gender": "hombre",
             "secret": False
         },
         {
@@ -70,6 +76,7 @@ init python:
             "desc": "Alerta con valentía al Dr. Moriyama e impide que le administren la inyección letal a Kenji.",
             "xp": 50,
             "chapter": "Capítulo 1",
+            "gender": "hombre",
             "secret": False
         },
         {
@@ -78,6 +85,7 @@ init python:
             "desc": "Presencia la aterradora agonía y muerte de Kenji tras administrarse la dosis envenenada.",
             "xp": 40,
             "chapter": "Capítulo 1",
+            "gender": "hombre",
             "secret": False
         },
         {
@@ -86,15 +94,17 @@ init python:
             "desc": "Completa cualquiera de los dos desenlaces del primer capítulo de NEXUS.",
             "xp": 30,
             "chapter": "Capítulo 1",
+            "gender": "hombre",
             "secret": False
         },
-        # --- RUTA DE AOI KAZAMA (CAPÍTULO 1 - LA HERMANA DEL DESTINO) ---
+        # --- RUTA DE AOI KAZAMA (CAPÍTULO 1 - LA HERMANA DEL DESTINO - MUJER) ---
         {
             "id": "despertar_aoi",
             "name": "Despertar en la Penumbra",
             "desc": "Despierta tras un mes de coma en el hospital y descubre la trágica partida de Shinshu.",
             "xp": 25,
             "chapter": "Capítulo 1 (Aoi)",
+            "gender": "mujer",
             "secret": False
         },
         {
@@ -103,6 +113,7 @@ init python:
             "desc": "Presencia a través del espejo del lavabo la fatal visión de la muerte de tu compañera Yuna.",
             "xp": 25,
             "chapter": "Capítulo 1 (Aoi)",
+            "gender": "mujer",
             "secret": False
         },
         {
@@ -111,6 +122,7 @@ init python:
             "desc": "Acepta la sedación y el aislamiento médico con tal de retirar el objeto letal y salvar a Yuna.",
             "xp": 50,
             "chapter": "Capítulo 1 (Aoi)",
+            "gender": "mujer",
             "secret": False
         },
         {
@@ -119,6 +131,7 @@ init python:
             "desc": "Intenta advertir a Yuna sobre la discusión, pero tus palabras son desestimadas como delirio.",
             "xp": 35,
             "chapter": "Capítulo 1 (Aoi)",
+            "gender": "mujer",
             "secret": False
         },
         {
@@ -127,6 +140,7 @@ init python:
             "desc": "Crees que la visión fue solo una pesadilla, presenciando la tragedia exacta sin haber actuado.",
             "xp": 35,
             "chapter": "Capítulo 1 (Aoi)",
+            "gender": "mujer",
             "secret": False
         },
 
@@ -213,20 +227,52 @@ init python:
         },
     ]
 
-    # Generación programática de los logros restantes de la saga hasta completar 110
+    # Generación programática balanceada para cada protagonista (55 Hombre, 55 Mujer = 110 Total)
     _chapter_names = ["Capítulo 2: Niebla en Matsumoto", "Capítulo 3: La Red del Destino", "Capítulo 4: Cenizas del Pasado", "Capítulo 5: El Fin del Juicio"]
     _tier_xp = [20, 25, 30, 35, 40, 50, 60]
-    for i in range(len(ACHIEVEMENTS_DB) + 1, TOTAL_ACHIEVEMENTS_COUNT + 1):
+
+    _curr_hombre = len([a for a in ACHIEVEMENTS_DB if a.get("gender") == "hombre"])
+    _curr_mujer = len([a for a in ACHIEVEMENTS_DB if a.get("gender") == "mujer"])
+
+    # Completar hombre hasta 55
+    for i in range(_curr_hombre + 1, 56):
         c_name = _chapter_names[(i % len(_chapter_names))]
         xp_val = _tier_xp[(i % len(_tier_xp))]
         ACHIEVEMENTS_DB.append({
-            "id": "nex_ach_{}".format(i),
-            "name": "Fragmento del Destino #{}".format(i),
-            "desc": "Logro avanzado de la saga NEXUS: Desbloqueable al explorar los caminos ocultos de {}.".format(c_name),
+            "id": "nex_ach_h_{}".format(i),
+            "name": "Fragmento Carmesí #{}".format(i),
+            "desc": "Logro de la saga de Shinshu: Desbloqueable al explorar los caminos ocultos de {}.".format(c_name),
             "xp": xp_val,
             "chapter": c_name.split(":")[0],
+            "gender": "hombre",
             "secret": True
         })
+
+    # Completar mujer hasta 55
+    for i in range(_curr_mujer + 1, 56):
+        c_name = _chapter_names[(i % len(_chapter_names))]
+        xp_val = _tier_xp[(i % len(_tier_xp))]
+        ACHIEVEMENTS_DB.append({
+            "id": "nex_ach_m_{}".format(i),
+            "name": "Fragmento Amatista #{}".format(i),
+            "desc": "Logro de la saga de Aoi: Desbloqueable al explorar los caminos ocultos de {}.".format(c_name),
+            "xp": xp_val,
+            "chapter": c_name.split(":")[0],
+            "gender": "mujer",
+            "secret": True
+        })
+
+    def get_current_gender():
+        if persistent.selected_gender == "mujer":
+            return "mujer"
+        return "hombre"
+
+    def get_gender_achievements_db():
+        curr = get_current_gender()
+        return [ach for ach in ACHIEVEMENTS_DB if ach.get("gender") == curr]
+
+    def get_total_gender_achievements_count():
+        return len(get_gender_achievements_db())
 
     def get_achievement_by_id(ach_id):
         for ach in ACHIEVEMENTS_DB:
@@ -240,7 +286,7 @@ init python:
         return ach_id in persistent.unlocked_achievements
 
     def grant_achievement(ach_id):
-        """Desbloquea un logro, actualiza XP, historial reciente y muestra notificación sonora y visual."""
+        """Desbloquea un logro, actualiza XP, historial reciente y reproduce el nuevo sonido melancólico."""
         if persistent.unlocked_achievements is None:
             persistent.unlocked_achievements = []
         if persistent.recent_achievements is None:
@@ -250,24 +296,22 @@ init python:
             ach = get_achievement_by_id(ach_id)
             if ach:
                 persistent.unlocked_achievements.append(ach_id)
-                # Mantener lista de recientes (últimos 10)
                 if ach_id in persistent.recent_achievements:
                     persistent.recent_achievements.remove(ach_id)
                 persistent.recent_achievements.insert(0, ach_id)
                 if len(persistent.recent_achievements) > 10:
                     persistent.recent_achievements = persistent.recent_achievements[:10]
 
-                # Notificación en pantalla
+                # Notificación en pantalla con sonido triste y melódico
                 msg = _("¡LOGRO DESBLOQUEADO!\n{name} (+{xp} XP)").format(
                     name=ach["name"], xp=ach["xp"]
                 )
                 try:
-                    renpy.play("audio/eye_vision.wav", channel="sound")
+                    renpy.play("audio/achievement_unlock.wav", channel="sound")
                 except:
                     pass
                 renpy.notify(msg)
 
-                # Si está en el ranking, actualizar ranking
                 if persistent.player_in_ranking:
                     update_player_in_ranking()
 
@@ -276,67 +320,73 @@ init python:
         return False
 
     def get_total_player_xp():
-        """Calcula el total acumulado de XP a partir de los logros desbloqueados."""
+        """Calcula el total acumulado de XP exclusivamente para el protagonista seleccionado."""
         if not persistent.unlocked_achievements:
             return 0
+        curr_db = get_gender_achievements_db()
+        curr_ids = {a["id"] for a in curr_db}
         total = 0
         for ach_id in persistent.unlocked_achievements:
-            ach = get_achievement_by_id(ach_id)
-            if ach:
-                total += ach.get("xp", 0)
+            if ach_id in curr_ids:
+                ach = get_achievement_by_id(ach_id)
+                if ach:
+                    total += ach.get("xp", 0)
         return total
 
     def get_player_level():
-        """Nivel dinámico en base al XP del jugador."""
+        """Nivel dinámico en base al XP del protagonista seleccionado."""
         xp = get_total_player_xp()
         return max(1, 1 + (xp // 50))
 
     def get_unlocked_count():
+        """Conteo de logros desbloqueados exclusivamente para el protagonista seleccionado."""
         if not persistent.unlocked_achievements:
             return 0
-        return len(persistent.unlocked_achievements)
+        curr_db = get_gender_achievements_db()
+        curr_ids = {a["id"] for a in curr_db}
+        return len([aid for aid in persistent.unlocked_achievements if aid in curr_ids])
 
     def get_achievements_percent():
-        total = TOTAL_ACHIEVEMENTS_COUNT
+        total = get_total_gender_achievements_count()
         unlocked = get_unlocked_count()
         if total == 0:
             return 0
         return int((unlocked * 100) / total)
 
     def get_recorrido_count():
-        # Representa los nodos de historia y logros descubiertos
         return get_unlocked_count()
 
     def get_filtered_achievements():
-        """Devuelve los logros según la pestaña seleccionada y el texto de búsqueda."""
+        """Devuelve los logros exclusivamente del protagonista seleccionado según la pestaña y búsqueda."""
         f = persistent.achievement_filter or "Todos"
         search = (persistent.achievement_search or "").strip().lower()
 
+        base_db = get_gender_achievements_db()
         results = []
 
         if f == "Desbloqueados":
-            for ach in ACHIEVEMENTS_DB:
+            for ach in base_db:
                 if is_achievement_unlocked(ach["id"]):
                     results.append(ach)
         elif f == "Bloqueados":
-            for ach in ACHIEVEMENTS_DB:
+            for ach in base_db:
                 if not is_achievement_unlocked(ach["id"]):
                     results.append(ach)
         elif f == "Recientes":
+            base_ids = {a["id"] for a in base_db}
             if persistent.recent_achievements:
                 for ach_id in persistent.recent_achievements:
-                    ach = get_achievement_by_id(ach_id)
-                    if ach:
-                        results.append(ach)
+                    if ach_id in base_ids:
+                        ach = get_achievement_by_id(ach_id)
+                        if ach:
+                            results.append(ach)
             else:
-                # Si aún no hay recientes, mostrar los desbloqueados
-                for ach in ACHIEVEMENTS_DB:
+                for ach in base_db:
                     if is_achievement_unlocked(ach["id"]):
                         results.append(ach)
         else: # "Todos"
-            results = list(ACHIEVEMENTS_DB)
+            results = list(base_db)
 
-        # Aplicar búsqueda si hay texto
         if search:
             filtered = []
             for ach in results:
@@ -347,8 +397,12 @@ init python:
         return results
 
     def update_player_in_ranking():
-        """Asegura que el jugador esté registrado en el ranking con sus estadísticas reales."""
-        nick = persistent.player_nickname or "Ren Kasugai"
+        """Asegura que el jugador esté registrado en el ranking con su personaje actual."""
+        if persistent.selected_gender == "mujer":
+            default_nick = "Aoi Kazama"
+        else:
+            default_nick = "Shinshu Kazama"
+        nick = persistent.player_nickname or default_nick
         xp = get_total_player_xp()
         lvl = get_player_level()
         logros = get_unlocked_count()

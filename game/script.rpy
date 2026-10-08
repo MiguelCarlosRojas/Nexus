@@ -108,27 +108,11 @@ label start:
 
     "{b}EL EVENTO NEXUS.{/b}\nUna rasgadura en el tejido del espacio-tiempo. Una bifurcación cuántica donde dos destinos colisionan: la realidad de quien corrió para salvar... y la realidad de quien cayó en la sombra del impacto."
 
-    if persistent.selected_gender == "mujer":
-        "{color=#c084fc}{b}LÍNEA TEMPORAL ALPHA: PERSPECTIVA DE AOI KAZAMA{/b}{/color}\nHas despertado en la fractura donde el peso de la culpa consumió a tu familia."
-        jump chapter1_aoi
-    else:
-        "{color=#e63946}{b}LÍNEA TEMPORAL OMEGA: PERSPECTIVA DE SHINSHU KAZAMA (REN){/b}{/color}\nHas despertado en la fractura donde la muerte quedó grabada en tus pupilas."
-        jump chapter1_shinshu
-
-# -----------------------------------------------------------------------------
-# CAPÍTULO 1 (HOMBRE): SHINSHU KAZAMA (REN)
-# -----------------------------------------------------------------------------
-label chapter1_shinshu:
-
-    # -------------------------------------------------------------------------
-    # PRÓLOGO: EL ECO DEL ASFALTO Y LA NIEBLA DE CHŪBU
-    # -------------------------------------------------------------------------
-    scene bg negro
-    with fade_lento
-
-    # Sonido de lluvia ambiental continua en las montañas de Japón Central
     play sound "audio/rain.wav" loop
 
+    # -------------------------------------------------------------------------
+    # EL ECO DEL ASFALTO Y LA NIEBLA DE CHŪBU (RECUERDO COMPARTIDO)
+    # -------------------------------------------------------------------------
     "Hay un vacío helado en el fondo de mi memoria."
     "No es la simple ausencia de recuerdos. Es algo mucho más siniestro: la certidumbre asfixiante de que el día del impacto, algo humano murió dentro de mí... y algo antiguo e inhumano despertó para ocupar su lugar."
 
@@ -145,7 +129,7 @@ label chapter1_shinshu:
 
     aoi "¡Mira, hermano! Si pisas solo las líneas blancas del paso de peatones, los monstruos de la niebla no te alcanzan..."
 
-    p "Aoi, camina despacio. El suelo está resbaladizo y mamá nos espera al otro lado de la estación."
+    shinshu "Aoi, camina despacio. El suelo está resbaladizo y mamá nos espera al otro lado de la estación."
 
     "Y entonces... la atmósfera se quebró."
     "El aire se volvió denso, oliendo a ozono quemado y óxido ferroso."
@@ -157,31 +141,61 @@ label chapter1_shinshu:
     # Efecto sonoro de impacto brutal
     play sound "audio/crash.wav"
 
-    "El tiempo no me concedió espacio para la vacilación."
-    "Un impulso ciego y visceral se apoderó de mis músculos: me arrojé hacia adelante con toda la desesperación de mis manos infantiles, empujando a Aoi fuera de la trayectoria mortal hacia la acera."
+    if persistent.selected_gender == "mujer":
+        # ---------------------------------------------------------------------
+        # BIFURCACIÓN ALPHA: ATROPELLO DE AOI (RUTA MUJER)
+        # ---------------------------------------------------------------------
+        with vpunch
 
-    with vpunch
+        hide silueta_aoi
+        scene bg destello_rojo
+        with vision_flash_aoi
 
-    hide silueta_aoi
-    scene bg destello_rojo
-    with vision_flash
+        "El tiempo no me concedió espacio para reaccionar."
+        "Un impacto atronador de acero y velocidad embistió mi pequeño cuerpo de lleno. El paraguas amarillo salió volando por los aires hacia la niebla..."
+        "En mi último segundo de lucidez, vi la silueta desesperada de mi hermano Shinshu corriendo hacia mí con los brazos extendidos, desgarrándose la voz al gritar mi nombre antes de que mi cabeza se estrellara contra el bordillo del asfalto helado."
 
-    "Un crujido espantoso. Huesos pulverizándose contra el parachoques blindado."
-    "Mi cuerpo suspendido en el aire antes de estrellarse contra el pavimento congelado."
-    "Recuerdo la sangre tibia escurriéndose entre el agua de lluvia... y sobre todo, una figura inmóvil detrás del parabrisas del camión. Una silueta sin rostro que me miraba con fijeza espectral."
+        stop sound fadeout 1.5
 
-    misterio "{i}«La muerte no se cancela, niño... solo transfiere sus ojos a quien la desafía.»{/i}"
+        scene bg negro
+        with fade_muerte
 
-    stop sound fadeout 1.8
+        "Y luego... el silencio más absoluto. Un abismo de oscuridad infinita."
 
-    scene bg negro
-    with fade_lento
+        jump chapter1_aoi
 
-    "Después de aquella voz gutural... no hubo dolor. Solo un abismo insondable de coma profundo que devoró años enteros de mi existencia."
+    else:
+        # ---------------------------------------------------------------------
+        # BIFURCACIÓN OMEGA: IMPACTO RECIBIDO POR SHINSHU (RUTA HOMBRE)
+        # ---------------------------------------------------------------------
+        "El tiempo no me concedió espacio para la vacilación."
+        "Un impulso ciego y visceral se apoderó de mis músculos: me arrojé hacia adelante con toda la desesperación de mis manos infantiles, empujando a Aoi fuera de la trayectoria mortal hacia la acera."
+
+        with vpunch
+
+        hide silueta_aoi
+        scene bg destello_rojo
+        with vision_flash
+
+        "Un crujido espantoso. Huesos pulverizándose contra el parachoques blindado."
+        "Mi cuerpo suspendido en el aire antes de estrellarse contra el pavimento congelado."
+        "Recuerdo la sangre tibia escurriéndose entre el agua de lluvia... y sobre todo, una figura inmóvil detrás del parabrisas del camión. Una silueta sin rostro que me miraba con fijeza espectral."
+
+        misterio "{i}«La muerte no se cancela, niño... solo transfiere sus ojos a quien la desafía.»{/i}"
+
+        stop sound fadeout 1.8
+
+        scene bg negro
+        with fade_lento
+
+        "Después de aquella voz gutural... no hubo dolor. Solo un abismo insondable de coma profundo que devoró años enteros de mi existencia."
+
+        jump chapter1_shinshu_despertar
 
     # -------------------------------------------------------------------------
     # EL DESPERTAR EN EL HOSPITAL GENERAL DE SHINSHU (HABITACIÓN 304)
     # -------------------------------------------------------------------------
+label chapter1_shinshu_despertar:
     # Pitido del monitor cardíaco al recuperar el conocimiento
     play sound "audio/monitor.wav"
 
@@ -993,11 +1007,9 @@ label chapter1_aoi:
     # -------------------------------------------------------------------------
     "Miro el filo que sostengo en mis dedos temblorosos. La muerte me rodea, pero por primera vez desde el coma... tengo el poder de actuar."
     "¿Qué debo hacer con este don maldito?"
+    "¿Qué camino eliges para enfrentar la muerte inminente de Yuna?"
 
     menu:
-        "¿Qué camino eliges para enfrentar la muerte inminente de Yuna?":
-            pass
-
         "1. Advertir desesperadamente a Yuna sobre la discusión con su padre y el objeto mortal.":
             jump aoi_decision_advertir
 
