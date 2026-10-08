@@ -659,7 +659,7 @@ screen navigation():
                         add "gui/icons/icon_achievements.png" yalign 0.5 ysize 24 fit "contain"
                         text _("Logros y Nivel") style "nav_icon_text"
 
-                # Solo se desbloquean tras completar el Capítulo 1
+                # Solo se visualizan tras completar el Capítulo 1
                 if getattr(persistent, "completed_chapter_1", False):
                     button:
                         action ShowMenu("character_gallery")
@@ -678,26 +678,6 @@ screen navigation():
                             yalign 0.5
                             add "gui/icons/icon_routes.png" yalign 0.5 ysize 24 fit "contain"
                             text _("Líneas Alternas") style "nav_icon_text"
-                else:
-                    button:
-                        action NullAction()
-                        style "nav_icon_button"
-                        sensitive False
-                        hbox:
-                            spacing 18
-                            yalign 0.5
-                            add "gui/icons/icon_gallery.png" yalign 0.5 ysize 24 fit "contain" alpha 0.45
-                            text _("Galería 🔒") style "nav_icon_text" color "#64748b"
-
-                    button:
-                        action NullAction()
-                        style "nav_icon_button"
-                        sensitive False
-                        hbox:
-                            spacing 18
-                            yalign 0.5
-                            add "gui/icons/icon_routes.png" yalign 0.5 ysize 24 fit "contain" alpha 0.45
-                            text _("Líneas Alternas 🔒") style "nav_icon_text" color "#64748b"
 
                 if _in_replay:
                     button:

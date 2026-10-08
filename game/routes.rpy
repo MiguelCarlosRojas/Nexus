@@ -14,7 +14,7 @@ init python:
             "unlocked": "despertar" in persistent.unlocked_achievements,
             "desc": "Tras un mes en coma profundo por el choque, Shinshu Kazama despierta con la capacidad ocular de prever las muertes inminentes.",
             "unlocked_details": "Despertar confirmado en el Hospital General de Chūbu. La pupila derecha percibe coágulos de causalidad.",
-            "locked_details": "🔒 [SIN ACCESO] Línea temporal no explorada aún."
+            "locked_details": "Línea temporal no explorada aún. Juega la perspectiva de Shinshu para desbloquearla."
         },
         {
             "id": "mariposa_janken",
@@ -48,19 +48,19 @@ init python:
                     "name": "Bifurcación A: Advertir Directamente a Kenji",
                     "status": "tragedia_kenji" in persistent.unlocked_achievements,
                     "desc": "Suplicarle a Kenji que rechace la medicación.",
-                    "consequence": "❌ DESTINO TRÁGICO: Kenji cree que son delirios de sedantes y fallece por asfixia tóxica."
+                    "consequence": "DESTINO TRÁGICO: Kenji cree que son delirios de sedantes y fallece por asfixia tóxica."
                 },
                 {
                     "name": "Bifurcación B: Guardar Silencio por Miedo",
                     "status": "tragedia_kenji" in persistent.unlocked_achievements,
                     "desc": "Ocultarse bajo las mantas temiendo ser catalogado demente.",
-                    "consequence": "❌ DESTINO TRÁGICO: Kenji colapsa en el suelo en silencio; la culpa atormenta a Shinshu."
+                    "consequence": "DESTINO TRÁGICO: Kenji colapsa en el suelo en silencio; la culpa atormenta a Shinshu."
                 },
                 {
                     "name": "Bifurcación C: Alertar al Dr. Moriyama",
                     "status": "salvar_kenji" in persistent.unlocked_achievements,
                     "desc": "Arrancarse las vías y salir gritando al pasillo para exigir una auditoría.",
-                    "consequence": "✨ HILO ROTO (ESPERANZA): El Dr. Moriyama requisa la ampolla a las 17:59. Kenji sobrevive."
+                    "consequence": "HILO ROTO (ESPERANZA): El Dr. Moriyama requisa la ampolla a las 17:59. Kenji sobrevive."
                 }
             ]
         }
@@ -74,7 +74,7 @@ init python:
             "unlocked": "despertar_aoi" in persistent.unlocked_achievements,
             "desc": "Aoi despierta del coma en el hospital de Nagano y descubre que Shinshu ya no está en este mundo.",
             "unlocked_details": "Despertar solitario. El dolor abre una percepción oculta ligada a los reflejos cristalinos.",
-            "locked_details": "🔒 [SIN ACCESO] Línea temporal no explorada aún."
+            "locked_details": "Línea temporal no explorada aún. Juega la perspectiva de Aoi para desbloquearla."
         },
         {
             "id": "mariposa_espejo_aoi",
@@ -83,7 +83,7 @@ init python:
             "unlocked": "espejo_premonicion" in persistent.unlocked_achievements,
             "desc": "En el espejo del lavabo, Aoi presencia la discusión entre Yuna Sasaki y su padre a las 17:00, terminando en empujón mortal.",
             "unlocked_details": "Visión completa del punto ciego: una varilla metálica de construcción bajo la cama.",
-            "locked_details": "🔒 [SIN ACCESO] Visión no presenciada."
+            "locked_details": "Visión no presenciada todavía."
         },
         {
             "id": "nexus_yuna_fatal",
@@ -96,19 +96,19 @@ init python:
                     "name": "Bifurcación A: Advertir Verbalmente a Yuna",
                     "status": "tragedia_yuna" in persistent.unlocked_achievements,
                     "desc": "Contar la visión a Yuna para evitar que discuta con su padre.",
-                    "consequence": "❌ DESTINO TRÁGICO: Yuna se enoja, la discusión se intensifica y la caída ocurre sin poder frenarla."
+                    "consequence": "DESTINO TRÁGICO: Yuna se enoja, la discusión se intensifica y la caída ocurre sin poder frenarla."
                 },
                 {
                     "name": "Bifurcación B: Retirar la Varilla de Madrugada",
                     "status": "salvar_yuna" in persistent.unlocked_achievements,
                     "desc": "Arrastrarse bajo la cama y extraer el filo punzante, asumiendo el estigma psiquiátrico.",
-                    "consequence": "✨ HILO ROTO (ESPERANZA): Yuna cae al suelo pero no hay filo mortal; Aoi es aislada en psiquiatría pero salva su vida."
+                    "consequence": "HILO ROTO (ESPERANZA): Yuna cae al suelo pero no hay filo mortal; Aoi es aislada en psiquiatría pero salva su vida."
                 },
                 {
                     "name": "Bifurcación C: Omisión por Miedo a la Locura",
                     "status": "omision_yuna" in persistent.unlocked_achievements,
                     "desc": "Quedarse inmóvil creyendo que fue una alucinación post-coma.",
-                    "consequence": "❌ DESTINO TRÁGICO: Yuna fallece exactamente como el espejo anticipó; Aoi vive con la culpa."
+                    "consequence": "DESTINO TRÁGICO: Yuna fallece exactamente como el espejo anticipó; Aoi vive con la culpa."
                 }
             ]
         }
@@ -163,7 +163,7 @@ screen alternate_routes():
                     text "•":
                         color "#475569"
 
-                    text "Nodos Explorados: [completed_nodes] / [total_nodes]":
+                    text ("Nodos Explorados: " + str(completed_nodes) + " / " + str(total_nodes)) substitute False:
                         font gui.interface_text_font
                         size 13
                         color "#38bdf8"
@@ -187,31 +187,32 @@ screen alternate_routes():
                                 text "●":
                                     size 14
                                     color (persistent.theme_border or "#e63946")
-                                text route["title"]:
+                                text route["title"] substitute False:
                                     font gui.name_text_font
                                     size 16
                                     bold True
                                     color "#ffffff"
-                                text "[[DESBLOQUEADO]":
+                                text "(Desbloqueado)" substitute False:
                                     font gui.interface_text_font
                                     size 11
                                     color "#4ade80"
                                     bold True
                             else:
-                                text "🔒":
+                                text "○":
                                     size 14
-                                text route["title"]:
+                                    color "#64748b"
+                                text route["title"] substitute False:
                                     font gui.name_text_font
                                     size 16
                                     bold True
                                     color "#64748b"
-                                text "[[SIN ACCESO]":
+                                text "(No Explorada)" substitute False:
                                     font gui.interface_text_font
                                     size 11
                                     color "#ef4444"
                                     bold True
 
-                        text route["desc"]:
+                        text route["desc"] substitute False:
                             font gui.interface_text_font
                             size 13
                             color "#94a3b8"
@@ -249,47 +250,48 @@ screen alternate_routes():
                                                             size 13
                                                             color "#4ade80"
                                                             bold True
-                                                        text b["name"]:
+                                                        text b["name"] substitute False:
                                                             font gui.interface_text_font
                                                             size 13
                                                             bold True
                                                             color "#f8fafc"
-                                                        text "[[Ruta Experimentada]":
+                                                        text "(Ruta Experimentada)" substitute False:
                                                             font gui.interface_text_font
                                                             size 10
                                                             color "#4ade80"
                                                     else:
-                                                        text "🔒":
+                                                        text "○":
                                                             size 12
-                                                        text b["name"]:
+                                                            color "#64748b"
+                                                        text b["name"] substitute False:
                                                             font gui.interface_text_font
                                                             size 13
                                                             bold True
                                                             color "#64748b"
-                                                        text "[[No Explorada - Sin Acceso]":
+                                                        text "(No Explorada)" substitute False:
                                                             font gui.interface_text_font
                                                             size 10
                                                             color "#94a3b8"
 
                                                 if b.get("status", False):
-                                                    text b["consequence"]:
+                                                    text b["consequence"] substitute False:
                                                         font gui.interface_text_font
                                                         size 12
                                                         color "#e2e8f0"
                                                 else:
-                                                    text "Consecuencia causal bloqueada. Toma decisiones diferentes en una nueva partida para desbloquear esta línea.":
+                                                    text "Consecuencia causal bloqueada. Toma decisiones diferentes en una nueva partida para desbloquear esta línea." substitute False:
                                                         font gui.interface_text_font
                                                         size 11
                                                         color "#475569"
                                                         italic True
                         else:
                             if route.get("unlocked", False):
-                                text route.get("unlocked_details", ""):
+                                text route.get("unlocked_details", "") substitute False:
                                     font gui.interface_text_font
                                     size 12
                                     color "#38bdf8"
                             else:
-                                text route.get("locked_details", "🔒 [SIN ACCESO]"):
+                                text route.get("locked_details", "Línea temporal no explorada aún.") substitute False:
                                     font gui.interface_text_font
                                     size 12
                                     color "#64748b"
