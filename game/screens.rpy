@@ -244,50 +244,72 @@ screen choice(items):
         yalign 0.42
         spacing 20
 
-        # --- CABECERA DE DECISIÓN Y BARRA DE PROGRESO DE INACTIVIDAD ---
-        vbox:
+        # --- CABECERA DE DECISIÓN Y BARRA DE TIEMPO ELEGANTE ---
+        frame:
             xalign 0.5
             xsize 940
-            spacing 8
+            background Frame(Solid("#080c16ea"), 8, 8)
+            padding (24, 14, 24, 14)
 
-            hbox:
+            vbox:
+                spacing 10
                 xfill True
-                yalign 0.5
 
-                # Título de encrucijada
                 hbox:
-                    spacing 10
-                    yalign 0.5
-                    text ("⚡ TIEMPO CRÍTICO DE REACCIÓN" if is_urgent else "⏳ DESTINO EN DISPUTA"):
-                        font gui.interface_text_font
-                        size 13
-                        bold True
-                        color ("#f87171" if is_urgent else "#38bdf8")
-                        kerning 2
-
-                # Etiqueta de segundos
-                text ("Límite: [timeout_val:.0f]s"):
-                    font gui.interface_text_font
-                    size 12
-                    color "#94a3b8"
-                    xalign 1.0
-                    yalign 0.5
-
-            # Contenedor de la barra de progreso
-            frame:
-                xfill True
-                ysize 8
-                background Solid("#1e293b80")
-                padding (0, 0, 0, 0)
-
-                # Relleno de la barra decreciente animado
-                bar:
                     xfill True
-                    ysize 8
-                    value AnimatedValue(0.0, range=1.0, delay=timeout_val, old_value=1.0)
-                    left_bar Solid("#e63946" if is_urgent else "#c084fc")
-                    right_bar Solid("#00000000")
-                    thumb None
+                    yalign 0.5
+
+                    # Título de encrucijada y estado
+                    hbox:
+                        spacing 12
+                        yalign 0.5
+                        text ("⚡" if is_urgent else "⏳"):
+                            size 16
+                            color ("#ef4444" if is_urgent else "#38bdf8")
+                            yalign 0.5
+                        text ("LÍMITE CRÍTICO DE REACCIÓN" if is_urgent else "DESTINO EN DISPUTA"):
+                            font gui.interface_text_font
+                            size 13
+                            bold True
+                            color ("#f87171" if is_urgent else "#e2e8f0")
+                            kerning 2
+                            yalign 0.5
+
+                    # Contador digital de tiempo restante
+                    frame:
+                        background Frame(Solid("#111827d0"), 4, 4)
+                        padding (12, 4, 12, 4)
+                        yalign 0.5
+                        hbox:
+                            spacing 6
+                            yalign 0.5
+                            text "TIEMPO:":
+                                font gui.interface_text_font
+                                size 10
+                                color "#94a3b8"
+                                bold True
+                                yalign 0.5
+                            text ("[timeout_val:.0f]s"):
+                                font gui.interface_text_font
+                                size 12
+                                bold True
+                                color ("#ef4444" if is_urgent else "#38bdf8")
+                                yalign 0.5
+
+                # Marco de la barra de tiempo fluida
+                frame:
+                    xfill True
+                    ysize 10
+                    background Frame(Solid("#0f172a"), 5, 5)
+                    padding (2, 2, 2, 2)
+
+                    bar:
+                        xfill True
+                        ysize 6
+                        value AnimatedValue(0.0, range=1.0, delay=timeout_val, old_value=1.0)
+                        left_bar Frame(Solid("#ef4444" if is_urgent else (persistent.theme_color or "#c084fc")), 3, 3)
+                        right_bar Solid("#00000000")
+                        thumb None
 
         # --- OPCIONES DE DECISIÓN ---
         vbox:
@@ -455,12 +477,46 @@ init python:
         return 4.0
 
     def auto_select_choice(items):
-        """Selecciona automáticamente una opción tras expirar el temporizador de inactividad."""
+        """Selecciona automáticamente una opción tras expirar el temporizador de inactividad,
+        basándose en logros, nivel de experiencia y selección pseudoaleatoria balanceada."""
         import random
         if not items:
             return
-        # Preferencia por logros o balance pseudoaleatorio
-        chosen_item = random.choice(items)
+
+        unlocked = set(persistent.unlocked_achievements or [])
+        user_xp = get_total_player_xp()
+
+        # Ponderación dinámica basada en la afinidad del jugador
+        scored_items = []
+        for it in items:
+            cap = (getattr(it, "caption", "") or "").lower()
+            weight = 10.0
+
+            # 1. Influencia por logros previos desbloqueados
+            # Si el jugador ha demostrado valentía o premonición en logros anteriores
+            if "ojo_premonicion" in unlocked or "espejo_premonicion" in unlocked:
+                if any(w in cap for w in ["concentrarte", "visión", "vision", "ojo", "retirar", "advertir", "filo"]):
+                    weight += 15.0
+            if "janken_victoria" in unlocked or "salvar_kenji" in unlocked:
+                if any(w in cap for w in ["limpiamente", "advertir", "alertar", "retirar"]):
+                    weight += 12.0
+            if "tragedia_kenji" in unlocked:
+                if any(w in cap for w in ["silencio", "ignorar", "callar"]):
+                    weight += 5.0
+
+            # 2. Experiencia acumulada (los jugadores de mayor nivel tienden a tomar acción directa)
+            if user_xp >= 50:
+                if any(w in cap for w in ["advertir", "retirar", "concentrarte", "alertar"]):
+                    weight += 8.0
+
+            # 3. Variabilidad pseudoaleatoria balanceada
+            weight += random.uniform(1.0, 6.0)
+            scored_items.append((weight, it))
+
+        # Ordenar por puntaje ponderado descendente
+        scored_items.sort(key=lambda x: x[0], reverse=True)
+        chosen_item = scored_items[0][1]
+
         if hasattr(chosen_item, "action") and chosen_item.action:
             renpy.run(chosen_item.action)
 
@@ -545,30 +601,55 @@ screen navigation():
             # Separador estético sutil
             null height 2
 
-            # --- IDENTIFICADOR FIJO DE DESTINO (NO PERMITE VOLVER ATRÁS) ---
-            frame:
-                xalign 0.5
-                xsize 380
-                background Frame(Solid("#101422a8"), 6, 6)
-                padding (16, 8, 16, 8)
-                hbox:
-                    spacing 12
-                    yalign 0.5
-                    text ("♀" if persistent.selected_gender == "mujer" else "♂"):
-                        size 22
-                        color (persistent.theme_border or "#e63946")
-                        bold True
+            # --- IDENTIFICADOR DE DESTINO (Muestra estado si fue elegido) ---
+            if persistent.selected_gender:
+                frame:
+                    xalign 0.5
+                    xsize 380
+                    background Frame(Solid("#101422a8"), 6, 6)
+                    padding (16, 8, 16, 8)
+                    hbox:
+                        spacing 12
                         yalign 0.5
-                    vbox:
-                        spacing 1
-                        yalign 0.5
-                        text ("PERSPECTIVA: MUJER (AOI)" if persistent.selected_gender == "mujer" else "PERSPECTIVA: HOMBRE (SHINSHU)"):
-                            size 11
-                            color "#f8fafc"
+                        text ("♀" if persistent.selected_gender == "mujer" else "♂"):
+                            size 22
+                            color (persistent.theme_border or "#e63946")
                             bold True
-                        text ("Línea Temporal Amatista" if persistent.selected_gender == "mujer" else "Línea Temporal Carmesí"):
-                            size 9
+                            yalign 0.5
+                        vbox:
+                            spacing 1
+                            yalign 0.5
+                            text ("PERSPECTIVA: MUJER (AOI)" if persistent.selected_gender == "mujer" else "PERSPECTIVA: HOMBRE (SHINSHU)"):
+                                size 11
+                                color "#f8fafc"
+                                bold True
+                            text ("Línea Temporal Amatista" if persistent.selected_gender == "mujer" else "Línea Temporal Carmesí"):
+                                size 9
+                                color "#94a3b8"
+            else:
+                frame:
+                    xalign 0.5
+                    xsize 380
+                    background Frame(Solid("#101422a8"), 6, 6)
+                    padding (16, 8, 16, 8)
+                    hbox:
+                        spacing 12
+                        yalign 0.5
+                        text "✧":
+                            size 20
                             color "#94a3b8"
+                            bold True
+                            yalign 0.5
+                        vbox:
+                            spacing 1
+                            yalign 0.5
+                            text "PERSPECTIVA: SIN DEFINIR":
+                                size 11
+                                color "#f8fafc"
+                                bold True
+                            text "Se seleccionará al iniciar la historia":
+                                size 9
+                                color "#94a3b8"
 
             null height 2
 
@@ -631,6 +712,15 @@ screen navigation():
                         yalign 0.5
                         add "gui/icons/icon_achievements.png" yalign 0.5 ysize 24 fit "contain"
                         text _("Logros y Nivel") style "nav_icon_text"
+
+                button:
+                    action ShowMenu("character_gallery")
+                    style "nav_icon_button"
+                    hbox:
+                        spacing 18
+                        yalign 0.5
+                        add "gui/icons/icon_gallery.png" yalign 0.5 ysize 24 fit "contain"
+                        text _("Galería") style "nav_icon_text"
 
                 if _in_replay:
                     button:
@@ -795,21 +885,45 @@ screen protagonist_selection():
             color "#64748b"
             xalign 0.5
 
-        # Barra de progreso del temporizador inteligente de selección
+        # Barra de tiempo estilizada del temporizador de selección
         frame:
             xalign 0.5
-            xsize 520
-            ysize 6
-            background Solid("#1e293b80")
-            padding (0, 0, 0, 0)
+            xsize 560
+            background Frame(Solid("#080c16ea"), 6, 6)
+            padding (16, 10, 16, 10)
 
-            bar:
+            vbox:
+                spacing 6
                 xfill True
-                ysize 6
-                value AnimatedValue(0.0, range=1.0, delay=4.0, old_value=1.0)
-                left_bar Solid("#e63946")
-                right_bar Solid("#00000000")
-                thumb None
+
+                hbox:
+                    xfill True
+                    text "⏳ DECISIÓN TEMPORAL":
+                        font gui.interface_text_font
+                        size 11
+                        bold True
+                        color "#94a3b8"
+                        kerning 2
+                    text "Límite: 4s":
+                        font gui.interface_text_font
+                        size 11
+                        bold True
+                        color "#e63946"
+                        xalign 1.0
+
+                frame:
+                    xfill True
+                    ysize 8
+                    background Frame(Solid("#0f172a"), 4, 4)
+                    padding (2, 2, 2, 2)
+
+                    bar:
+                        xfill True
+                        ysize 4
+                        value AnimatedValue(0.0, range=1.0, delay=4.0, old_value=1.0)
+                        left_bar Frame(Solid("#e63946"), 2, 2)
+                        right_bar Solid("#00000000")
+                        thumb None
 
     # Contenedor de selección dual sobrio (sin siluetas ni detalles de trama)
     hbox:
@@ -1099,27 +1213,13 @@ screen main_menu():
         ysize 1080
         background None
 
-        # Fondo dinámico animado
+        # Fondo dinámico animado sin siluetas invasivas
         add "main_menu_animated_bg":
             fit "cover"
             xsize 1470
             ysize 1080
 
-        # Silueta anime adaptada según el protagonista seleccionado
-        if persistent.selected_gender == "mujer":
-            add "images/silueta_aoi.png":
-                xalign 0.90
-                yalign 1.0
-                zoom 0.85
-                alpha 0.85
-        else:
-            add "images/silueta_ren.png":
-                xalign 0.90
-                yalign 1.0
-                zoom 0.85
-                alpha 0.85
-
-        # Capa de oscurecimiento suave central para máxima legibilidad del logo
+        # Capa de oscurecimiento suave central para máxima legibilidad del logo (sin siluetas de personajes)
         frame:
             xalign 0.35
             yalign 0.5
@@ -1152,7 +1252,7 @@ screen main_menu():
                         xalign 0.5
                         text_align 0.5
                         line_spacing 6
-                else:
+                elif persistent.selected_gender == "hombre":
                     text "「 瞳 の 奥 に 、 死 が 映 る 」":
                         size 22
                         color (persistent.theme_border or "#e63946")
@@ -1163,6 +1263,20 @@ screen main_menu():
                     text "En el corazón de Nagano, la muerte aguarda en cada mirada.\nUn don que nació de una herida. Una elección que decide quién respira mañana.":
                         size 16
                         color "#a4adbe"
+                        xalign 0.5
+                        text_align 0.5
+                        line_spacing 6
+                else:
+                    text "「 宿 命 の 瞳 、 二 つ の 運 命 」":
+                        size 22
+                        color "#e63946"
+                        xalign 0.5
+                        bold True
+                        kerning 4
+
+                    text "Dos almas entrelazadas en el epicentro de Nagano.\nElige tu perspectiva al comenzar la historia y desafía las leyes del destino.":
+                        size 16
+                        color "#cbd5e1"
                         xalign 0.5
                         text_align 0.5
                         line_spacing 6

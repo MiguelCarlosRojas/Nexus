@@ -47,15 +47,13 @@ image silueta_kenji = "images/silueta_kenji.png"
 image silueta_enfermera = "images/silueta_enfermera.png"
 image silueta_doctor = "images/silueta_doctor.png"
 
-# Fondos Cinematográficos del Menú Principal (Alternancia Continua 3.5s / 1.5s disolución)
+# Fondos Cinematográficos del Menú Principal (Transición fluida continua en disolución suave)
 image bg_menu_mano_sangre = "images/nexus_destino_mano_sangre.png"
 image bg_menu_mariposa_rosa = "images/nexus_destino_mariposa_rosa.png"
 
 image main_menu_animated_bg:
     "images/nexus_destino_mano_sangre.png"
     pause 3.5
-    choice:
-        pass
     "images/nexus_destino_mariposa_rosa.png" with Dissolve(1.5)
     pause 3.5
     "images/nexus_destino_mano_sangre.png" with Dissolve(1.5)
