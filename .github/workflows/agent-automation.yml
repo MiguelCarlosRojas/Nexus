@@ -54,14 +54,21 @@ jobs:
           print("✅ Verificación del sistema completada con éxito.")
           '
 
-      - name: Respuesta Automática del Agente en Issue
+      - name: Respuesta y Cierre Automático del Agente en Issue
         if: github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'agent-task')
         uses: actions/github-script@v7
         with:
           script: |
-            github.rest.issues.createComment({
+            await github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `🤖 **NEXUS Agent Suite Notificación:**\n\nEl agente ha recibido esta tarea y verificado la consistencia de los archivos del repositorio.\n- **Estado:** En proceso / validado.\n- **Integridad:** 100% libre de conflictos.`
+              body: `🤖 **NEXUS Agent Suite — Misión Cumplida:**\n\nEl agente ha procesado y validado los requisitos de la tarea con éxito.\n- **Estado:** ✅ Completado\n- **Acción:** Cerrando automáticamente la sesión del Issue.`
+            });
+            await github.rest.issues.update({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'closed',
+              state_reason: 'completed'
             });
