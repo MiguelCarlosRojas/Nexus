@@ -364,9 +364,27 @@ init python:
         persistent.selected_gender = gender
         if gender == "mujer":
             set_theme("Amatista Sakura")
+            if not persistent.player_nickname or persistent.player_nickname == "Shinshu Kazama":
+                persistent.player_nickname = "Aoi Kazama"
         else:
             set_theme("Carmesí")
+            if not persistent.player_nickname or persistent.player_nickname == "Aoi Kazama":
+                persistent.player_nickname = "Shinshu Kazama"
         renpy.restart_interaction()
+
+    def auto_select_protagonist():
+        import random
+        if persistent.selected_gender is None:
+            count_h = len([aid for aid in (persistent.unlocked_achievements or []) if get_achievement_by_id(aid) and get_achievement_by_id(aid).get("gender") == "hombre"])
+            count_m = len([aid for aid in (persistent.unlocked_achievements or []) if get_achievement_by_id(aid) and get_achievement_by_id(aid).get("gender") == "mujer"])
+            if count_m > count_h:
+                chosen = "mujer"
+            elif count_h > count_m:
+                chosen = "hombre"
+            else:
+                chosen = random.choice(["hombre", "mujer"])
+            set_protagonist_gender(chosen)
+        renpy.return_statement()
 
     def set_dialogue_size(size):
         persistent.text_size_choice = size
@@ -449,14 +467,14 @@ screen navigation():
             # Separador estético sutil
             null height 2
 
-            # --- SELECTOR DE PROTAGONISTA Y DESTINO ---
-            button:
+            # --- IDENTIFICADOR FIJO DE DESTINO (NO PERMITE VOLVER ATRÁS) ---
+            frame:
                 xalign 0.5
                 xsize 380
-                action Show("protagonist_selection")
-                style "nav_icon_button"
+                background Frame(Solid("#101422a8"), 6, 6)
+                padding (16, 8, 16, 8)
                 hbox:
-                    spacing 14
+                    spacing 12
                     yalign 0.5
                     text ("♀" if persistent.selected_gender == "mujer" else "♂"):
                         size 22
@@ -466,12 +484,12 @@ screen navigation():
                     vbox:
                         spacing 1
                         yalign 0.5
-                        text ("PROTAGONISTA: MUJER (AOI)" if persistent.selected_gender == "mujer" else "PROTAGONISTA: HOMBRE (SHINSHU)"):
+                        text ("PERSPECTIVA: MUJER (AOI)" if persistent.selected_gender == "mujer" else "PERSPECTIVA: HOMBRE (SHINSHU)"):
                             size 11
                             color "#f8fafc"
                             bold True
-                        text "Clic para cambiar perspectiva y destino":
-                            size 10
+                        text ("Línea Temporal Amatista" if persistent.selected_gender == "mujer" else "Línea Temporal Carmesí"):
+                            size 9
                             color "#94a3b8"
 
             null height 2
@@ -658,185 +676,146 @@ style nav_return_friendly_text is gui_button_text:
 
 
 ## Pantalla de Selección de Protagonista (Hombre / Mujer) ########################
+## Pantalla de Selección de Protagonista (Hombre / Mujer) ########################
 screen protagonist_selection():
     modal True
     tag menu
 
-    add "#07080d"
+    # Temporizador automático (7 segundos): Si no selecciona, el sistema elige automáticamente
+    timer 7.0 action Function(auto_select_protagonist)
 
-    # Marco ambiental estilizado
+    add "#06080d"
+
+    # Marco ambiental
     frame:
         xfill True
         yfill True
-        background Frame(Solid("#02030588"), 0, 0)
+        background Frame(Solid("#02030698"), 0, 0)
 
     vbox:
         xalign 0.5
-        yalign 0.07
-        spacing 8
+        yalign 0.16
+        spacing 12
 
-        text "NEXUS • SELECCIÓN DE DESTINO Y PROTAGONISTA":
+        text "NEXUS • SELECCIÓN DE PERSPECTIVA":
             font gui.interface_text_font
             size 14
             color "#94a3b8"
-            kerning 5
+            kerning 6
             xalign 0.5
 
-        text "ELIGE TU PERSPECTIVA TEMPORAL":
+        text "ELIGE TU DESTINO":
             font gui.name_text_font
-            size 36
+            size 40
             color "#f8fafc"
             bold True
             xalign 0.5
 
-        text "Tu elección transforma el diseño de la interfaz, la paleta cromática y el destino de la historia.":
+        text "Una vez confirmada la elección, la realidad quedará sellada.":
             font gui.interface_text_font
             size 15
             color "#64748b"
             xalign 0.5
 
-    # Contenedor de selección dual
+    # Contenedor de selección dual sobrio (sin siluetas ni detalles de trama)
     hbox:
         xalign 0.5
-        yalign 0.57
-        spacing 45
+        yalign 0.56
+        spacing 60
 
-        # --- OPCIÓN 1: HOMBRE (SHINSHU KAZAMA / REN) ---
+        # --- OPCIÓN 1: HOMBRE ---
         button:
-            xsize 520
-            ysize 630
+            xsize 420
+            ysize 320
             action [
                 Function(set_protagonist_gender, "hombre"),
                 Return()
             ]
-            background Frame(Solid("#0d111bf2"), 10, 10)
-            hover_background Frame(Solid("#180f15f8"), 10, 10)
-            padding (28, 26, 28, 26)
+            background Frame(Solid("#0d111bf2"), 12, 12)
+            hover_background Frame(Solid("#1a0f16f8"), 12, 12)
+            padding (36, 36, 36, 36)
 
             vbox:
-                spacing 14
+                spacing 22
                 xfill True
-                yfill True
+                yalign 0.5
 
-                frame:
-                    background Solid("#e6394628")
-                    padding (12, 4, 12, 4)
-                    xalign 0.0
-                    text "PERSPECTIVA ORIGINAL • CARMESÍ":
-                        size 11
-                        color "#e63946"
-                        bold True
+                text "♂":
+                    size 48
+                    color "#e63946"
+                    bold True
+                    xalign 0.5
 
-                frame:
-                    xsize 464
-                    ysize 260
-                    background Solid("#06080e")
-                    add "images/silueta_ren.png":
-                        xalign 0.5
-                        yalign 1.0
-                        zoom 0.58
+                text "HOMBRE":
+                    size 28
+                    color "#f8fafc"
+                    bold True
+                    xalign 0.5
+                    kerning 4
 
-                vbox:
-                    spacing 4
-                    text "SHINSHU KAZAMA (REN)":
-                        size 22
-                        color "#f8fafc"
-                        bold True
-                    text "「 瞳 の 奥 に 、 死 が 映 る 」":
-                        size 13
-                        color "#e63946"
-                        bold True
-
-                text "Despiertas con la aguja del destino y la maldición del Nexus tras proteger a tu hermana. Investiga el envenenamiento en el hospital de Shinshu.":
-                    size 13
-                    color "#94a3b8"
-                    line_spacing 4
-
-                null height 6
+                null height 8
 
                 frame:
                     xfill True
-                    ysize 42
+                    ysize 46
                     background Solid("#e63946")
-                    text "JUGAR COMO HOMBRE (SHINSHU)":
+                    text "SELECCIONAR":
                         size 13
                         color "#ffffff"
                         bold True
                         xalign 0.5
                         yalign 0.5
 
-        # --- OPCIÓN 2: MUJER (AOI KAZAMA) ---
+        # --- OPCIÓN 2: MUJER ---
         button:
-            xsize 520
-            ysize 630
+            xsize 420
+            ysize 320
             action [
                 Function(set_protagonist_gender, "mujer"),
                 Return()
             ]
-            background Frame(Solid("#120d1cf2"), 10, 10)
-            hover_background Frame(Solid("#201032f8"), 10, 10)
-            padding (28, 26, 28, 26)
+            background Frame(Solid("#120d1cf2"), 12, 12)
+            hover_background Frame(Solid("#201032f8"), 12, 12)
+            padding (36, 36, 36, 36)
 
             vbox:
-                spacing 14
+                spacing 22
                 xfill True
-                yfill True
+                yalign 0.5
 
-                frame:
-                    background Solid("#9333ea28")
-                    padding (12, 4, 12, 4)
-                    xalign 0.0
-                    text "NUEVA REALIDAD CUÁNTICA • AMATISTA":
-                        size 11
-                        color "#c084fc"
-                        bold True
+                text "♀":
+                    size 48
+                    color "#c084fc"
+                    bold True
+                    xalign 0.5
 
-                frame:
-                    xsize 464
-                    ysize 260
-                    background Solid("#08050e")
-                    add "images/silueta_aoi.png":
-                        xalign 0.5
-                        yalign 1.0
-                        zoom 0.58
+                text "MUJER":
+                    size 28
+                    color "#f8fafc"
+                    bold True
+                    xalign 0.5
+                    kerning 4
 
-                vbox:
-                    spacing 4
-                    text "AOI KAZAMA":
-                        size 22
-                        color "#f8fafc"
-                        bold True
-                    text "「 運 命 の 瞳 、 輪 廻 の 淵 」":
-                        size 13
-                        color "#c084fc"
-                        bold True
-
-                text "Despiertas un mes después en coma. Tu hermano saltó de la azotea devorado por la culpa. Al borde del suicidio, tus ojos despiertan ante el espejo para alterar la muerte.":
-                    size 13
-                    color "#94a3b8"
-                    line_spacing 4
-
-                null height 6
+                null height 8
 
                 frame:
                     xfill True
-                    ysize 42
+                    ysize 46
                     background Solid("#9333ea")
-                    text "JUGAR COMO MUJER (AOI)":
+                    text "SELECCIONAR":
                         size 13
                         color "#ffffff"
                         bold True
                         xalign 0.5
                         yalign 0.5
 
-    if persistent.selected_gender is not None:
-        textbutton _("← VOLVER AL MENÚ"):
-            xalign 0.5
-            yalign 0.96
-            text_size 13
-            text_color "#64748b"
-            text_hover_color "#ffffff"
-            action Return()
+    # Indicador de selección automática por inactividad
+    text "Decisión automática en 7 segundos si no seleccionas...":
+        xalign 0.5
+        yalign 0.88
+        font gui.interface_text_font
+        size 13
+        color "#475569"
 
 
 ## Pantalla del menú principal #################################################
@@ -2663,7 +2642,7 @@ screen achievements():
                     vbox:
                         spacing 2
                         xalign 0.5
-                        text "[get_unlocked_count()]/[TOTAL_ACHIEVEMENTS_COUNT]":
+                        text "[get_unlocked_count()]/[get_total_gender_achievements_count()]":
                             size 28
                             bold True
                             color "#ffffff"
@@ -2737,7 +2716,7 @@ screen achievements():
                     vbox:
                         spacing 2
                         xalign 0.5
-                        text "[get_recorrido_count()]/[TOTAL_ACHIEVEMENTS_COUNT]":
+                        text "[get_recorrido_count()]/[get_total_gender_achievements_count()]":
                             size 24
                             bold True
                             color "#ffffff"
