@@ -16,10 +16,10 @@ jobs:
       - name: Checkout del Repositorio
         uses: actions/checkout@v4
 
-      - name: Comprimir Assets y Proyecto Nexus
+      - name: Comprimir Assets y Proyecto Nexus Limpio
         run: |
           mkdir -p dist
-          zip -r "dist/Nexus-Game-${{ github.ref_name }}.zip" game/ README.md COPYRIGHT.md CODE_OF_CONDUCT.md .gitignore -x "*.git*" "*__pycache__*" "*errors.txt*" "*log.txt*"
+          zip -r "dist/Nexus-Game-${{ github.ref_name }}.zip" game/ -x "*.git*" "*__pycache__*" "*errors.txt*" "*log.txt*" "*.save" "*persistent*"
 
       - name: Crear GitHub Release con Assets Adjuntos
         uses: softprops/action-gh-release@v2
