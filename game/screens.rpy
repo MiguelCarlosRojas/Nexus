@@ -233,15 +233,71 @@ style input:
 screen choice(items):
     style_prefix "choice"
 
+    $ timeout_val = get_choice_timeout(items)
+    $ is_urgent = (timeout_val <= 2.5)
+
+    # Temporizador de inactividad inteligente: selecciona automáticamente al expirar
+    timer timeout_val action Function(auto_select_choice, items)
+
     vbox:
         xalign 0.5
-        yalign 0.45
-        spacing 16
+        yalign 0.42
+        spacing 20
 
-        for i in items:
-            textbutton i.caption:
-                action i.action
-                style "nexus_choice_btn"
+        # --- CABECERA DE DECISIÓN Y BARRA DE PROGRESO DE INACTIVIDAD ---
+        vbox:
+            xalign 0.5
+            xsize 940
+            spacing 8
+
+            hbox:
+                xfill True
+                yalign 0.5
+
+                # Título de encrucijada
+                hbox:
+                    spacing 10
+                    yalign 0.5
+                    text ("⚡ TIEMPO CRÍTICO DE REACCIÓN" if is_urgent else "⏳ DESTINO EN DISPUTA"):
+                        font gui.interface_text_font
+                        size 13
+                        bold True
+                        color ("#f87171" if is_urgent else "#38bdf8")
+                        kerning 2
+
+                # Etiqueta de segundos
+                text ("Límite: [timeout_val:.0f]s"):
+                    font gui.interface_text_font
+                    size 12
+                    color "#94a3b8"
+                    xalign 1.0
+                    yalign 0.5
+
+            # Contenedor de la barra de progreso
+            frame:
+                xfill True
+                ysize 8
+                background Solid("#1e293b80")
+                padding (0, 0, 0, 0)
+
+                # Relleno de la barra decreciente animado
+                bar:
+                    xfill True
+                    ysize 8
+                    value AnimatedValue(0.0, range=1.0, delay=timeout_val, old_value=1.0)
+                    left_bar Solid("#e63946" if is_urgent else "#c084fc")
+                    right_bar Solid("#00000000")
+                    thumb None
+
+        # --- OPCIONES DE DECISIÓN ---
+        vbox:
+            xalign 0.5
+            spacing 14
+
+            for i in items:
+                textbutton i.caption:
+                    action i.action
+                    style "nexus_choice_btn"
 
 
 style nexus_choice_btn is gui_button:
@@ -385,6 +441,28 @@ init python:
                 chosen = random.choice(["hombre", "mujer"])
             set_protagonist_gender(chosen)
         renpy.return_statement()
+
+    def get_choice_timeout(items):
+        """Calcula el tiempo del temporizador: 2.0s si es decisión rápida/urgente, 4.0s si es reflexiva."""
+        if not items:
+            return 4.0
+        # Palabras clave de urgencia/reflejos inmediatos
+        urgent_keywords = ["limpiamente", "concentrarte", "reflejos", "rápido", "rapido", "instinto", "intuitivo", "janken", "puño", "puno", "reaccionar"]
+        for it in items:
+            cap = (getattr(it, "caption", "") or "").lower()
+            if any(k in cap for k in urgent_keywords):
+                return 2.0
+        return 4.0
+
+    def auto_select_choice(items):
+        """Selecciona automáticamente una opción tras expirar el temporizador de inactividad."""
+        import random
+        if not items:
+            return
+        # Preferencia por logros o balance pseudoaleatorio
+        chosen_item = random.choice(items)
+        if hasattr(chosen_item, "action") and chosen_item.action:
+            renpy.run(chosen_item.action)
 
     def set_dialogue_size(size):
         persistent.text_size_choice = size
@@ -681,8 +759,8 @@ screen protagonist_selection():
     modal True
     tag menu
 
-    # Temporizador automático (7 segundos): Si no selecciona, el sistema elige automáticamente
-    timer 7.0 action Function(auto_select_protagonist)
+    # Temporizador inteligente (4 segundos): Si no selecciona, el sistema elige automáticamente
+    timer 4.0 action Function(auto_select_protagonist)
 
     add "#06080d"
 
@@ -694,8 +772,8 @@ screen protagonist_selection():
 
     vbox:
         xalign 0.5
-        yalign 0.16
-        spacing 12
+        yalign 0.14
+        spacing 10
 
         text "NEXUS • SELECCIÓN DE PERSPECTIVA":
             font gui.interface_text_font
@@ -716,6 +794,22 @@ screen protagonist_selection():
             size 15
             color "#64748b"
             xalign 0.5
+
+        # Barra de progreso del temporizador inteligente de selección
+        frame:
+            xalign 0.5
+            xsize 520
+            ysize 6
+            background Solid("#1e293b80")
+            padding (0, 0, 0, 0)
+
+            bar:
+                xfill True
+                ysize 6
+                value AnimatedValue(0.0, range=1.0, delay=4.0, old_value=1.0)
+                left_bar Solid("#e63946")
+                right_bar Solid("#00000000")
+                thumb None
 
     # Contenedor de selección dual sobrio (sin siluetas ni detalles de trama)
     hbox:
@@ -810,7 +904,7 @@ screen protagonist_selection():
                         yalign 0.5
 
     # Indicador de selección automática por inactividad
-    text "Decisión automática en 7 segundos si no seleccionas...":
+    text "Decisión automática en 4 segundos si no seleccionas...":
         xalign 0.5
         yalign 0.88
         font gui.interface_text_font
@@ -825,13 +919,19 @@ screen main_menu():
 
     add gui.main_menu_background
 
-    # Fondo cinematográfico de Nagano en la noche para el área derecha
+    # Fondo cinematográfico animado con alternancia continua entre los dos destinos
     frame:
         xpos 450
         ypos 0
         xsize 1470
         ysize 1080
-        background "images/main_menu_bg.png"
+        background None
+
+        # Fondo dinámico animado
+        add "main_menu_animated_bg":
+            fit "cover"
+            xsize 1470
+            ysize 1080
 
         # Silueta anime adaptada según el protagonista seleccionado
         if persistent.selected_gender == "mujer":
