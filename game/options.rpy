@@ -146,7 +146,7 @@ default preferences.afm_time = 15
 ## Normalmente, este valor no debe ser modificado. Si lo es, debe ser siempre
 ## una cadena literal y no una expresión.
 
-define config.save_directory = "Nexus-1791313901"
+define config.save_directory = "Nexus-v1.2.1-clean"
 
 
 ## Icono #######################################################################

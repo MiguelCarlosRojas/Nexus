@@ -127,6 +127,9 @@ label splashscreen:
 # -----------------------------------------------------------------------------
 label start:
 
+    # Selección de protagonista garantizada para cada nueva partida
+    call screen protagonist_selection
+
     # -------------------------------------------------------------------------
     # PRÓLOGO CONCEPTUAL EN PANTALLA COMPLETA (SIN CAJA DE DIÁLOGO)
     # -------------------------------------------------------------------------
@@ -863,7 +866,7 @@ label final_capitulo_esperanza:
 label chapter1_aoi:
 
     # -------------------------------------------------------------------------
-    # PARTE 1: EL DESPERTAR TRAS UN MES DE SILENCIO
+    # PARTE 1: EL DESPERTAR TRAS CASI MEDIO AÑO DE SILENCIO
     # -------------------------------------------------------------------------
     scene bg negro
     with fade_lento
@@ -905,9 +908,9 @@ label chapter1_aoi:
     play music "audio/piano_sad_theme.wav" loop fadein 2.0
 
     madre "Aoi... mi pequeña... no han pasado unas horas..."
-    madre "Has estado en coma profundo... durante un mes entero."
+    madre "Has estado en coma profundo... durante casi medio año. Seis meses enteros conectada a tubos y monitores."
 
-    aoi_p "¿U-un mes...?"
+    aoi_p "¿S-seis meses...? ¿Casi medio año...?"
 
     madre "Aquel día... el camión derrapó en la curva de Matsumoto. Shinshu corrió desesperado hacia ti... pero no llegó a tiempo. El golpe te destrozó la cabeza contra el bordillo."
 
@@ -916,7 +919,7 @@ label chapter1_aoi:
 
     "Mi madre se cubre el rostro, convulsionando en sollozos ahogados."
 
-    madre "Durante semanas, Shinshu no salió de este hospital. No dormía. No comía. Se quedaba de rodillas junto a tu camilla sosteniendo tu mano inerte, repitiéndose una y otra vez que todo había sido culpa suya..."
+    madre "Durante cinco largos meses, Shinshu no salió de este hospital. No dormía. No comía. Se quedaba de rodillas junto a tu camilla sosteniendo tu mano inerte, repitiéndose una y otra vez que todo había sido culpa suya..."
     madre "{i}«Si hubiera corrido más rápido... si la hubiera tomado del brazo antes de cruzar... Aoi estaría despierta»{/i}... ese veneno se le metió en la cabeza..."
 
     aoi_p "No... Shinshu no tuvo la culpa... ¡yo fui la que corrió adelante jugando en las líneas blancas...!"
@@ -950,7 +953,7 @@ label chapter1_aoi:
 
     show aoi_abrazando_rodillas at silueta_floor_center with Dissolve(1.0)
 
-    madre "Murió en el acto al estrellarse contra el pavimento... Hace tres semanas enterramos a tu hermano. ¡Y yo lo empujé a esa azotea, Aoi! ¡Fui yo...!"
+    madre "Murió en el acto al estrellarse contra el pavimento... Hace un mes enterramos a tu hermano. Un mes entero antes de que pudieras despertar. ¡Y yo lo empujé a esa azotea, Aoi! ¡Fui yo...!"
 
     $ grant_achievement("despertar_aoi")
 

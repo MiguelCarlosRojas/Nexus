@@ -133,7 +133,7 @@ init python:
                 "images/aoi_caminando_desanimada.png",
                 "images/nexus_destino_mariposa_rosa.png"
             ],
-            "synopsis": "Despierta tras un mes de coma tras el accidente y se entera del suicidio de su hermano Shinshu. Consumida por la desolación y retenida en el hospital, descubre en el espejo del lavabo que puede ver la muerte antes de que ocurra.",
+            "synopsis": "Despierta tras casi medio año (seis meses) de coma tras el accidente y se entera de la muerte de su hermano Shinshu ocurrida un mes antes. Consumida por la desolación y retenida en el hospital, descubre en el espejo del lavabo que puede ver la muerte antes de que ocurra.",
             "routes": [
                 {"title": "Rama 1: Advertir a Yuna", "desc": "Le suplica a Yuna evitar la discusión con su padre; no le cree por su trauma y Yuna muere en el forcejeo."},
                 {"title": "Rama 2: Retirar el Objeto Punzante", "desc": "Espera a la noche, retira el objeto letal bajo la cama; Yuna se salva pero Aoi es sedada y aislada."},
@@ -149,9 +149,9 @@ init python:
             "images": [
                 "images/silueta_ren.png"
             ],
-            "synopsis": "El hermano mayor cuya culpa insoportable y rechazo tras el accidente lo llevaron a arrojarse desde la azotea del hospital, marcando el destino de Aoi para siempre.",
+            "synopsis": "El hermano mayor cuya culpa insoportable y rechazo tras el accidente lo llevaron a arrojarse desde la azotea un mes antes de que Aoi despertara, marcando su destino para siempre.",
             "routes": [
-                {"title": "El Salto del Ángel Caído", "desc": "Tragedia ocurrida mientras Aoi permanecía en coma profundo."}
+                {"title": "El Salto del Ángel Caído", "desc": "Tragedia ocurrida un mes antes del despertar de Aoi tras cinco meses de vigilia."}
             ]
         },
         {

@@ -72,8 +72,8 @@ init python:
             "title": "EVENTO NEXUS: EL DESPERTAR Y LA AUSENCIA DE SHINSHU",
             "type": "NEXUS EVENT",
             "unlocked": "despertar_aoi" in persistent.unlocked_achievements,
-            "desc": "Aoi despierta del coma en el hospital de Nagano y descubre que Shinshu ya no está en este mundo.",
-            "unlocked_details": "Despertar solitario. El dolor abre una percepción oculta ligada a los reflejos cristalinos.",
+            "desc": "Aoi despierta tras casi medio año (seis meses) de coma en el hospital de Nagano y descubre la trágica muerte de Shinshu ocurrida un mes antes.",
+            "unlocked_details": "Despertar solitario tras seis meses. El dolor abre una percepción oculta ligada a los reflejos cristalinos.",
             "locked_details": "Línea temporal no explorada aún. Juega la perspectiva de Aoi para desbloquearla."
         },
         {
