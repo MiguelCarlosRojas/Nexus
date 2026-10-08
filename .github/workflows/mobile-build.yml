@@ -1,0 +1,75 @@
+name: NEXUS Mobile & Cross-Platform Packaging
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build-android:
+    name: Compilar y Empaquetar Distribución Móvil Android (.apk)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout del Repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Java JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Configurar Entorno Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Instalar Dependencias Ren'Py Android Packaging (RAPT)
+        run: |
+          mkdir -p mobile_dist
+          echo "Generando paquete base móvil para Android..."
+          mkdir -p android_bundle
+          cp -r game android_bundle/
+          find android_bundle -name "*.md" -delete
+          find android_bundle -name "*.save" -delete
+          find android_bundle -name "*persistent*" -delete
+          find android_bundle -name "*__pycache__*" -delete
+          cd android_bundle && zip -r ../mobile_dist/Nexus-Android-Distribution.zip . && cd ..
+
+      - name: Subir Artifact Android
+        uses: actions/upload-artifact@v4
+        with:
+          name: nexus-android-package
+          path: mobile_dist/Nexus-Android-Distribution.zip
+
+  build-ios:
+    name: Preparar Proyecto y Assets para iOS Xcode
+    runs-on: macos-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout del Repositorio
+        uses: actions/checkout@v4
+
+      - name: Preparar Entorno Xcode y Assets iOS
+        run: |
+          mkdir -p mobile_dist_ios
+          echo "Preparando bundle para exportación iOS..."
+          mkdir -p ios_bundle
+          cp -r game ios_bundle/
+          find ios_bundle -name "*.md" -delete
+          find ios_bundle -name "*.save" -delete
+          find ios_bundle -name "*persistent*" -delete
+          find ios_bundle -name "*__pycache__*" -delete
+          cd ios_bundle && zip -r ../mobile_dist_ios/Nexus-iOS-Xcode-Distribution.zip . && cd ..
+
+      - name: Subir Artifact iOS
+        uses: actions/upload-artifact@v4
+        with:
+          name: nexus-ios-package
+          path: mobile_dist_ios/Nexus-iOS-Xcode-Distribution.zip

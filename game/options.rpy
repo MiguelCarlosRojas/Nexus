@@ -24,7 +24,7 @@ define gui.show_name = False
 
 ## Versión del juego.
 
-define config.version = "1.2.0"
+define config.version = "1.2.1"
 
 
 ## Texto situado en la pantalla 'Acerca de' del juego. Sitúa el texto entre
@@ -197,6 +197,9 @@ init python:
     build.classify('log.txt', None)
     build.classify('dist/**', None)
     build.classify('**__pycache__/**', None)
+    build.classify('**.md', None)
+    build.classify('**.cer', None)
+    build.classify('**.bat', None)
 
     ## Para archivar, se clasifican como 'archive'.
 
