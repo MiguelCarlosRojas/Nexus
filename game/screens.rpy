@@ -1422,7 +1422,7 @@ screen main_menu():
                         bold True
                         kerning 4
 
-                    text "Despertaste del coma tras la pérdida de tu hermano.\nUn reflejo en el espejo del hospital revela la muerte antes de que ocurra.":
+                    text "Despertaste tras seis meses de coma y la muerte de tu hermano un mes atrás.\nUn reflejo en el espejo del hospital revela la muerte antes de que ocurra.":
                         size 16
                         color "#d8b4fe"
                         xalign 0.5

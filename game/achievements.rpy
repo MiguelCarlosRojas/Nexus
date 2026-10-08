@@ -101,7 +101,7 @@ init python:
         {
             "id": "despertar_aoi",
             "name": "Despertar en la Penumbra",
-            "desc": "Despierta tras un mes de coma en el hospital y descubre la trágica partida de Shinshu.",
+            "desc": "Despierta tras seis meses de coma en el hospital y descubre la trágica muerte de Shinshu ocurrida un mes antes.",
             "xp": 25,
             "chapter": "Capítulo 1 (Aoi)",
             "gender": "mujer",
