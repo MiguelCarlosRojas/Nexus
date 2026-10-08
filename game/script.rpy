@@ -29,7 +29,19 @@ define padre_yuna = Character("Sr. Tachibana", color="#94a3b8", who_outlines=[(1
 # Siluetas de los Personajes
 # -----------------------------------------------------------------------------
 image silueta_ren = "images/silueta_ren.png"
-image silueta_aoi = "images/silueta_aoi.png"
+image silueta_aoi = "images/Aoi.png"
+image aoi_base = "images/Aoi.png"
+image aoi_agachada_melancolica = "images/aoi_agachada_melancolica.png"
+image aoi_sentada_suelo = "images/aoi_sentada_suelo.png"
+image aoi_de_pie_abrazandose = "images/aoi_de_pie_abrazandose.png"
+image aoi_caminando_desanimada = "images/aoi_caminando_desanimada.png"
+image aoi_llorando_manga = "images/aoi_llorando_manga.png"
+image aoi_abrazando_rodillas = "images/aoi_abrazando_rodillas.png"
+image aoi_sentada_piernas_desganadas = "images/aoi_sentada_piernas_desganadas.png"
+image aoi_sentada_costado_mano = "images/aoi_sentada_costado_mano.png"
+image aoi_arrodillada_desolada = "images/aoi_arrodillada_desolada.png"
+image aoi_acurrucada_llorando_mano = "images/aoi_acurrucada_llorando_mano.png"
+image aoi_de_pie_correa_bolso = "images/aoi_de_pie_correa_bolso.png"
 image silueta_madre = "images/silueta_madre.png"
 image silueta_kenji = "images/silueta_kenji.png"
 image silueta_enfermera = "images/silueta_enfermera.png"
@@ -40,6 +52,16 @@ transform silueta_left:
     xalign 0.18
     yalign 1.0
     zoom 0.88
+
+transform silueta_floor_center:
+    xalign 0.5
+    yalign 1.0
+    zoom 0.95
+
+transform silueta_floor_left:
+    xalign 0.2
+    yalign 1.0
+    zoom 0.95
 
 transform silueta_right:
     xalign 0.82
@@ -809,7 +831,8 @@ label chapter1_aoi:
 
     aoi_p "D... ¿dónde...?"
 
-    show silueta_madre at silueta_center with Dissolve(1.2)
+    show silueta_madre at silueta_left with Dissolve(1.2)
+    show aoi_acurrucada_llorando_mano at silueta_floor_center with Dissolve(1.2)
 
     "Un rostro desencajado se abalanza sobre la barandilla de la cama."
     "Las lágrimas de mi madre empapan las sábanas antes de que pueda articular una sola palabra."
@@ -846,7 +869,8 @@ label chapter1_aoi:
 
     aoi_p "No... Shinshu no tuvo la culpa... ¡yo fui la que corrió adelante jugando en las líneas blancas...!"
 
-    show silueta_madre at silueta_center with Dissolve(0.8)
+    show silueta_madre at silueta_left with Dissolve(0.8)
+    show aoi_llorando_manga at silueta_center with Dissolve(0.8)
 
     madre "Y yo... ciega de dolor y desesperación... en lugar de abrazarlo, le grité."
     madre "Le grité en este mismo pasillo: {i}«¡Todo es culpa tuya! ¡Tú eres el hermano mayor! ¡Era tu deber proteger a tu hermana menor!»{/i}"
@@ -872,6 +896,8 @@ label chapter1_aoi:
     scene bg hospital_habitacion_aoi
     with Dissolve(1.5)
 
+    show aoi_abrazando_rodillas at silueta_floor_center with Dissolve(1.0)
+
     madre "Murió en el acto al estrellarse contra el pavimento... Hace tres semanas enterramos a tu hermano. ¡Y yo lo empujé a esa azotea, Aoi! ¡Fui yo...!"
 
     $ grant_achievement("despertar_aoi")
@@ -894,10 +920,14 @@ label chapter1_aoi:
     scene bg hospital_pasillo
     with Dissolve(1.0)
 
+    show aoi_caminando_desanimada at silueta_center with Dissolve(1.0)
+
     "Quería morir. Quería reunirme con Shinshu y pedirle perdón en la penumbra."
     "Varias veces intenté arrancarme los sueros para desangrarme en silencio. En dos ocasiones corrí hacia las ventanas del cuarto piso intentando abrir los pestillos para saltar al vacío, igual que hizo él."
 
+    hide aoi_caminando_desanimada with Dissolve(0.3)
     show silueta_enfermera at silueta_left
+    show aoi_arrodillada_desolada at silueta_floor_center
     show silueta_doctor at silueta_right
     with Dissolve(0.8)
 
@@ -909,6 +939,7 @@ label chapter1_aoi:
 
     hide silueta_enfermera
     hide silueta_doctor
+    hide aoi_arrodillada_desolada
     with Dissolve(0.8)
 
     # -------------------------------------------------------------------------
@@ -917,6 +948,8 @@ label chapter1_aoi:
     scene bg hospital_noche
     with Dissolve(1.5)
 
+    show aoi_de_pie_abrazandose at silueta_center with Dissolve(1.0)
+
     "Una medianoche espesa y silenciosa en el pabellón oeste."
     "La enfermera de guardia acababa de pasar su ronda de control y cerró la puerta batiente."
     "En la camilla de al lado duerme Yuna Tachibana, mi compañera de habitación. Una chica ingresada por dolencias pulmonares que siempre intentaba hablarme con una sonrisa amable, aunque yo solo le respondía con monosílabos gélidos."
@@ -924,8 +957,12 @@ label chapter1_aoi:
     "Me deslizo fuera de las sábanas sin hacer ruido."
     "Bajo una tablilla suelta del rodapié del lavabo, había escondido días atrás un pequeño filo metálico: una hoja de bisturí descartada que conseguí hurtar durante un cambio de apósitos."
 
+    hide aoi_de_pie_abrazandose with Dissolve(0.5)
+
     scene bg bano_espejo
     with Dissolve(1.2)
+
+    show aoi_base at silueta_center with Dissolve(0.8)
 
     "Entro al cuarto de baño y cierro el pestillo despacio."
     "Abro el grifo. Me lavo la cara con agua helada para detener el temblor de mis manos."
@@ -935,6 +972,8 @@ label chapter1_aoi:
 
     "Alzo la vista hacia el espejo frente a mí con el filo apoyado contra la piel de mi muñeca."
     "Y entonces..."
+
+    hide aoi_base with Dissolve(0.3)
 
     play sound "audio/eye_vision.wav"
     scene bg destello_morado
@@ -1033,7 +1072,7 @@ label aoi_decision_advertir:
 
     aoi_p "Yuna... escúchame bien. Tienes que creerme. Esta tarde vendrá tu padre a visitarte."
 
-    show silueta_aoi at silueta_center with Dissolve(0.8)
+    show aoi_de_pie_correa_bolso at silueta_center with Dissolve(0.8)
 
     yuna "¿Mi padre? Sí... dijo que pasaría después del trabajo. ¿Cómo lo sabes?"
 
@@ -1048,7 +1087,7 @@ label aoi_decision_advertir:
 
     yuna "¡Basta, Aoi! ¡Por favor, déjame en paz o llamaré a la enfermera!"
 
-    hide silueta_aoi with Dissolve(0.6)
+    hide aoi_de_pie_correa_bolso with Dissolve(0.6)
 
     "Nadie me cree. Para el mundo, soy solo una paciente rota por el duelo con alucinaciones paranoides."
 
@@ -1109,6 +1148,8 @@ label aoi_decision_retirar:
     "Me deslizo como una sombra fuera de mi cama. El suelo helado quema la planta de mis pies descalzos."
     "Me arrastro lentamente hacia la cama de Yuna. Me agacho en la penumbra y deslizo mi brazo bajo el armazón de hierro."
 
+    show aoi_agachada_melancolica at silueta_floor_center with Dissolve(0.8)
+
     "Mis dedos tantean el polvo y los cables... hasta que rozan un borde frío y punzante."
     "Es la varilla metálica rota de soporte. Afilada como un arpón oxidado."
     "La aferro con fuerza y comienzo a extraerla despacio..."
@@ -1136,6 +1177,11 @@ label aoi_decision_retirar:
     "Tres enfermeros se abalanzan sobre mí, arrojándome contra el suelo linóleo."
     "Me arrancan el hierro de las manos mientras un pinchazo ardiente atraviesa mi brazo: un sedante de choque."
 
+    hide aoi_agachada_melancolica
+    hide silueta_doctor
+    hide silueta_enfermera
+    with Dissolve(0.4)
+
     aoi_p "¡No... no entienden...! ¡La varilla... estaba debajo de su cama...!"
 
     "Mi vista se nubla en un torbellino púrpura mientras pierdo el conocimiento..."
@@ -1143,6 +1189,8 @@ label aoi_decision_retirar:
     # Aislamiento y salvación al día siguiente
     scene bg habitacion_aislamiento
     with Dissolve(2.0)
+
+    show aoi_sentada_costado_mano at silueta_floor_center with Dissolve(1.0)
 
     "Despierto horas después en una habitación acolchada de aislamiento preventivo en el pabellón psiquiátrico."
     "Tengo las muñecas aseguradas a la cama. Mi madre llora al otro lado del cristal tras ser notificada del incidente."
@@ -1176,10 +1224,14 @@ label aoi_decision_ignorar:
     scene bg hospital_dia
     with Dissolve(1.2)
 
+    show aoi_sentada_piernas_desganadas at silueta_floor_center with Dissolve(1.0)
+
     "Me quedo inmóvil en mi cama toda la mañana, temblando bajo las mantas."
     "Intento convencerme de que mi mente traumatizada por la muerte de Shinshu me está jugando una mala pasada."
 
     aoi_p "(Fue solo un delirio... la falta de oxígeno del coma. Los espejos no muestran el futuro. No puedo volverme loca...)"
+
+    hide aoi_sentada_piernas_desganadas with Dissolve(0.8)
 
     scene bg hospital_tarde
     with Dissolve(1.5)
@@ -1225,6 +1277,8 @@ label final_capitulo_aoi_tragedia:
     "El padre de Yuna fue detenido e imputado por homicidio involuntario."
     "Nadie me escuchó cuando intenté advertirle. Todos creyeron que mis advertencias eran desvaríos de una mente quebrada."
 
+    show aoi_sentada_suelo at silueta_floor_center with Dissolve(1.5)
+
     "Comprendí con una amargura insoportable que ver el futuro no sirve de nada si las palabras no tienen fuerza para cambiarlo."
     "Shinshu murió por la culpa... y ahora yo cargo con la culpa de saber y no haber podido evitar la tragedia."
 
@@ -1243,6 +1297,8 @@ label final_capitulo_aoi_esperanza:
     "Sola en la habitación de aislamiento, apoyé mi frente contra el cristal frío de la puerta."
     "Los médicos piensan que soy peligrosa. Mi expediente clínico ahora me etiqueta como paciente psiquiátrica inestable. Probablemente pasaré meses encerrada bajo vigilancia estricta."
 
+    show aoi_base at silueta_center with Dissolve(1.5)
+
     "Pero en el rincón de mi alma, una lágrima de paz rodó por mi mejilla."
     "Yuna está viva. La muerte extendió sus garras y yo se las arranqué con mis propias manos en la oscuridad de la noche."
 
@@ -1260,6 +1316,8 @@ label final_capitulo_aoi_omision:
     stop music fadeout 2.5
     scene bg negro
     with fade_muerte
+
+    show aoi_acurrucada_llorando_mano at silueta_floor_center with Dissolve(1.5)
 
     "La imagen de los ojos vacíos de Yuna se grabó en mi retina para siempre."
     "Tuve la oportunidad de salvarla. Tuve la premonición en mis manos y elegí la cobardía de creer que solo era una pesadilla."
