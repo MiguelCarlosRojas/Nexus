@@ -118,17 +118,13 @@ define fade_blanco = Fade(0.8, 1.0, 0.8, color="#ffffff")
 # Entrada Inicial del Juego (Antes del Menú Principal)
 # -----------------------------------------------------------------------------
 label splashscreen:
-    if persistent.selected_gender is None:
-        call screen protagonist_selection
+    call screen protagonist_selection
     return
 
 # -----------------------------------------------------------------------------
 # Inicio de la Partida - Prólogo Conceptual
 # -----------------------------------------------------------------------------
 label start:
-
-    # Selección de protagonista garantizada para cada nueva partida
-    call screen protagonist_selection
 
     # -------------------------------------------------------------------------
     # PRÓLOGO CONCEPTUAL EN PANTALLA COMPLETA (SIN CAJA DE DIÁLOGO)
@@ -799,12 +795,18 @@ label final_capitulo_tragedia:
     scene bg negro
     with Dissolve(1.5)
 
+    # Audio dinámico específico para el desenlace trágico de Shinshu
+    play sound "audio/end_shinshu_tragedy.wav"
+
     # Pantalla Cinemática en Pantalla Completa: Fin del Capítulo 1
     call screen cinematic_chapter_end("LÍNEA CARMESÍ: DESTINO CONSUMADO (TRAGEDIA)", [
         "Evento Nexus: Visión de causalidad en las pupilas de Kenji a las 18:00.",
         "Efecto Mariposa: La advertencia fue desestimada o silenciada por temor.",
         "Desenlace: Asfixia y fallecimiento de Kenji Takahashi en la Habitación 304."
     ])
+
+    # Audio dinámico del teaser del Capítulo 2 para la ruta de tragedia de Shinshu
+    play sound "audio/ch2_teaser_shinshu_tragedy.wav"
 
     # Pantalla Cinemática: Próximamente Capítulo 2
     call screen cinematic_chapter2_coming_soon
@@ -842,12 +844,18 @@ label final_capitulo_esperanza:
     scene bg negro
     with Dissolve(1.5)
 
+    # Audio dinámico específico para el desenlace de esperanza de Shinshu
+    play sound "audio/end_shinshu_hope.wav"
+
     # Pantalla Cinemática en Pantalla Completa: Fin del Capítulo 1
     call screen cinematic_chapter_end("LÍNEA CARMESÍ: EL HILO ROTO DEL DESTINO (ESPERANZA)", [
         "Evento Nexus: Alerta frenética al Dr. Moriyama en el pasillo central de Shinshu.",
         "Efecto Mariposa: Intervención quirúrgica y requisa de la aguja mortal a las 17:59.",
         "Desenlace: Salvación milagrosa de Kenji Takahashi; el destino fatal fue quebrado."
     ])
+
+    # Audio dinámico del teaser del Capítulo 2 para la ruta de esperanza de Shinshu
+    play sound "audio/ch2_teaser_shinshu_hope.wav"
 
     # Pantalla Cinemática: Próximamente Capítulo 2
     call screen cinematic_chapter2_coming_soon
@@ -1343,12 +1351,18 @@ label final_capitulo_aoi_tragedia:
     scene bg negro
     with Dissolve(1.5)
 
+    # Audio dinámico específico para el desenlace trágico de Aoi
+    play sound "audio/end_aoi_tragedy.wav"
+
     # Pantalla Cinemática en Pantalla Completa: Fin del Capítulo 1
     call screen cinematic_chapter_end("LÍNEA AMATISTA: ADVERTENCIA EN EL VACÍO (TRAGEDIA)", [
         "Evento Nexus: Reflejo premonitorio de sangre en el espejo del lavabo.",
         "Efecto Mariposa: Intento verbal directo de advertencia a Yuna Sasaki.",
         "Desenlace: Palabras desestimadas; caída mortal contra el soporte metálico."
     ])
+
+    # Audio dinámico del teaser del Capítulo 2 para la ruta de tragedia de Aoi
+    play sound "audio/ch2_teaser_aoi_tragedy.wav"
 
     # Pantalla Cinemática: Próximamente Capítulo 2
     call screen cinematic_chapter2_coming_soon
@@ -1384,12 +1398,18 @@ label final_capitulo_aoi_esperanza:
     scene bg negro
     with Dissolve(1.5)
 
+    # Audio dinámico específico para el desenlace de esperanza de Aoi
+    play sound "audio/end_aoi_hope.wav"
+
     # Pantalla Cinemática en Pantalla Completa: Fin del Capítulo 1
     call screen cinematic_chapter_end("LÍNEA AMATISTA: EL SACRIFICIO QUE BURLÓ A LA MUERTE (ESPERANZA)", [
         "Evento Nexus: Detección y extracción nocturna de la varilla mortal.",
         "Efecto Mariposa: Aoi es retenida en aislamiento psiquiátrico preventivo.",
         "Desenlace: Yuna sobrevive a la discusión; el destino fatal fue quebrado."
     ])
+
+    # Audio dinámico del teaser del Capítulo 2 para la ruta de esperanza de Aoi
+    play sound "audio/ch2_teaser_aoi_hope.wav"
 
     # Pantalla Cinemática: Próximamente Capítulo 2
     call screen cinematic_chapter2_coming_soon
@@ -1424,12 +1444,18 @@ label final_capitulo_aoi_omision:
     scene bg negro
     with Dissolve(1.5)
 
+    # Audio dinámico específico para el desenlace de omisión de Aoi
+    play sound "audio/end_aoi_omission.wav"
+
     # Pantalla Cinemática en Pantalla Completa: Fin del Capítulo 1
     call screen cinematic_chapter_end("LÍNEA AMATISTA: EL PESO DE LA OMISIÓN (TRAGEDIA)", [
         "Evento Nexus: Reflejo premonitorio atribuido a trauma del coma.",
         "Efecto Mariposa: Omisión de acción por miedo a la demencia.",
         "Desenlace: Yuna Sasaki fallece exactamente como la visión anticipó."
     ])
+
+    # Audio dinámico del teaser del Capítulo 2 para la ruta de omisión de Aoi
+    play sound "audio/ch2_teaser_aoi_omission.wav"
 
     # Pantalla Cinemática: Próximamente Capítulo 2
     call screen cinematic_chapter2_coming_soon

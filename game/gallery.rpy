@@ -208,11 +208,10 @@ init python:
         chars = get_gallery_characters()
         if not chars:
             return None
-        if not persistent.gallery_selected_char:
-            persistent.gallery_selected_char = chars[0]["id"]
         for c in chars:
             if c["id"] == persistent.gallery_selected_char:
                 return c
+        persistent.gallery_selected_char = chars[0]["id"]
         return chars[0]
 
     def select_gallery_char(char_id):
@@ -265,24 +264,6 @@ screen character_gallery():
                                 font gui.interface_text_font
                                 size 10
                                 color "#94a3b8"
-
-                    # Selector rápido de perspectiva para explorar la otra historia
-                    hbox:
-                        spacing 10
-                        yalign 0.5
-                        text "Filtrar por:":
-                            font gui.interface_text_font
-                            size 11
-                            color "#64748b"
-                            yalign 0.5
-                        textbutton "Hombre":
-                            action [Function(set_protagonist_gender, "hombre"), Function(select_gallery_char, "shinshu")]
-                            selected (persistent.selected_gender != "mujer")
-                            style "pref_tab_btn"
-                        textbutton "Mujer":
-                            action [Function(set_protagonist_gender, "mujer"), Function(select_gallery_char, "aoi_protagonista")]
-                            selected (persistent.selected_gender == "mujer")
-                            style "pref_tab_btn"
 
             # --- SELECTOR HORIZONTAL DE PERSONAJES ---
             frame:

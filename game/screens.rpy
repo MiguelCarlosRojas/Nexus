@@ -233,93 +233,15 @@ style input:
 screen choice(items):
     style_prefix "choice"
 
-    $ timeout_val = get_choice_timeout(items)
-    $ is_urgent = (timeout_val <= 2.5)
-
-    # Temporizador de inactividad inteligente: selecciona automáticamente al expirar
-    timer timeout_val action Function(auto_select_choice, items)
-
     vbox:
         xalign 0.5
-        yalign 0.42
-        spacing 20
+        yalign 0.45
+        spacing 14
 
-        # --- CABECERA DE DECISIÓN Y BARRA DE TIEMPO ELEGANTE ---
-        frame:
-            xalign 0.5
-            xsize 940
-            background Frame(Solid("#080c16ea"), 8, 8)
-            padding (24, 14, 24, 14)
-
-            vbox:
-                spacing 10
-                xfill True
-
-                hbox:
-                    xfill True
-                    yalign 0.5
-
-                    # Título de encrucijada y estado
-                    hbox:
-                        spacing 12
-                        yalign 0.5
-                        text ("⚡" if is_urgent else "⏳"):
-                            size 16
-                            color ("#ef4444" if is_urgent else "#38bdf8")
-                            yalign 0.5
-                        text ("LÍMITE CRÍTICO DE REACCIÓN" if is_urgent else "DESTINO EN DISPUTA"):
-                            font gui.interface_text_font
-                            size 13
-                            bold True
-                            color ("#f87171" if is_urgent else "#e2e8f0")
-                            kerning 2
-                            yalign 0.5
-
-                    # Contador digital de tiempo restante
-                    frame:
-                        background Frame(Solid("#111827d0"), 4, 4)
-                        padding (12, 4, 12, 4)
-                        yalign 0.5
-                        hbox:
-                            spacing 6
-                            yalign 0.5
-                            text "TIEMPO:":
-                                font gui.interface_text_font
-                                size 10
-                                color "#94a3b8"
-                                bold True
-                                yalign 0.5
-                            text ("[timeout_val:.0f]s"):
-                                font gui.interface_text_font
-                                size 12
-                                bold True
-                                color ("#ef4444" if is_urgent else "#38bdf8")
-                                yalign 0.5
-
-                # Marco de la barra de tiempo fluida
-                frame:
-                    xfill True
-                    ysize 10
-                    background Frame(Solid("#0f172a"), 5, 5)
-                    padding (2, 2, 2, 2)
-
-                    bar:
-                        xfill True
-                        ysize 6
-                        value AnimatedValue(0.0, range=1.0, delay=timeout_val, old_value=1.0)
-                        left_bar Frame(Solid("#ef4444" if is_urgent else (persistent.theme_color or "#c084fc")), 3, 3)
-                        right_bar Solid("#00000000")
-                        thumb None
-
-        # --- OPCIONES DE DECISIÓN ---
-        vbox:
-            xalign 0.5
-            spacing 14
-
-            for i in items:
-                textbutton i.caption:
-                    action i.action
-                    style "nexus_choice_btn"
+        for i in items:
+            textbutton i.caption:
+                action i.action
+                style "nexus_choice_btn"
 
 
 style nexus_choice_btn is gui_button:
@@ -801,13 +723,9 @@ style nav_return_friendly_text is gui_button_text:
 
 
 ## Pantalla de Selección de Protagonista (Hombre / Mujer) ########################
-## Pantalla de Selección de Protagonista (Hombre / Mujer) ########################
 screen protagonist_selection():
     modal True
     tag menu
-
-    # Temporizador inteligente (4 segundos): Si no selecciona, el sistema elige automáticamente
-    timer 4.0 action Function(auto_select_protagonist)
 
     add "#06080d"
 
@@ -819,8 +737,8 @@ screen protagonist_selection():
 
     vbox:
         xalign 0.5
-        yalign 0.14
-        spacing 10
+        yalign 0.16
+        spacing 12
 
         text "NEXUS • SELECCIÓN DE PERSPECTIVA":
             font gui.interface_text_font
@@ -841,46 +759,6 @@ screen protagonist_selection():
             size 15
             color "#64748b"
             xalign 0.5
-
-        # Barra de tiempo estilizada del temporizador de selección
-        frame:
-            xalign 0.5
-            xsize 560
-            background Frame(Solid("#080c16ea"), 6, 6)
-            padding (16, 10, 16, 10)
-
-            vbox:
-                spacing 6
-                xfill True
-
-                hbox:
-                    xfill True
-                    text "⏳ DECISIÓN TEMPORAL":
-                        font gui.interface_text_font
-                        size 11
-                        bold True
-                        color "#94a3b8"
-                        kerning 2
-                    text "Límite: 4s":
-                        font gui.interface_text_font
-                        size 11
-                        bold True
-                        color "#e63946"
-                        xalign 1.0
-
-                frame:
-                    xfill True
-                    ysize 8
-                    background Frame(Solid("#0f172a"), 4, 4)
-                    padding (2, 2, 2, 2)
-
-                    bar:
-                        xfill True
-                        ysize 4
-                        value AnimatedValue(0.0, range=1.0, delay=4.0, old_value=1.0)
-                        left_bar Frame(Solid("#e63946"), 2, 2)
-                        right_bar Solid("#00000000")
-                        thumb None
 
     # Contenedor de selección dual sobrio (sin siluetas ni detalles de trama)
     hbox:

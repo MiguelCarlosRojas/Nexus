@@ -124,23 +124,8 @@ screen alternate_routes():
             spacing 24
             xfill True
 
-            # Barra superior con selector de perspectiva de líneas
-            hbox:
-                spacing 16
-                xalign 0.5
-
-                textbutton _("Línea Carmesí (Shinshu)"):
-                    action SetVariable("persistent.routes_view_tab", "shinshu")
-                    selected (persistent.routes_view_tab == "shinshu")
-                    style "navigation_button"
-
-                textbutton _("Línea Amatista (Aoi)"):
-                    action SetVariable("persistent.routes_view_tab", "aoi")
-                    selected (persistent.routes_view_tab == "aoi")
-                    style "navigation_button"
-
-            # Resumen de estado de exploración causal
-            $ current_routes = ROUTES_SHINSHU if persistent.routes_view_tab == "shinshu" else ROUTES_AOI
+            # Resumen de estado de exploración causal aislado por perspectiva
+            $ current_routes = ROUTES_SHINSHU if persistent.selected_gender != "mujer" else ROUTES_AOI
             $ completed_nodes = sum(1 for r in current_routes if r.get("unlocked", False))
             $ total_nodes = len(current_routes)
 
@@ -153,12 +138,12 @@ screen alternate_routes():
                     spacing 20
                     yalign 0.5
 
-                    text "ÁRBOL CAUSAL DEL CAPÍTULO 1":
+                    text ("ÁRBOL CAUSAL • LÍNEA AMATISTA (AOI KAZAMA)" if persistent.selected_gender == "mujer" else "ÁRBOL CAUSAL • LÍNEA CARMESÍ (SHINSHU KAZAMA)"):
                         font gui.interface_text_font
                         size 13
                         bold True
                         color (persistent.theme_border or "#e63946")
-                        kerning 3
+                        kerning 2
 
                     text "•":
                         color "#475569"
