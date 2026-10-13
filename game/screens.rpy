@@ -267,9 +267,56 @@ style nexus_choice_btn_text is gui_button_text:
 
 screen quick_menu():
 
-    ## Pantalla de menú rápido deshabilitada conforme a la preferencia visual del usuario
     zorder 100
-    pass
+
+    if quick_menu:
+
+        frame:
+            xalign 0.5
+            yalign 0.992
+            background Frame(Solid("#070b16d8"), 6, 6)
+            padding (12, 4, 12, 4)
+
+            hbox:
+                spacing 10
+                yalign 0.5
+
+                textbutton _("⏪ Historial"):
+                    action ShowMenu('history')
+                    text_size 11
+                    text_color "#94a3b8"
+                    text_hover_color "#ffffff"
+
+                textbutton _("⏭ Saltar"):
+                    action Skip() alternate Skip(fast=True, confirm=True)
+                    text_size 11
+                    text_color "#94a3b8"
+                    text_hover_color "#ffffff"
+
+                textbutton _("▶ Auto"):
+                    action Preference("auto-forward", "toggle")
+                    text_size 11
+                    text_color "#94a3b8"
+                    text_hover_color "#ffffff"
+
+                textbutton _("💾 Guardar"):
+                    action ShowMenu('save')
+                    text_size 11
+                    text_color "#94a3b8"
+                    text_hover_color "#ffffff"
+
+                textbutton _("📂 Cargar"):
+                    action ShowMenu('load')
+                    text_size 11
+                    text_color "#94a3b8"
+                    text_hover_color "#ffffff"
+
+                textbutton _("⚙ Menú"):
+                    action ShowMenu('preferences')
+                    text_size 11
+                    text_color (persistent.theme_color or "#e63946")
+                    text_hover_color "#ffffff"
+                    text_bold True
 
 
 ## Este código asegura que la pantalla 'quick_menu' se muestra en el juego,
@@ -2443,7 +2490,7 @@ screen help():
 
     default device = "keyboard"
 
-    use game_menu(_("Ayuda"), scroll="viewport"):
+    use game_menu(_("Ayuda y Controles"), scroll="viewport"):
 
         style_prefix "help"
 
@@ -2451,9 +2498,12 @@ screen help():
             spacing 23
 
             hbox:
+                spacing 12
 
                 textbutton _("Teclado") action SetScreenVariable("device", "keyboard")
                 textbutton _("Ratón") action SetScreenVariable("device", "mouse")
+                textbutton _("📱 Celular / Táctil") action SetScreenVariable("device", "mobile")
+                textbutton _("🏥 Exploración 2D") action SetScreenVariable("device", "exploration")
 
                 if GamepadExists():
                     textbutton _("Mando") action SetScreenVariable("device", "gamepad")
@@ -2462,6 +2512,10 @@ screen help():
                 use keyboard_help
             elif device == "mouse":
                 use mouse_help
+            elif device == "mobile":
+                use mobile_help
+            elif device == "exploration":
+                use exploration_help
             elif device == "gamepad":
                 use gamepad_help
 
@@ -2469,20 +2523,24 @@ screen help():
 screen keyboard_help():
 
     hbox:
-        label _("Intro")
-        text _("Avanza el diálogo y activa la interfaz.")
-
-    hbox:
-        label _("Espacio")
-        text _("Avanza el diálogo sin seleccionar opciones.")
+        label _("W, A, S, D")
+        text _("Mueve al personaje en la Exploración 2D del Hospital.")
 
     hbox:
         label _("Teclas de flecha")
-        text _("Navega la interfaz.")
+        text _("Navega la interfaz y camina en la Exploración 2D.")
+
+    hbox:
+        label _("Espacio / E")
+        text _("Avanza el diálogo o investiga pistas en la Exploración 2D.")
+
+    hbox:
+        label _("Intro")
+        text _("Avanza el diálogo e interactúa con objetos seleccionados.")
 
     hbox:
         label _("Escape")
-        text _("Accede al menú del juego.")
+        text _("Accede al menú del juego y pausa la exploración.")
 
     hbox:
         label _("Ctrl")
@@ -2490,11 +2548,11 @@ screen keyboard_help():
 
     hbox:
         label _("Tabulador")
-        text _("Activa/desactiva el salto de diálogo.")
+        text _("Activa/desactiva el salto continuo de diálogo.")
 
     hbox:
         label _("Av. pág.")
-        text _("Retrocede al diálogo anterior.")
+        text _("Retrocede al diálogo anterior en el historial.")
 
     hbox:
         label _("Re. pág.")
@@ -2502,19 +2560,124 @@ screen keyboard_help():
 
     hbox:
         label "H"
-        text _("Oculta la interfaz.")
+        text _("Oculta la interfaz para contemplar las ilustraciones.")
 
     hbox:
         label "S"
-        text _("Captura la pantalla.")
+        text _("Captura la pantalla actual.")
 
-    hbox:
-        label "V"
-        text _("Activa/desactiva la asistencia por {a=https://www.renpy.org/l/voicing}voz-automática{/a}.")
 
-    hbox:
-        label "Shift+A"
-        text _("Abre el menú de accesibilidad.")
+screen mobile_help():
+
+    vbox:
+        spacing 14
+
+        frame:
+            background Solid("#111827")
+            padding (16, 12, 16, 12)
+            xfill True
+            vbox:
+                spacing 4
+                text "CONTROLES TÁCTILES EN CELULARES (ANDROID E IOS)":
+                    font gui.interface_text_font
+                    size 14
+                    bold True
+                    color "#38bdf8"
+                text "NEXUS está optimizado para dispositivos móviles con gestos táctiles y controles virtuales:":
+                    font gui.interface_text_font
+                    size 11
+                    color "#94a3b8"
+
+        hbox:
+            label _("Tocar con un dedo")
+            text _("Avanza el diálogo, confirma elecciones e interactúa con los botones.")
+
+        hbox:
+            label _("Tocar con dos dedos")
+            text _("Abre el Menú del juego (Guardar, Cargar, Preferencias y Salir).")
+
+        hbox:
+            label _("Deslizar hacia arriba")
+            text _("Abre el Historial para revisar textos y diálogos anteriores.")
+
+        hbox:
+            label _("Deslizar hacia abajo")
+            text _("Oculta la caja de diálogo para apreciar el arte visual.")
+
+        hbox:
+            label _("Mantener presionado")
+            text _("Activa el salto rápido de texto mientras el dedo esté apoyado.")
+
+        hbox:
+            label _("Cruceta virtual (D-Pad)")
+            text _("Usa los botones táctiles (▲, ▼, ◀, ▶) para caminar en el Hospital 2D.")
+
+        hbox:
+            label _("Toque directo en salas")
+            text _("Toca cualquier sala o icono del hospital para que tu personaje camine hacia ella e investigue al instante.")
+
+        frame:
+            background Solid("#1e293b")
+            padding (14, 10, 14, 10)
+            xfill True
+            vbox:
+                spacing 4
+                text "GUÍA DE EJECUCIÓN EN CELULARES:":
+                    font gui.interface_text_font
+                    size 12
+                    bold True
+                    color "#f59e0b"
+                text "En dispositivos Android se recomienda ejecutar el paquete de NEXUS a través de JoiPlay (con el plugin oficial de Ren'Py) para disfrutar de aceleración gráfica, sonido envolvente y soporte táctil completo sin problemas de compatibilidad del instalador. En iOS, mediante navegadores web compatibles o simuladores de VN.":
+                    font gui.interface_text_font
+                    size 11
+                    color "#cbd5e1"
+                    line_spacing 4
+
+
+screen exploration_help():
+
+    vbox:
+        spacing 14
+
+        frame:
+            background Solid("#111827")
+            padding (16, 12, 16, 12)
+            xfill True
+            vbox:
+                spacing 4
+                text "SISTEMA DE EXPLORACIÓN 2D DEL HOSPITAL (CAPÍTULO 1)":
+                    font gui.interface_text_font
+                    size 14
+                    bold True
+                    color "#e63946"
+                text "En el Capítulo 1 podrás mover a Shinshu o Aoi en tiempo real por el pabellón hospitalario:":
+                    font gui.interface_text_font
+                    size 11
+                    color "#94a3b8"
+
+        hbox:
+            label _("W, A, S, D")
+            text _("Desplaza al protagonista: W (Arriba), S (Abajo), A (Izquierda), D (Derecha).")
+
+        hbox:
+            label _("Flechas de dirección")
+            text _("Controles alternativos de movimiento en teclado.")
+
+        hbox:
+            label _("Espacio / E / Intro")
+            text _("Inspecciona un expediente, camilla o pista cuando estés cerca.")
+
+        hbox:
+            label _("Toque directo en el mapa")
+            text _("En celular o PC, toca directamente cualquier sala o icono para desplazarte e investigarlo al instante.")
+
+        hbox:
+            label _("Cruceta táctil móvil")
+            text _("Botones virtuales en pantalla (▲, ▼, ◀, ▶) para jugar cómodamente en móviles.")
+
+        hbox:
+            label _("Continuar historia")
+            text _("Al descubrir al menos 2 pistas o expedientes, se desbloquea el botón para avanzar hacia el desenlace causal.")
 
 
 screen mouse_help():

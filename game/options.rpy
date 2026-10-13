@@ -119,6 +119,10 @@ define config.window_hide_transition = Dissolve(.2)
 
 ## Preferencias por defecto ####################################################
 
+## Modo pantalla completa por defecto:
+default preferences.fullscreen = True
+define config.default_fullscreen = True
+
 ## Controla la velocidad del texto por defecto. El valor por defecto 0 indica
 ## infinito; cualquier otro número indica el número de caracteres por segundo
 ## que se mostrarán.

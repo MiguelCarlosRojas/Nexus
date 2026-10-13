@@ -2,7 +2,8 @@
 ## SISTEMA DE EXPLORACIÓN 2D DEL HOSPITAL (CAPÍTULO 1 - HOMBRE Y MUJER)
 ## =============================================================================
 ## Permite al jugador recorrer el pabellón hospitalario en 2D en tiempo real
-## utilizando las teclas [W, A, S, D], las [Flechas de Dirección] o controles táctiles.
+## utilizando las teclas [W, A, S, D], las [Flechas de Dirección], toques directos
+## en pantalla o la cruceta táctil virtual para celulares.
 ## =============================================================================
 
 default hospital_pos_x = 480
@@ -20,7 +21,7 @@ init python:
         {
             "id": "kenji_bed",
             "name": "Habitación 304 • Camilla de Kenji",
-            "x": 440, "y": 270, "radius": 85,
+            "x": 440, "y": 270, "radius": 95,
             "icon": "🛏️",
             "tag": "COMPAÑERO",
             "color": "#38bdf8",
@@ -30,7 +31,7 @@ init python:
         {
             "id": "nursing_station",
             "name": "Estación de Enfermería Central",
-            "x": 1020, "y": 260, "radius": 85,
+            "x": 1020, "y": 260, "radius": 95,
             "icon": "📋",
             "tag": "REGISTRO",
             "color": "#f59e0b",
@@ -40,7 +41,7 @@ init python:
         {
             "id": "pharmacy_depot",
             "name": "Depósito de Farmacia y Toxicología",
-            "x": 1200, "y": 550, "radius": 85,
+            "x": 1200, "y": 550, "radius": 95,
             "icon": "☣️",
             "tag": "ANOMALÍA",
             "color": "#ef4444",
@@ -50,7 +51,7 @@ init python:
         {
             "id": "hallway_window",
             "name": "Ventanal Panorámico a la Tormenta",
-            "x": 720, "y": 420, "radius": 85,
+            "x": 720, "y": 420, "radius": 95,
             "icon": "🌧️",
             "tag": "MEMORIA",
             "color": "#94a3b8",
@@ -60,9 +61,10 @@ init python:
         {
             "id": "dr_office",
             "name": "Despacho de Jefatura Quirúrgica",
-            "x": 860, "y": 640, "radius": 85,
+            "x": 860, "y": 640, "radius": 95,
             "icon": "🚪",
             "tag": "JEFATURA",
+            "color": "#e63946",
             "title": "La Frialdad del Dr. Moriyama",
             "text": "A través de la puerta entreabierta de caoba, divisas al Dr. Moriyama revisando un informe confidencial bajo una lámpara halógena.\n\nSu voz suena seca y glacial al teléfono: «Los pacientes del pabellón oeste deben mantenerse bajo monitoreo estricto. La administración de las dieciocho horas procederá conforme a la directiva». \n\nSus ojos se clavan un instante en los tuyos a través del pasillo con una frialdad que te hiela la sangre."
         }
@@ -75,7 +77,7 @@ init python:
         {
             "id": "yuna_bed",
             "name": "Habitación 201 • Camilla de Yuna",
-            "x": 440, "y": 270, "radius": 85,
+            "x": 440, "y": 270, "radius": 95,
             "icon": "🛏️",
             "tag": "COMPAÑERA",
             "color": "#c084fc",
@@ -85,7 +87,7 @@ init python:
         {
             "id": "bathroom_mirror",
             "name": "Lavabo y Espejo Causal",
-            "x": 380, "y": 580, "radius": 85,
+            "x": 380, "y": 580, "radius": 95,
             "icon": "🪞",
             "tag": "EVENTO NEXUS",
             "color": "#a855f7",
@@ -95,7 +97,7 @@ init python:
         {
             "id": "nursing_chart",
             "name": "Puesto Médico y Expediente Clínico",
-            "x": 1020, "y": 260, "radius": 85,
+            "x": 1020, "y": 260, "radius": 95,
             "icon": "📋",
             "tag": "EXPEDIENTE",
             "color": "#f59e0b",
@@ -105,7 +107,7 @@ init python:
         {
             "id": "broken_stand",
             "name": "Rincón del Corredor • Soporte Roto",
-            "x": 620, "y": 320, "radius": 85,
+            "x": 620, "y": 320, "radius": 95,
             "icon": "⚠️",
             "tag": "OBJETO LETAL",
             "color": "#ef4444",
@@ -115,7 +117,7 @@ init python:
         {
             "id": "rooftop_window",
             "name": "Ventanal Sur • Vista a la Azotea",
-            "x": 860, "y": 640, "radius": 85,
+            "x": 860, "y": 640, "radius": 95,
             "icon": "🌧️",
             "tag": "MEMORIA",
             "color": "#94a3b8",
@@ -125,15 +127,33 @@ init python:
     ]
 
     def get_hospital_areas(perspective):
-        if perspective == "mujer":
-            return HOSPITAL_AREAS_AOI
-        return HOSPITAL_AREAS_SHINSHU
+        areas = HOSPITAL_AREAS_AOI if perspective == "mujer" else HOSPITAL_AREAS_SHINSHU
+        default_color = "#c084fc" if perspective == "mujer" else "#e63946"
+        for a in areas:
+            if "color" not in a or not a["color"]:
+                a["color"] = default_color
+            if "icon" not in a:
+                a["icon"] = "✦"
+            if "name" not in a:
+                a["name"] = "Área Hospitalaria"
+            if "radius" not in a:
+                a["radius"] = 95
+            if "tag" not in a:
+                a["tag"] = "PISTA"
+            if "title" not in a:
+                a["title"] = "Expediente"
+            if "text" not in a:
+                a["text"] = "Sin observaciones adicionales."
+        return areas
 
     def get_nearest_hospital_area(perspective, px, py):
         areas = get_hospital_areas(perspective)
         for a in areas:
-            dist = ((a["x"] - px) ** 2 + (a["y"] - py) ** 2) ** 0.5
-            if dist <= a["radius"]:
+            ax = a.get("x", 0)
+            ay = a.get("y", 0)
+            rad = a.get("radius", 95)
+            dist = ((ax - px) ** 2 + (ay - py) ** 2) ** 0.5
+            if dist <= rad:
                 return a
         return None
 
@@ -144,8 +164,7 @@ init python:
         new_x = hospital_pos_x + dx
         new_y = hospital_pos_y + dy
 
-        # Delimitación y colisiones con los muros del pabellón (Área de exploración 2D)
-        # Permite moverse libremente por pasillos y salas
+        # Delimitación y colisiones con los muros del pabellón
         min_x, max_x = 360, 1260
         min_y, max_y = 220, 680
 
@@ -153,12 +172,25 @@ init python:
         hospital_pos_y = max(min_y, min(max_y, new_y))
         renpy.restart_interaction()
 
+    def teleport_and_inspect_area(area, perspective):
+        global hospital_pos_x, hospital_pos_y
+        if area:
+            hospital_pos_x = area.get("x", hospital_pos_x)
+            hospital_pos_y = area.get("y", hospital_pos_y)
+            inspect_hospital_area(area)
+
     def inspect_hospital_area(area):
         global hospital_modal_clue, hospital_investigated
         if area:
             hospital_modal_clue = area
-            hospital_investigated.add(area["id"])
-            renpy.play("audio/eye_vision.wav" if "NEXUS" in area.get("tag", "") or "ANOMALÍA" in area.get("tag", "") else "audio/heartbeat.wav")
+            area_id = area.get("id", "")
+            if area_id:
+                hospital_investigated.add(area_id)
+            tag = area.get("tag", "")
+            if "NEXUS" in tag or "ANOMALÍA" in tag or "OBJETO" in tag:
+                renpy.play("audio/eye_vision.wav")
+            else:
+                renpy.play("audio/heartbeat.wav")
             renpy.restart_interaction()
 
     def close_hospital_modal():
@@ -178,7 +210,7 @@ screen hospital_2d_exploration(perspective="hombre"):
     $ near_area = get_nearest_hospital_area(perspective, hospital_pos_x, hospital_pos_y)
     $ is_male = (perspective != "mujer")
     $ theme_tint = "#e63946" if is_male else "#c084fc"
-    $ progress_count = len([a for a in current_areas if a["id"] in hospital_investigated])
+    $ progress_count = len([a for a in current_areas if a.get("id") in hospital_investigated])
     $ total_count = len(current_areas)
     $ can_continue = (progress_count >= 2)
 
@@ -211,9 +243,9 @@ screen hospital_2d_exploration(perspective="hombre"):
     # --- ENCABEZADO SUPERIOR DEL PABELLÓN ---
     frame:
         xfill True
-        ysize 90
+        ysize 88
         background Solid("#070b16f2")
-        padding (36, 16, 36, 16)
+        padding (32, 14, 32, 14)
 
         hbox:
             xfill True
@@ -235,7 +267,7 @@ screen hospital_2d_exploration(perspective="hombre"):
 
                 text ("HOSPITAL GENERAL DE SHINSHU (PABELLÓN OESTE - 17:45)" if is_male else "HOSPITAL GENERAL DE NAGANO (PLANTA SEGUNDA - MEDIANOCHE)"):
                     font gui.name_text_font
-                    size 18
+                    size 17
                     color "#f8fafc"
                     bold True
                     yalign 0.5
@@ -249,7 +281,7 @@ screen hospital_2d_exploration(perspective="hombre"):
                     padding (14, 6, 14, 6)
                     hbox:
                         spacing 8
-                        text "PISTAS Y EXPEDIENTES:":
+                        text "EXPEDIENTES DESCUBIERTOS:":
                             font gui.interface_text_font
                             size 11
                             color "#94a3b8"
@@ -263,18 +295,17 @@ screen hospital_2d_exploration(perspective="hombre"):
     # --- PLANO ARQUITECTÓNICO 2D DEL HOSPITAL (TABLERO DE EXPLORACIÓN) ---
     frame:
         xalign 0.5
-        yalign 0.54
-        xsize 1360
-        ysize 720
+        yalign 0.51
+        xsize 1380
+        ysize 690
         background Frame(Solid("#080d1af0"), 8, 8)
         padding (20, 20, 20, 20)
 
-        # Dibujo de las salas y paredes del hospital en el plano
         fixed:
             xfill True
             yfill True
 
-            # Cuadrícula ambiental de linóleo hospitalario
+            # Salas y zonas delimitadas en el mapa 2D
             # Sala 1: Habitación de Internación (Noroeste)
             frame:
                 xpos 340
@@ -284,7 +315,7 @@ screen hospital_2d_exploration(perspective="hombre"):
                 background Solid("#0e1628d0")
                 text ("HABITACIÓN 304" if is_male else "HABITACIÓN 201"):
                     size 11
-                    color "#475569"
+                    color "#64748b"
                     xalign 0.5
                     ypos 8
                     bold True
@@ -298,7 +329,7 @@ screen hospital_2d_exploration(perspective="hombre"):
                 background Solid("#121b30d0")
                 text "CORREDOR Y VENTANALES":
                     size 10
-                    color "#475569"
+                    color "#64748b"
                     xalign 0.5
                     ypos 8
                     bold True
@@ -312,7 +343,7 @@ screen hospital_2d_exploration(perspective="hombre"):
                 background Solid("#0f1b2bd0")
                 text "ESTACIÓN DE ENFERMERÍA":
                     size 11
-                    color "#475569"
+                    color "#64748b"
                     xalign 0.5
                     ypos 8
                     bold True
@@ -326,7 +357,7 @@ screen hospital_2d_exploration(perspective="hombre"):
                 background Solid("#11152bd0")
                 text ("LAVABOS Y PABELLÓN OESTE" if is_male else "LAVABO Y ESPEJO PREMONITORIO"):
                     size 10
-                    color "#475569"
+                    color "#64748b"
                     xalign 0.5
                     ypos 8
                     bold True
@@ -337,45 +368,49 @@ screen hospital_2d_exploration(perspective="hombre"):
                 ypos 490
                 xsize 360
                 ysize 180
-                background Solid("#1a1024d0" if not is_male else "#1e131cd0")
+                background Solid("#1e131cd0" if is_male else "#1a1024d0")
                 text ("JEFATURA MÉDICA Y FARMACIA" if is_male else "DESPACHO Y ARCHIVO"):
                     size 11
-                    color "#475569"
+                    color "#64748b"
                     xalign 0.5
                     ypos 8
                     bold True
 
-            # RENDER DE CADA PUNTO DE INTERÉS (HOTSPOTS)
+            # RENDER DE CADA PUNTO DE INTERÉS (HOTSPOTS TÁCTILES)
+            # Permite hacer clic o tocar con el dedo en celular para caminar directamente a la sala e investigarla
             for area in current_areas:
-                $ is_found = (area["id"] in hospital_investigated)
-                $ spot_color = "#10b981" if is_found else area["color"]
+                $ is_found = (area.get("id") in hospital_investigated)
+                $ spot_color = "#10b981" if is_found else area.get("color", theme_tint)
+                $ ax = area.get("x", 500)
+                $ ay = area.get("y", 300)
 
                 button:
-                    xpos (area["x"] - 38)
-                    ypos (area["y"] - 38)
-                    xsize 76
-                    ysize 76
+                    xpos (ax - 42)
+                    ypos (ay - 42)
+                    xsize 84
+                    ysize 84
                     background Frame(Solid(spot_color + "30"), 8, 8)
                     hover_background Frame(Solid(spot_color + "80"), 8, 8)
-                    action Function(inspect_hospital_area, area)
+                    # Al tocar en celular o hacer clic, el personaje camina hacia la sala y la investiga
+                    action Function(teleport_and_inspect_area, area, perspective)
 
                     vbox:
                         xalign 0.5
                         yalign 0.5
                         spacing 2
-                        text area["icon"]:
-                            size 24
+                        text area.get("icon", "✦"):
+                            size 26
                             xalign 0.5
                         text ("✔" if is_found else "✦"):
-                            size 11
+                            size 12
                             color spot_color
                             bold True
                             xalign 0.5
 
                 # Etiqueta de la sala
-                text area["name"]:
-                    xpos area["x"]
-                    ypos (area["y"] + 42)
+                text area.get("name", "Sala"):
+                    xpos ax
+                    ypos (ay + 46)
                     xanchor 0.5
                     font gui.interface_text_font
                     size 10
@@ -434,24 +469,24 @@ screen hospital_2d_exploration(perspective="hombre"):
                         text_bold True
                         text_color theme_tint
 
-    # --- BARRA INFERIOR DE CONTROLES (TECLADO, TOUCH Y AVANCE) ---
+    # --- BARRA INFERIOR DE CONTROLES ADAPTADA A CELULARES Y PC ---
     frame:
         xfill True
-        ysize 100
+        ysize 115
         yalign 1.0
         background Solid("#050811f6")
-        padding (40, 14, 40, 14)
+        padding (30, 10, 30, 10)
 
         hbox:
             xfill True
             yalign 0.5
 
-            # Controles en pantalla para Móviles (Android / iOS) y Mouse (D-PAD)
+            # CRUCETA TÁCTIL VIRTUAL PARA CELULARES Y MOUSE
             hbox:
-                spacing 8
+                spacing 6
                 yalign 0.5
 
-                text "CONTROLES:":
+                text "MÓVIL / TÁCTIL:":
                     font gui.interface_text_font
                     size 11
                     color "#64748b"
@@ -462,9 +497,9 @@ screen hospital_2d_exploration(perspective="hombre"):
                     action Function(move_hospital_player, -32, 0, "left", perspective)
                     background Solid("#1e293b")
                     hover_background Solid("#334155")
-                    padding (12, 8, 12, 8)
-                    text "◀ A / Izq":
-                        size 11
+                    padding (14, 10, 14, 10)
+                    text "◀ A":
+                        size 13
                         color "#e2e8f0"
                         bold True
 
@@ -472,9 +507,9 @@ screen hospital_2d_exploration(perspective="hombre"):
                     action Function(move_hospital_player, 0, -32, "up", perspective)
                     background Solid("#1e293b")
                     hover_background Solid("#334155")
-                    padding (12, 8, 12, 8)
-                    text "▲ W / Arr":
-                        size 11
+                    padding (14, 10, 14, 10)
+                    text "▲ W":
+                        size 13
                         color "#e2e8f0"
                         bold True
 
@@ -482,9 +517,9 @@ screen hospital_2d_exploration(perspective="hombre"):
                     action Function(move_hospital_player, 0, 32, "down", perspective)
                     background Solid("#1e293b")
                     hover_background Solid("#334155")
-                    padding (12, 8, 12, 8)
-                    text "▼ S / Aba":
-                        size 11
+                    padding (14, 10, 14, 10)
+                    text "▼ S":
+                        size 13
                         color "#e2e8f0"
                         bold True
 
@@ -492,23 +527,41 @@ screen hospital_2d_exploration(perspective="hombre"):
                     action Function(move_hospital_player, 32, 0, "right", perspective)
                     background Solid("#1e293b")
                     hover_background Solid("#334155")
-                    padding (12, 8, 12, 8)
-                    text "▶ D / Der":
-                        size 11
+                    padding (14, 10, 14, 10)
+                    text "▶ D":
+                        size 13
                         color "#e2e8f0"
                         bold True
 
-            # Indicación de teclas
-            text "Usa [W, A, S, D] o [Flechas] para caminar • [Espacio / E] para investigar":
-                font gui.interface_text_font
-                size 12
-                color "#94a3b8"
+                # Botón de Acción Táctil en Celular
+                if near_area:
+                    button:
+                        action Function(inspect_hospital_area, near_area)
+                        background Solid(theme_tint)
+                        hover_background Solid("#10b981")
+                        padding (16, 10, 16, 10)
+                        text "🔍 INVESTIGAR":
+                            size 13
+                            color "#ffffff"
+                            bold True
+
+            # Guía de juego en pantalla
+            vbox:
                 yalign 0.5
                 xalign 0.5
+                spacing 2
+                text "• Teclado: [W, A, S, D] o [Flechas] para caminar • [Espacio / E] para investigar":
+                    font gui.interface_text_font
+                    size 11
+                    color "#94a3b8"
+                text "• Celular: Toca la cruceta táctil o toca directamente cualquier sala en el plano":
+                    font gui.interface_text_font
+                    size 11
+                    color "#38bdf8"
 
-            # Botón de Continuar la Historia (se activa al encontrar pistas suficientes)
+            # Botón de Continuar la Historia (se activa al encontrar 2 o más pistas)
             hbox:
-                spacing 16
+                spacing 14
                 yalign 0.5
 
                 if can_continue:
@@ -520,12 +573,12 @@ screen hospital_2d_exploration(perspective="hombre"):
                         text_color "#ffffff"
                         background Solid(theme_tint)
                         hover_background Solid("#10b981")
-                        padding (22, 10, 22, 10)
+                        padding (22, 12, 22, 12)
                 else:
                     frame:
                         background Solid("#1e293b")
-                        padding (16, 10, 16, 10)
-                        text ("Investiga al menos 2 pistas para avanzar (" + str(progress_count) + "/2)"):
+                        padding (16, 12, 16, 12)
+                        text ("Investiga al menos 2 pistas (" + str(progress_count) + "/2)"):
                             font gui.interface_text_font
                             size 11
                             color "#64748b"
@@ -534,21 +587,24 @@ screen hospital_2d_exploration(perspective="hombre"):
 
     # --- MODAL FLOTANTE DE DETALLE DE LA PISTA INVESTIGADA ---
     if hospital_modal_clue:
-        # Fondo translúcido que enfoca la atención en el hallazgo
-        frame:
+        $ clue_color = hospital_modal_clue.get("color", theme_tint)
+
+        # Fondo translúcido que permite cerrar al tocar fuera
+        button:
             xfill True
             yfill True
             background Solid("#000000ba")
+            action Function(close_hospital_modal)
 
         frame:
             xalign 0.5
             yalign 0.5
-            xsize 880
-            background Frame(Solid("#0d1322f8"), 12, 12)
+            xsize 920
+            background Frame(Solid("#0d1322fa"), 12, 12)
             padding (36, 30, 36, 30)
 
             vbox:
-                spacing 18
+                spacing 16
                 xfill True
 
                 # Cabecera de la pista
@@ -559,17 +615,17 @@ screen hospital_2d_exploration(perspective="hombre"):
                     hbox:
                         spacing 12
                         yalign 0.5
-                        text hospital_modal_clue["icon"]:
+                        text hospital_modal_clue.get("icon", "✦"):
                             size 28
                             yalign 0.5
                         vbox:
                             spacing 2
-                            text hospital_modal_clue["name"]:
+                            text hospital_modal_clue.get("name", "Área de Investigación"):
                                 font gui.interface_text_font
                                 size 12
                                 bold True
-                                color hospital_modal_clue["color"]
-                            text hospital_modal_clue["title"]:
+                                color clue_color
+                            text hospital_modal_clue.get("title", "Expediente"):
                                 font gui.name_text_font
                                 size 20
                                 bold True
@@ -579,7 +635,7 @@ screen hospital_2d_exploration(perspective="hombre"):
                         background Solid("#1e293b")
                         padding (10, 4, 10, 4)
                         yalign 0.5
-                        text hospital_modal_clue["tag"]:
+                        text hospital_modal_clue.get("tag", "PISTA"):
                             font gui.interface_text_font
                             size 11
                             color "#e2e8f0"
@@ -589,10 +645,10 @@ screen hospital_2d_exploration(perspective="hombre"):
                 frame:
                     xfill True
                     ysize 2
-                    background Solid(hospital_modal_clue["color"])
+                    background Solid(clue_color)
 
                 # Texto de la pista / diálogo
-                text hospital_modal_clue["text"]:
+                text hospital_modal_clue.get("text", ""):
                     font gui.interface_text_font
                     size 14
                     color "#cbd5e1"
@@ -604,10 +660,10 @@ screen hospital_2d_exploration(perspective="hombre"):
                 button:
                     action Function(close_hospital_modal)
                     xalign 1.0
-                    background Solid(theme_tint)
+                    background Solid(clue_color)
                     hover_background Solid("#334155")
                     padding (24, 10, 24, 10)
-                    text "SEGUIR EXPLORANDO [ESC / CLICK]":
+                    text "✕ SEGUIR EXPLORANDO [ESC / TOCAR]":
                         font gui.interface_text_font
                         size 12
                         bold True
