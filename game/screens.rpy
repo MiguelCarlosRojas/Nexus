@@ -727,9 +727,9 @@ screen protagonist_selection():
     modal True
     tag menu
 
-    add "#06080d"
+    add "#04060a"
 
-    # Marco ambiental
+    # Marco ambiental y viñeta
     frame:
         xfill True
         yfill True
@@ -737,128 +737,208 @@ screen protagonist_selection():
 
     vbox:
         xalign 0.5
-        yalign 0.16
-        spacing 12
+        yalign 0.08
+        spacing 8
 
-        text "NEXUS • SELECCIÓN DE PERSPECTIVA":
+        text "NEXUS: 宿命の瞳 • ENCRUCIJADA TEMPORAL":
             font gui.interface_text_font
-            size 14
+            size 13
             color "#94a3b8"
             kerning 6
             xalign 0.5
 
-        text "ELIGE TU DESTINO":
+        text "ELIGE TU DESTINO CAUSAL":
             font gui.name_text_font
-            size 40
+            size 36
             color "#f8fafc"
             bold True
             xalign 0.5
 
-        text "Una vez confirmada la elección, la realidad quedará sellada.":
+        text "Selecciona el punto de vista desde el cual explorarás las fracturas del Capítulo 1.":
             font gui.interface_text_font
-            size 15
+            size 14
             color "#64748b"
             xalign 0.5
 
-    # Contenedor de selección dual sobrio (sin siluetas ni detalles de trama)
+    # Contenedor de selección dual interactivo
     hbox:
         xalign 0.5
-        yalign 0.56
-        spacing 60
+        yalign 0.53
+        spacing 44
 
-        # --- OPCIÓN 1: HOMBRE ---
+        # --- OPCIÓN 1: HOMBRE (SHINSHU KAZAMA) ---
         button:
-            xsize 420
-            ysize 320
+            xsize 520
+            ysize 570
             action [
                 Function(set_protagonist_gender, "hombre"),
                 Return()
             ]
-            background Frame(Solid("#0d111bf2"), 12, 12)
-            hover_background Frame(Solid("#1a0f16f8"), 12, 12)
-            padding (36, 36, 36, 36)
+            background Frame(Solid("#090e1cf0"), 12, 12)
+            hover_background Frame(Solid("#160d16fa"), 12, 12)
+            padding (32, 28, 32, 28)
 
             vbox:
-                spacing 22
+                spacing 14
                 xfill True
-                yalign 0.5
 
-                text "♂":
-                    size 48
-                    color "#e63946"
-                    bold True
-                    xalign 0.5
+                hbox:
+                    xfill True
+                    frame:
+                        background Solid("#2b1117")
+                        padding (10, 4, 10, 4)
+                        text "LÍNEA CARMESÍ":
+                            font gui.interface_text_font
+                            size 11
+                            color "#f87171"
+                            bold True
+                    text "風間 信州":
+                        font gui.interface_text_font
+                        size 13
+                        color "#64748b"
+                        xalign 1.0
 
-                text "HOMBRE":
-                    size 28
+                text "♂ SHINSHU KAZAMA":
+                    font gui.name_text_font
+                    size 26
                     color "#f8fafc"
                     bold True
-                    xalign 0.5
-                    kerning 4
+
+                text "El Ojo de la Premonición Causal":
+                    font gui.interface_text_font
+                    size 13
+                    color "#e63946"
+                    bold True
+
+                text "Internado en el Hospital General de Shinshu tras salvar a su hermana en Matsumoto. Su ojo izquierdo despierta visiones directas de la muerte en las pupilas de quienes lo rodean.":
+                    font gui.interface_text_font
+                    size 13
+                    color "#cbd5e1"
+                    line_spacing 4
+
+                null height 4
+
+                vbox:
+                    spacing 6
+                    text "• Escenario: Hospital General de Shinshu (Habitación 304)":
+                        font gui.interface_text_font
+                        size 11
+                        color "#94a3b8"
+                    text "• Compañero: Kenji Takahashi y el enigma de las 18:00":
+                        font gui.interface_text_font
+                        size 11
+                        color "#94a3b8"
+                    text "• Modalidad: Exploración 2D y bifurcación causal directa":
+                        font gui.interface_text_font
+                        size 11
+                        color "#38bdf8"
 
                 null height 8
 
                 frame:
                     xfill True
-                    ysize 46
+                    ysize 44
                     background Solid("#e63946")
-                    text "SELECCIONAR":
+                    text "INICIAR COMO SHINSHU (HOMBRE)":
+                        font gui.interface_text_font
                         size 13
                         color "#ffffff"
                         bold True
                         xalign 0.5
                         yalign 0.5
 
-        # --- OPCIÓN 2: MUJER ---
+        # --- OPCIÓN 2: MUJER (AOI KAZAMA) ---
         button:
-            xsize 420
-            ysize 320
+            xsize 520
+            ysize 570
             action [
                 Function(set_protagonist_gender, "mujer"),
                 Return()
             ]
-            background Frame(Solid("#120d1cf2"), 12, 12)
-            hover_background Frame(Solid("#201032f8"), 12, 12)
-            padding (36, 36, 36, 36)
+            background Frame(Solid("#100c1df0"), 12, 12)
+            hover_background Frame(Solid("#1e0f2ffa"), 12, 12)
+            padding (32, 28, 32, 28)
 
             vbox:
-                spacing 22
+                spacing 14
                 xfill True
-                yalign 0.5
 
-                text "♀":
-                    size 48
-                    color "#c084fc"
-                    bold True
-                    xalign 0.5
+                hbox:
+                    xfill True
+                    frame:
+                        background Solid("#231036")
+                        padding (10, 4, 10, 4)
+                        text "LÍNEA AMATISTA":
+                            font gui.interface_text_font
+                            size 11
+                            color "#c084fc"
+                            bold True
+                    text "風間 葵":
+                        font gui.interface_text_font
+                        size 13
+                        color "#64748b"
+                        xalign 1.0
 
-                text "MUJER":
-                    size 28
+                text "♀ AOI KAZAMA":
+                    font gui.name_text_font
+                    size 26
                     color "#f8fafc"
                     bold True
-                    xalign 0.5
-                    kerning 4
+
+                text "El Reflejo Premonitorio del Destino":
+                    font gui.interface_text_font
+                    size 13
+                    color "#c084fc"
+                    bold True
+
+                text "Despierta tras seis meses de coma enfrentando el trágico salto al vacío de su hermano. Retenida bajo estricta vigilancia en Nagano, el abismo se manifiesta en los reflejos de los espejos.":
+                    font gui.interface_text_font
+                    size 13
+                    color "#cbd5e1"
+                    line_spacing 4
+
+                null height 4
+
+                vbox:
+                    spacing 6
+                    text "• Escenario: Hospital General de Nagano (Pabellón Oeste)":
+                        font gui.interface_text_font
+                        size 11
+                        color "#94a3b8"
+                    text "• Compañera: Yuna Sasaki y el presagio de la discusión":
+                        font gui.interface_text_font
+                        size 11
+                        color "#94a3b8"
+                    text "• Modalidad: Exploración 2D e investigación de sombras":
+                        font gui.interface_text_font
+                        size 11
+                        color "#c084fc"
 
                 null height 8
 
                 frame:
                     xfill True
-                    ysize 46
+                    ysize 44
                     background Solid("#9333ea")
-                    text "SELECCIONAR":
+                    text "INICIAR COMO AOI (MUJER)":
+                        font gui.interface_text_font
                         size 13
                         color "#ffffff"
                         bold True
                         xalign 0.5
                         yalign 0.5
 
-    # Indicador de selección automática por inactividad
-    text "Decisión automática en 4 segundos si no seleccionas...":
+    # Pie informativo limpio (sin temporizadores ni cuenta regresiva)
+    frame:
         xalign 0.5
-        yalign 0.88
-        font gui.interface_text_font
-        size 13
-        color "#475569"
+        yalign 0.94
+        background Frame(Solid("#0a0e19c0"), 6, 6)
+        padding (24, 8, 24, 8)
+        text "ℹ La elección sellará la perspectiva activa en el Capítulo 1. Podrás jugar la otra historia iniciando una nueva partida.":
+            font gui.interface_text_font
+            size 12
+            color "#64748b"
+            xalign 0.5
 
 
 ## Pantallas Cinemáticas en Pantalla Completa: Prólogo Conceptual #################

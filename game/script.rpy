@@ -427,11 +427,25 @@ label chapter1_shinshu_despertar:
     "El pavor me paralizó hasta la médula de los huesos. Mis ojos no predecían el futuro: contemplaban la ejecución inexorable de la muerte antes de que ocurriera."
 
     # -------------------------------------------------------------------------
-    # LA HABITACIÓN COMPARTIDA Y KENJI TAKAHASHI
+    # EXPLORACIÓN 2D DEL HOSPITAL GENERAL DE SHINSHU (PABELLÓN OESTE)
     # -------------------------------------------------------------------------
+    "La certeza de que la muerte merodeaba por los pasillos me obligó a actuar. No podía quedarme postrado en la camilla esperando a ciegas."
+    "Con paso tembloroso, me apoyé en mi bastón de aluminio y decidí recorrer el pabellón de punta a punta para inspeccionar cada sala e investigar qué ocultaban los médicos."
+
+    # Inicia la exploración interactiva en 2D (WASD / Flechas / D-Pad)
+    call screen hospital_2d_exploration("hombre")
+
+    $ grant_achievement("exploracion_shinshu")
+
     scene bg hospital_tarde
     with Dissolve(1.2)
 
+    "Tras recorrer los pasillos y recopilar las inquietantes anomalías del pabellón, regresé a la habitación 304 antes del anochecer."
+    "Eran casi las 17:45. La tormenta arreciaba contra los cristales."
+
+    # -------------------------------------------------------------------------
+    # LA HABITACIÓN COMPARTIDA Y KENJI TAKAHASHI
+    # -------------------------------------------------------------------------
     "Mi compañero de cuarto era Kenji Takahashi, un chico de diecinueve años internado por una doble fractura de tibia tras una excursión por los senderos alpinos de Kamikochi."
     "En medio de la pesadez de aquel hospital, Kenji era el único rayo de normalidad."
 
@@ -1004,6 +1018,18 @@ label chapter1_aoi:
     hide silueta_doctor
     hide aoi_arrodillada_desolada
     with Dissolve(0.8)
+
+    # -------------------------------------------------------------------------
+    # EXPLORACIÓN 2D DEL HOSPITAL GENERAL DE NAGANO (PLANTA SEGUNDA)
+    # -------------------------------------------------------------------------
+    "Con el paso de los días, aprendí a fingir calma para que me retiraran las correas de la camilla."
+    "Necesitaba caminar. Necesitaba comprender la jaula donde me tenían retenida antes de tomar una decisión definitiva."
+    "Aprovechando el cambio de turno en la enfermería central, me deslicé descalza fuera de la cama para explorar el pabellón en silencio."
+
+    # Inicia la exploración interactiva en 2D (WASD / Flechas / D-Pad)
+    call screen hospital_2d_exploration("mujer")
+
+    $ grant_achievement("exploracion_aoi")
 
     # -------------------------------------------------------------------------
     # PARTE 4: LA NOCHE DEL LAVABO Y EL FILO OCULTO

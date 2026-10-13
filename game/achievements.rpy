@@ -89,6 +89,15 @@ init python:
             "secret": False
         },
         {
+            "id": "exploracion_shinshu",
+            "name": "Pasos en el Pabellón Carmesí",
+            "desc": "Recorre el Hospital General de Shinshu en 2D e investiga las anomalías médicas antes de las 18:00.",
+            "xp": 30,
+            "chapter": "Capítulo 1",
+            "gender": "hombre",
+            "secret": False
+        },
+        {
             "id": "fin_capitulo_1",
             "name": "Fin del Prólogo de Shinshu",
             "desc": "Completa cualquiera de los dos desenlaces del primer capítulo de NEXUS.",
@@ -103,6 +112,15 @@ init python:
             "name": "Despertar en la Penumbra",
             "desc": "Despierta tras seis meses de coma en el hospital y descubre la trágica muerte de Shinshu ocurrida un mes antes.",
             "xp": 25,
+            "chapter": "Capítulo 1 (Aoi)",
+            "gender": "mujer",
+            "secret": False
+        },
+        {
+            "id": "exploracion_aoi",
+            "name": "Pasos en la Penumbra Amatista",
+            "desc": "Recorre el Hospital General de Nagano en 2D y descubre los secretos ocultos entre los corredores.",
+            "xp": 30,
             "chapter": "Capítulo 1 (Aoi)",
             "gender": "mujer",
             "secret": False
