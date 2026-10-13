@@ -462,7 +462,7 @@ screen hospital_2d_exploration(perspective="hombre"):
                     background Frame(Solid("#111827fa"), 6, 6)
                     padding (12, 6, 12, 6)
 
-                    textbutton _("[ E / ESPACIO ] INVESTIGAR"):
+                    textbutton _("[[ E / ESPACIO ]] INVESTIGAR") substitute False:
                         action Function(inspect_hospital_area, near_area)
                         text_font gui.interface_text_font
                         text_size 11
@@ -663,7 +663,7 @@ screen hospital_2d_exploration(perspective="hombre"):
                     background Solid(clue_color)
                     hover_background Solid("#334155")
                     padding (24, 10, 24, 10)
-                    text "✕ SEGUIR EXPLORANDO [ESC / TOCAR]":
+                    text "✕ SEGUIR EXPLORANDO [[ESC / TOCAR]]" substitute False:
                         font gui.interface_text_font
                         size 12
                         bold True

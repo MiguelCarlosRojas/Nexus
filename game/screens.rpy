@@ -1785,452 +1785,651 @@ style slot_button_text:
 ##
 ## https://www.renpy.org/doc/html/screen_special.html#preferences
 
+## Pantalla de Configuración y Preferencias (Rediseño Premium) #################
 screen preferences():
 
     tag menu
 
     use game_menu(_("Configuración"), scroll="viewport"):
 
-        # Ecosistema completo y enriquecido con gran variedad de opciones
+        $ is_mujer = (persistent.selected_gender == "mujer")
+        $ theme_accent = "#c084fc" if is_mujer else "#fb7185"
+        $ theme_border = persistent.theme_border or ("#a855f7" if is_mujer else "#f43f5e")
+        $ theme_bg = persistent.theme_color or ("#3b0764" if is_mujer else "#4c0519")
+
         vbox:
-            spacing 26
-            xalign 0.5
-            xsize 1160
+            spacing 18
+            xfill True
 
-            # =================================================================
-            # SECCIÓN 1: PANTALLA Y VISUALIZACIÓN
-            # =================================================================
-            vbox:
-                spacing 14
+            # -----------------------------------------------------------------
+            # 1. CABECERA EXPANDIDA: CONFIGURACIÓN GENERAL Y ESTADO
+            # -----------------------------------------------------------------
+            frame:
+                xfill True
+                background Frame(Solid("#090e1cf5"), 8, 8)
+                padding (22, 12, 22, 12)
 
                 hbox:
-                    spacing 10
+                    xfill True
                     yalign 0.5
-                    text "PANTALLA Y MODO DE VENTANA" style "pref_group_title"
 
-                hbox:
-                    style "pref_row_box"
-                    label _("Modo de Pantalla") style "pref_row_label"
                     hbox:
                         spacing 14
                         yalign 0.5
-                        textbutton _("Ventana"):
-                            action Preference("display", "window")
-                            selected (preferences.fullscreen == False)
-                            style "pref_tab_btn"
-                        textbutton _("Pantalla Completa"):
-                            action Preference("display", "fullscreen")
-                            selected (preferences.fullscreen == True)
-                            style "pref_tab_btn"
 
-                hbox:
-                    style "pref_row_box"
-                    label _("Modo de Salto de Diálogo") style "pref_row_label"
-                    hbox:
-                        spacing 14
-                        yalign 0.5
-                        textbutton _("Texto No Visto"):
-                            action Preference("skip", "toggle")
-                            style "pref_tab_btn"
-                        textbutton _("Tras Elecciones"):
-                            action Preference("after choices", "toggle")
-                            style "pref_tab_btn"
-                        textbutton _("Transiciones"):
-                            action InvertSelected(Preference("transitions", "toggle"))
-                            style "pref_tab_btn"
+                        frame:
+                            background Frame(Solid(theme_bg), 6, 6)
+                            padding (10, 4, 10, 4)
+                            yalign 0.5
+                            text ("♀ LÍNEA AMATISTA" if is_mujer else "♂ LÍNEA CARMESÍ"):
+                                font gui.interface_text_font
+                                size 12
+                                bold True
+                                color "#ffffff"
 
-            # =================================================================
-            # SECCIÓN 2: PERSONALIZACIÓN VISUAL Y TEMA JAPONÉS
-            # =================================================================
-            vbox:
-                spacing 14
-
-                hbox:
-                    spacing 10
-                    yalign 0.5
-                    text "PERSONALIZACIÓN VISUAL Y ESTILO" style "pref_group_title"
-
-                hbox:
-                    style "pref_row_box"
-                    label _("Tema de la Barra Lateral") style "pref_row_label"
-                    hbox:
-                        spacing 12
-                        yalign 0.5
-                        textbutton _("Carmesí Japón"):
-                            action Function(set_theme, "Carmesí")
-                            selected (persistent.theme_name == "Carmesí")
-                            style "pref_tab_btn"
-                        textbutton _("Amatista Sakura"):
-                            action Function(set_theme, "Amatista Sakura")
-                            selected (persistent.theme_name == "Amatista Sakura")
-                            style "pref_tab_btn"
-                        textbutton _("Azul Noche"):
-                            action Function(set_theme, "Azul Noche")
-                            selected (persistent.theme_name == "Azul Noche")
-                            style "pref_tab_btn"
-                        textbutton _("Oro Shinshu"):
-                            action Function(set_theme, "Oro Shinshu")
-                            selected (persistent.theme_name == "Oro Shinshu")
-                            style "pref_tab_btn"
-                        textbutton _("Jade Imperial"):
-                            action Function(set_theme, "Jade Imperial")
-                            selected (persistent.theme_name == "Jade Imperial")
-                            style "pref_tab_btn"
-
-                hbox:
-                    style "pref_row_box"
-                    label _("Tamaño del Texto de Diálogo") style "pref_row_label"
-                    hbox:
-                        spacing 12
-                        yalign 0.5
-                        textbutton _("Normal (30px)"):
-                            action Function(set_dialogue_size, 30)
-                            selected (persistent.text_size_choice == 30)
-                            style "pref_tab_btn"
-                        textbutton _("Grande (34px)"):
-                            action Function(set_dialogue_size, 34)
-                            selected (persistent.text_size_choice == 34)
-                            style "pref_tab_btn"
-                        textbutton _("Extra (38px)"):
-                            action Function(set_dialogue_size, 38)
-                            selected (persistent.text_size_choice == 38)
-                            style "pref_tab_btn"
-
-                hbox:
-                    style "pref_row_box"
-                    label _("Opacidad de la Caja de Diálogo") style "pref_row_label"
-                    hbox:
-                        spacing 12
-                        yalign 0.5
-                        textbutton _("Translúcida (70%)"):
-                            action Function(set_textbox_opacity, 0.70)
-                            selected (persistent.textbox_alpha == 0.70)
-                            style "pref_tab_btn"
-                        textbutton _("Equilibrada (85%)"):
-                            action Function(set_textbox_opacity, 0.85)
-                            selected (persistent.textbox_alpha == 0.85)
-                            style "pref_tab_btn"
-                        textbutton _("Sólida (100%)"):
-                            action Function(set_textbox_opacity, 1.0)
-                            selected (persistent.textbox_alpha == 1.0)
-                            style "pref_tab_btn"
-
-            # =================================================================
-            # SECCIÓN 3: EFECTOS CINEMATOGRÁFICOS Y ACCESIBILIDAD
-            # =================================================================
-            vbox:
-                spacing 14
-
-                hbox:
-                    spacing 10
-                    yalign 0.5
-                    text "EFECTOS VISUALES Y ACCESIBILIDAD" style "pref_group_title"
-
-                hbox:
-                    style "pref_row_box"
-                    label _("Sacudidas de Pantalla (Vibración)") style "pref_row_label"
-                    hbox:
-                        spacing 14
-                        yalign 0.5
-                        textbutton _("Activado"):
-                            action Function(toggle_screen_shake)
-                            selected (persistent.screen_shake == True)
-                            style "pref_tab_btn"
-                        textbutton _("Desactivado"):
-                            action Function(toggle_screen_shake)
-                            selected (persistent.screen_shake == False)
-                            style "pref_tab_btn"
-
-                hbox:
-                    style "pref_row_box"
-                    label _("Destellos de Ojos / Visiones de Muerte") style "pref_row_label"
-                    hbox:
-                        spacing 14
-                        yalign 0.5
-                        textbutton _("Completos"):
-                            action Function(toggle_flash_effects)
-                            selected (persistent.flash_effects == True)
-                            style "pref_tab_btn"
-                        textbutton _("Suavizados"):
-                            action Function(toggle_flash_effects)
-                            selected (persistent.flash_effects == False)
-                            style "pref_tab_btn"
-
-                hbox:
-                    style "pref_row_box"
-                    label _("Guardado Automático en Decisiones") style "pref_row_label"
-                    hbox:
-                        spacing 14
-                        yalign 0.5
-                        textbutton _("Habilitado"):
-                            action Function(toggle_auto_save_choices)
-                            selected (persistent.auto_save_choices == True)
-                            style "pref_tab_btn"
-                        textbutton _("Deshabilitado"):
-                            action Function(toggle_auto_save_choices)
-                            selected (persistent.auto_save_choices == False)
-                            style "pref_tab_btn"
-
-            # =================================================================
-            # SECCIÓN 4: AUDIO Y BANDA SONORA (SOLO PIANO TRISTE)
-            # =================================================================
-            vbox:
-                spacing 16
-
-                hbox:
-                    spacing 10
-                    yalign 0.5
-                    text "AUDIO Y BANDA SONORA" style "pref_group_title"
-
-                # Control de Música de Piano (Selector de Niveles + Control Fino + Escucha)
-                if config.has_music:
-                    frame:
-                        style "pref_audio_card"
                         vbox:
-                            spacing 12
+                            spacing 2
+                            text "PANEL DE CONFIGURACIÓN Y PREFERENCIAS • NEXUS":
+                                font gui.interface_text_font
+                                size 14
+                                bold True
+                                color "#f8fafc"
+                                kerning 1
+
+                            text "Ajustes audiovisuales, visualización de pantalla, temas visuales y ritmo de lectura":
+                                font gui.interface_text_font
+                                size 11
+                                color "#94a3b8"
+
+                    frame:
+                        background Frame(Solid("#0f172a"), 4, 4)
+                        padding (12, 5, 12, 5)
+                        text "ESTADO: SINCRONIZADO":
+                            font gui.interface_text_font
+                            size 11
+                            bold True
+                            color "#10b981"
+
+            # -----------------------------------------------------------------
+            # 2. SECCIÓN PANTALLA Y VISUALIZACIÓN
+            # -----------------------------------------------------------------
+            frame:
+                xfill True
+                background Frame(Solid("#080c18f8"), 8, 8)
+                padding (20, 16, 20, 16)
+
+                vbox:
+                    spacing 12
+                    xfill True
+
+                    text "🖥 PANTALLA Y MODO DE VENTANA":
+                        font gui.interface_text_font
+                        size 13
+                        bold True
+                        color theme_accent
+                        kerning 1
+
+                    hbox:
+                        xfill True
+                        yalign 0.5
+                        text "Modo de Pantalla:":
+                            font gui.interface_text_font
+                            size 13
+                            color "#e2e8f0"
+                            xsize 240
+
+                        hbox:
+                            spacing 10
+                            yalign 0.5
+                            button:
+                                action Preference("display", "window")
+                                padding (16, 8, 16, 8)
+                                background Frame(Solid(theme_bg if preferences.fullscreen == False else "#0f172acc"), 4, 4)
+                                hover_background Frame(Solid("#1e293bcc"), 4, 4)
+                                text "🗖 Modo Ventana":
+                                    font gui.interface_text_font
+                                    size 12
+                                    bold True
+                                    color ("#ffffff" if preferences.fullscreen == False else "#94a3b8")
+
+                            button:
+                                action Preference("display", "fullscreen")
+                                padding (16, 8, 16, 8)
+                                background Frame(Solid(theme_bg if preferences.fullscreen == True else "#0f172acc"), 4, 4)
+                                hover_background Frame(Solid("#1e293bcc"), 4, 4)
+                                text "⛶ Pantalla Completa":
+                                    font gui.interface_text_font
+                                    size 12
+                                    bold True
+                                    color ("#ffffff" if preferences.fullscreen == True else "#94a3b8")
+
+                    hbox:
+                        xfill True
+                        yalign 0.5
+                        text "Salto de Diálogo (Skip):":
+                            font gui.interface_text_font
+                            size 13
+                            color "#e2e8f0"
+                            xsize 240
+
+                        hbox:
+                            spacing 10
+                            yalign 0.5
+                            button:
+                                action Preference("skip", "toggle")
+                                padding (14, 7, 14, 7)
+                                background Frame(Solid("#0f172acc"), 4, 4)
+                                hover_background Frame(Solid("#1e293bcc"), 4, 4)
+                                text "Texto No Visto":
+                                    font gui.interface_text_font
+                                    size 11
+                                    color "#cbd5e1"
+
+                            button:
+                                action Preference("after choices", "toggle")
+                                padding (14, 7, 14, 7)
+                                background Frame(Solid("#0f172acc"), 4, 4)
+                                hover_background Frame(Solid("#1e293bcc"), 4, 4)
+                                text "Tras Elecciones":
+                                    font gui.interface_text_font
+                                    size 11
+                                    color "#cbd5e1"
+
+                            button:
+                                action InvertSelected(Preference("transitions", "toggle"))
+                                padding (14, 7, 14, 7)
+                                background Frame(Solid("#0f172acc"), 4, 4)
+                                hover_background Frame(Solid("#1e293bcc"), 4, 4)
+                                text "Transiciones":
+                                    font gui.interface_text_font
+                                    size 11
+                                    color "#cbd5e1"
+
+            # -----------------------------------------------------------------
+            # 3. SECCIÓN PERSONALIZACIÓN VISUAL Y TEMA JAPONÉS
+            # -----------------------------------------------------------------
+            frame:
+                xfill True
+                background Frame(Solid("#080c18f8"), 8, 8)
+                padding (20, 16, 20, 16)
+
+                vbox:
+                    spacing 12
+                    xfill True
+
+                    text "🎨 PERSONALIZACIÓN VISUAL Y TEMA JAPONÉS":
+                        font gui.interface_text_font
+                        size 13
+                        bold True
+                        color theme_accent
+                        kerning 1
+
+                    hbox:
+                        xfill True
+                        yalign 0.5
+                        text "Tema de Interfaz:":
+                            font gui.interface_text_font
+                            size 13
+                            color "#e2e8f0"
+                            xsize 240
+
+                        hbox:
+                            spacing 8
+                            yalign 0.5
+                            $ theme_list = [("Carmesí", "🔴 Carmesí"), ("Amatista Sakura", "🌸 Amatista Sakura"), ("Azul Noche", "🔵 Azul Noche"), ("Oro Shinshu", "🟡 Oro Shinshu"), ("Jade Imperial", "🟢 Jade Imperial")]
+                            for t_name, t_label in theme_list:
+                                $ is_t_sel = (persistent.theme_name == t_name)
+                                button:
+                                    action Function(set_theme, t_name)
+                                    padding (12, 6, 12, 6)
+                                    background Frame(Solid(theme_bg if is_t_sel else "#0f172acc"), 4, 4)
+                                    hover_background Frame(Solid("#1e293bcc"), 4, 4)
+                                    text t_label:
+                                        font gui.interface_text_font
+                                        size 11
+                                        bold is_t_sel
+                                        color ("#ffffff" if is_t_sel else "#94a3b8")
+
+                    hbox:
+                        xfill True
+                        yalign 0.5
+                        text "Tamaño de Fuente:":
+                            font gui.interface_text_font
+                            size 13
+                            color "#e2e8f0"
+                            xsize 240
+
+                        hbox:
+                            spacing 10
+                            yalign 0.5
+                            $ size_list = [(30, "Normal (30px)"), (34, "Grande (34px)"), (38, "Extra (38px)")]
+                            for s_val, s_label in size_list:
+                                $ is_s_sel = (persistent.text_size_choice == s_val)
+                                button:
+                                    action Function(set_dialogue_size, s_val)
+                                    padding (14, 6, 14, 6)
+                                    background Frame(Solid(theme_bg if is_s_sel else "#0f172acc"), 4, 4)
+                                    hover_background Frame(Solid("#1e293bcc"), 4, 4)
+                                    text s_label:
+                                        font gui.interface_text_font
+                                        size 11
+                                        bold is_s_sel
+                                        color ("#ffffff" if is_s_sel else "#94a3b8")
+
+                    hbox:
+                        xfill True
+                        yalign 0.5
+                        text "Opacidad de Caja:":
+                            font gui.interface_text_font
+                            size 13
+                            color "#e2e8f0"
+                            xsize 240
+
+                        hbox:
+                            spacing 10
+                            yalign 0.5
+                            $ op_list = [(0.70, "Translúcida (70%)"), (0.85, "Equilibrada (85%)"), (1.0, "Sólida (100%)")]
+                            for op_val, op_label in op_list:
+                                $ is_op_sel = (persistent.textbox_alpha == op_val)
+                                button:
+                                    action Function(set_textbox_opacity, op_val)
+                                    padding (14, 6, 14, 6)
+                                    background Frame(Solid(theme_bg if is_op_sel else "#0f172acc"), 4, 4)
+                                    hover_background Frame(Solid("#1e293bcc"), 4, 4)
+                                    text op_label:
+                                        font gui.interface_text_font
+                                        size 11
+                                        bold is_op_sel
+                                        color ("#ffffff" if is_op_sel else "#94a3b8")
+
+            # -----------------------------------------------------------------
+            # 4. SECCIÓN EFECTOS CINEMATOGRÁFICOS Y ACCESIBILIDAD
+            # -----------------------------------------------------------------
+            frame:
+                xfill True
+                background Frame(Solid("#080c18f8"), 8, 8)
+                padding (20, 16, 20, 16)
+
+                vbox:
+                    spacing 12
+                    xfill True
+
+                    text "👁 EFECTOS CINEMATOGRÁFICOS Y ACCESIBILIDAD":
+                        font gui.interface_text_font
+                        size 13
+                        bold True
+                        color theme_accent
+                        kerning 1
+
+                    hbox:
+                        xfill True
+                        yalign 0.5
+                        text "Sacudidas de Pantalla:":
+                            font gui.interface_text_font
+                            size 13
+                            color "#e2e8f0"
+                            xsize 240
+
+                        hbox:
+                            spacing 10
+                            button:
+                                action Function(toggle_screen_shake)
+                                padding (14, 6, 14, 6)
+                                background Frame(Solid(theme_bg if persistent.screen_shake == True else "#0f172acc"), 4, 4)
+                                hover_background Frame(Solid("#1e293bcc"), 4, 4)
+                                text "Activado":
+                                    font gui.interface_text_font
+                                    size 11
+                                    bold (persistent.screen_shake == True)
+                                    color ("#ffffff" if persistent.screen_shake == True else "#94a3b8")
+
+                            button:
+                                action Function(toggle_screen_shake)
+                                padding (14, 6, 14, 6)
+                                background Frame(Solid(theme_bg if persistent.screen_shake == False else "#0f172acc"), 4, 4)
+                                hover_background Frame(Solid("#1e293bcc"), 4, 4)
+                                text "Desactivado":
+                                    font gui.interface_text_font
+                                    size 11
+                                    bold (persistent.screen_shake == False)
+                                    color ("#ffffff" if persistent.screen_shake == False else "#94a3b8")
+
+                    hbox:
+                        xfill True
+                        yalign 0.5
+                        text "Destellos Premonitorios:":
+                            font gui.interface_text_font
+                            size 13
+                            color "#e2e8f0"
+                            xsize 240
+
+                        hbox:
+                            spacing 10
+                            button:
+                                action Function(toggle_flash_effects)
+                                padding (14, 6, 14, 6)
+                                background Frame(Solid(theme_bg if persistent.flash_effects == True else "#0f172acc"), 4, 4)
+                                hover_background Frame(Solid("#1e293bcc"), 4, 4)
+                                text "Completos":
+                                    font gui.interface_text_font
+                                    size 11
+                                    bold (persistent.flash_effects == True)
+                                    color ("#ffffff" if persistent.flash_effects == True else "#94a3b8")
+
+                            button:
+                                action Function(toggle_flash_effects)
+                                padding (14, 6, 14, 6)
+                                background Frame(Solid(theme_bg if persistent.flash_effects == False else "#0f172acc"), 4, 4)
+                                hover_background Frame(Solid("#1e293bcc"), 4, 4)
+                                text "Suavizados":
+                                    font gui.interface_text_font
+                                    size 11
+                                    bold (persistent.flash_effects == False)
+                                    color ("#ffffff" if persistent.flash_effects == False else "#94a3b8")
+
+                    hbox:
+                        xfill True
+                        yalign 0.5
+                        text "Autoguardado en Decisiones:":
+                            font gui.interface_text_font
+                            size 13
+                            color "#e2e8f0"
+                            xsize 240
+
+                        hbox:
+                            spacing 10
+                            button:
+                                action Function(toggle_auto_save_choices)
+                                padding (14, 6, 14, 6)
+                                background Frame(Solid(theme_bg if persistent.auto_save_choices == True else "#0f172acc"), 4, 4)
+                                hover_background Frame(Solid("#1e293bcc"), 4, 4)
+                                text "Habilitado":
+                                    font gui.interface_text_font
+                                    size 11
+                                    bold (persistent.auto_save_choices == True)
+                                    color ("#ffffff" if persistent.auto_save_choices == True else "#94a3b8")
+
+                            button:
+                                action Function(toggle_auto_save_choices)
+                                padding (14, 6, 14, 6)
+                                background Frame(Solid(theme_bg if persistent.auto_save_choices == False else "#0f172acc"), 4, 4)
+                                hover_background Frame(Solid("#1e293bcc"), 4, 4)
+                                text "Deshabilitado":
+                                    font gui.interface_text_font
+                                    size 11
+                                    bold (persistent.auto_save_choices == False)
+                                    color ("#ffffff" if persistent.auto_save_choices == False else "#94a3b8")
+
+            # -----------------------------------------------------------------
+            # 5. SECCIÓN AUDIO Y BANDA SONORA (BGM & SFX)
+            # -----------------------------------------------------------------
+            frame:
+                xfill True
+                background Frame(Solid("#080c18f8"), 8, 8)
+                padding (20, 16, 20, 16)
+
+                vbox:
+                    spacing 16
+                    xfill True
+
+                    text "🎵 AUDIO Y BANDA SONORA":
+                        font gui.interface_text_font
+                        size 13
+                        bold True
+                        color theme_accent
+                        kerning 1
+
+                    # MÚSICA DE PIANO BGM
+                    frame:
+                        xfill True
+                        background Frame(Solid("#0c1220ee"), 6, 6)
+                        padding (16, 12, 16, 12)
+                        vbox:
+                            spacing 10
                             xfill True
 
                             hbox:
                                 xfill True
                                 yalign 0.5
-                                label _("Música de Piano (BGM)") style "pref_audio_header_label"
-                                text "[int(preferences.get_volume('music') * 100)]%":
-                                    style "pref_volume_percent_text"
+                                text "Música de Piano (BGM):":
+                                    font gui.interface_text_font
+                                    size 13
+                                    bold True
+                                    color "#ffffff"
+                                text (str(int(preferences.get_volume('music') * 100)) + "%"):
+                                    font gui.interface_text_font
+                                    size 14
+                                    bold True
+                                    color theme_accent
+                                    xalign 1.0
 
-                            # Barra de niveles directos (0% Silencio, 25% Suave, 50% Medio, 75% Alto, 100% Máximo)
+                            # Botones rápidos de volumen
                             hbox:
                                 spacing 8
                                 xfill True
-                                yalign 0.5
-                                textbutton _("Mute (0%)"):
-                                    action Function(set_music_volume_level, 0.0)
-                                    selected (preferences.get_volume('music') == 0.0)
-                                    style "audio_preset_btn"
-                                textbutton _("Suave (25%)"):
-                                    action Function(set_music_volume_level, 0.25)
-                                    selected (abs(preferences.get_volume('music') - 0.25) < 0.04)
-                                    style "audio_preset_btn"
-                                textbutton _("Medio (50%)"):
-                                    action Function(set_music_volume_level, 0.50)
-                                    selected (abs(preferences.get_volume('music') - 0.50) < 0.04)
-                                    style "audio_preset_btn"
-                                textbutton _("Alto (75%)"):
-                                    action Function(set_music_volume_level, 0.75)
-                                    selected (abs(preferences.get_volume('music') - 0.75) < 0.04)
-                                    style "audio_preset_btn"
-                                textbutton _("Máximo (100%)"):
-                                    action Function(set_music_volume_level, 1.0)
-                                    selected (preferences.get_volume('music') >= 0.96)
-                                    style "audio_preset_btn"
+                                $ vol_presets = [(0.0, "Mute (0%)"), (0.25, "Suave (25%)"), (0.50, "Medio (50%)"), (0.75, "Alto (75%)"), (1.0, "Máximo (100%)")]
+                                for v_val, v_lbl in vol_presets:
+                                    $ is_v_sel = (abs(preferences.get_volume('music') - v_val) < 0.04) if v_val > 0 else (preferences.get_volume('music') == 0.0)
+                                    button:
+                                        action Function(set_music_volume_level, v_val)
+                                        padding (12, 6, 12, 6)
+                                        xfill True
+                                        background Frame(Solid(theme_bg if is_v_sel else "#141c2e"), 4, 4)
+                                        hover_background Frame(Solid("#1e293b"), 4, 4)
+                                        text v_lbl:
+                                            font gui.interface_text_font
+                                            size 10
+                                            bold is_v_sel
+                                            color ("#ffffff" if is_v_sel else "#94a3b8")
+                                            xalign 0.5
 
-                            # Fila de ajuste analógico fino + botón de prueba
+                            # Barra fina y botón de escucha
                             hbox:
                                 spacing 16
                                 yalign 0.5
                                 xfill True
-
-                                hbox:
-                                    spacing 10
+                                text "Ajuste fino:":
+                                    font gui.interface_text_font
+                                    size 11
+                                    color "#94a3b8"
+                                bar:
+                                    value Preference("music volume")
+                                    ysize 14
+                                    xsize 560
                                     yalign 0.5
-                                    text _("Ajuste Preciso:") style "pref_fine_label"
-                                    bar value Preference("music volume") style "audio_modern_bar"
-
-                                textbutton _("Escuchar Tema"):
+                                button:
                                     action Play("music", "audio/piano_sad_theme.wav")
-                                    style "audio_listen_btn"
+                                    padding (14, 6, 14, 6)
+                                    background Frame(Solid(theme_bg), 4, 4)
+                                    hover_background Frame(Solid(theme_border), 4, 4)
+                                    text "▶ Escuchar Tema":
+                                        font gui.interface_text_font
+                                        size 11
+                                        bold True
+                                        color "#ffffff"
 
-                # Control de Efectos de Sonido SFX
-                if config.has_sound:
+                    # EFECTOS DE SONIDO SFX
                     frame:
-                        style "pref_audio_card"
+                        xfill True
+                        background Frame(Solid("#0c1220ee"), 6, 6)
+                        padding (16, 12, 16, 12)
                         vbox:
-                            spacing 12
+                            spacing 10
                             xfill True
 
                             hbox:
                                 xfill True
                                 yalign 0.5
-                                label _("Efectos de Sonido (SFX)") style "pref_audio_header_label"
-                                text "[int(preferences.get_volume('sfx') * 100)]%":
-                                    style "pref_volume_percent_text"
+                                text "Efectos de Sonido (SFX):":
+                                    font gui.interface_text_font
+                                    size 13
+                                    bold True
+                                    color "#ffffff"
+                                text (str(int(preferences.get_volume('sfx') * 100)) + "%"):
+                                    font gui.interface_text_font
+                                    size 14
+                                    bold True
+                                    color theme_accent
+                                    xalign 1.0
 
-                            # Barra de niveles directos
+                            # Botones rápidos de volumen SFX
                             hbox:
                                 spacing 8
                                 xfill True
-                                yalign 0.5
-                                textbutton _("Mute (0%)"):
-                                    action Function(set_sfx_volume_level, 0.0)
-                                    selected (preferences.get_volume('sfx') == 0.0)
-                                    style "audio_preset_btn"
-                                textbutton _("Suave (25%)"):
-                                    action Function(set_sfx_volume_level, 0.25)
-                                    selected (abs(preferences.get_volume('sfx') - 0.25) < 0.04)
-                                    style "audio_preset_btn"
-                                textbutton _("Medio (50%)"):
-                                    action Function(set_sfx_volume_level, 0.50)
-                                    selected (abs(preferences.get_volume('sfx') - 0.50) < 0.04)
-                                    style "audio_preset_btn"
-                                textbutton _("Alto (75%)"):
-                                    action Function(set_sfx_volume_level, 0.75)
-                                    selected (abs(preferences.get_volume('sfx') - 0.75) < 0.04)
-                                    style "audio_preset_btn"
-                                textbutton _("Máximo (100%)"):
-                                    action Function(set_sfx_volume_level, 1.0)
-                                    selected (preferences.get_volume('sfx') >= 0.96)
-                                    style "audio_preset_btn"
+                                for v_val, v_lbl in vol_presets:
+                                    $ is_sfx_sel = (abs(preferences.get_volume('sfx') - v_val) < 0.04) if v_val > 0 else (preferences.get_volume('sfx') == 0.0)
+                                    button:
+                                        action Function(set_sfx_volume_level, v_val)
+                                        padding (12, 6, 12, 6)
+                                        xfill True
+                                        background Frame(Solid(theme_bg if is_sfx_sel else "#141c2e"), 4, 4)
+                                        hover_background Frame(Solid("#1e293b"), 4, 4)
+                                        text v_lbl:
+                                            font gui.interface_text_font
+                                            size 10
+                                            bold is_sfx_sel
+                                            color ("#ffffff" if is_sfx_sel else "#94a3b8")
+                                            xalign 0.5
 
-                            # Fila de ajuste analógico fino + botón de prueba
+                            # Barra fina y botón de prueba
                             hbox:
                                 spacing 16
                                 yalign 0.5
                                 xfill True
-
-                                hbox:
-                                    spacing 10
+                                text "Ajuste fino:":
+                                    font gui.interface_text_font
+                                    size 11
+                                    color "#94a3b8"
+                                bar:
+                                    value Preference("sound volume")
+                                    ysize 14
+                                    xsize 560
                                     yalign 0.5
-                                    text _("Ajuste Preciso:") style "pref_fine_label"
-                                    bar value Preference("sound volume") style "audio_modern_bar"
-
-                                textbutton _("Probar Sonido"):
+                                button:
                                     action Play("sound", "audio/eye_vision.wav")
-                                    style "audio_listen_btn"
+                                    padding (14, 6, 14, 6)
+                                    background Frame(Solid(theme_bg), 4, 4)
+                                    hover_background Frame(Solid(theme_border), 4, 4)
+                                    text "🔔 Probar Sonido":
+                                        font gui.interface_text_font
+                                        size 11
+                                        bold True
+                                        color "#ffffff"
 
-                # Interruptor de Silencio Global
-                if config.has_music or config.has_sound:
+                    # Silencio Global
                     frame:
-                        style "pref_audio_mute_card"
+                        xfill True
+                        background Frame(Solid("#060a14ee"), 4, 4)
+                        padding (14, 10, 14, 10)
                         hbox:
                             xfill True
                             yalign 0.5
                             vbox:
                                 spacing 2
-                                label _("Modo Silencioso Global") style "pref_audio_header_label"
-                                text _("Silencia o reanuda toda la música y efectos de sonido con un clic."):
+                                text "Modo Silencioso Global:":
+                                    font gui.interface_text_font
                                     size 12
-                                    color "#788294"
-                            hbox:
-                                xalign 1.0
-                                yalign 0.5
-                                textbutton (_("Mudo") if (_preferences.get_mute('music') and _preferences.get_mute('sfx')) else _("Silenciar")):
-                                    action Preference("all mute", "toggle")
-                                    style "audio_master_mute_btn"
+                                    bold True
+                                    color "#e2e8f0"
+                                text "Silencia o reactiva todos los mezcladores de audio de una sola vez.":
+                                    font gui.interface_text_font
+                                    size 10
+                                    color "#64748b"
 
-            # =================================================================
-            # SECCIÓN 5: VELOCIDAD Y TIEMPOS DE LECTURA
-            # =================================================================
-            vbox:
-                spacing 14
+                            button:
+                                action Preference("all mute", "toggle")
+                                padding (16, 7, 16, 7)
+                                background Frame(Solid("#1e293b"), 4, 4)
+                                hover_background Frame(Solid(theme_bg), 4, 4)
+                                text (_("🔇 Reactivar Sonido") if (_preferences.get_mute('music') and _preferences.get_mute('sfx')) else _("🔇 Silenciar Todo")):
+                                    font gui.interface_text_font
+                                    size 11
+                                    bold True
+                                    color "#ffffff"
 
-                hbox:
-                    spacing 10
-                    yalign 0.5
-                    text "VELOCIDAD Y TIEMPOS DE AVANCE" style "pref_group_title"
+            # -----------------------------------------------------------------
+            # 6. SECCIÓN VELOCIDAD Y TIEMPOS DE LECTURA
+            # -----------------------------------------------------------------
+            frame:
+                xfill True
+                background Frame(Solid("#080c18f8"), 8, 8)
+                padding (20, 16, 20, 16)
 
-                hbox:
-                    style "pref_row_box"
-                    label _("Velocidad de Aparición del Texto") style "pref_row_label"
-                    hbox:
-                        yalign 0.5
-                        bar value Preference("text speed") style "pref_ecosystem_bar_wide"
+                vbox:
+                    spacing 12
+                    xfill True
 
-                hbox:
-                    style "pref_row_box"
-                    label _("Tiempo de Autoavance de Diálogo") style "pref_row_label"
-                    hbox:
-                        yalign 0.5
-                        bar value Preference("auto-forward time") style "pref_ecosystem_bar_wide"
+                    text "⚡ VELOCIDAD Y TIEMPOS DE LECTURA":
+                        font gui.interface_text_font
+                        size 13
+                        bold True
+                        color theme_accent
+                        kerning 1
 
-            # =================================================================
-            # SECCIÓN 6: GESTIÓN DE DATOS Y PERFIL (NUEVO USUARIO)
-            # =================================================================
-            vbox:
-                spacing 14
-
-                hbox:
-                    spacing 10
-                    yalign 0.5
-                    text "GESTIÓN DE PERFIL Y PROGRESO" style "pref_group_title"
-
-                frame:
-                    style "pref_audio_card"
                     hbox:
                         xfill True
                         yalign 0.5
-                        vbox:
-                            spacing 3
-                            label _("Restablecer Progreso a Cero") style "pref_audio_header_label"
-                            text _("Reinicia todos los logros, puntos de XP y estadísticas para comenzar desde cero como un nuevo usuario."):
-                                size 12
-                                color "#8c96a8"
-                        textbutton _("Restablecer a Cero"):
-                            action Confirm(_("¿Deseas restablecer todo el progreso, logros y XP a cero absoluto como un nuevo usuario?"), Function(reset_all_progress))
-                            style "pref_act_button"
-                            xalign 1.0
+                        text "Velocidad de Texto:":
+                            font gui.interface_text_font
+                            size 13
+                            color "#e2e8f0"
+                            xsize 240
+                        bar:
+                            value Preference("text speed")
+                            ysize 14
+                            xsize 600
+                            yalign 0.5
 
+                    hbox:
+                        xfill True
+                        yalign 0.5
+                        text "Tiempo de Autoavance:":
+                            font gui.interface_text_font
+                            size 13
+                            color "#e2e8f0"
+                            xsize 240
+                        bar:
+                            value Preference("auto-forward time")
+                            ysize 14
+                            xsize 600
+                            yalign 0.5
 
-style pref_audio_card:
-    xfill True
-    padding (22, 18, 22, 18)
-    background Frame("gui/custom_btn/btn_idle.png", 8, 8)
+            # -----------------------------------------------------------------
+            # 7. SECCIÓN GESTIÓN DE PERFIL Y REINICIO
+            # -----------------------------------------------------------------
+            frame:
+                xfill True
+                background Frame(Solid("#080c18f8"), 8, 8)
+                padding (20, 16, 20, 16)
 
-style pref_audio_mute_card:
-    xfill True
-    padding (22, 16, 22, 16)
-    background Frame("gui/custom_btn/btn_idle.png", 8, 8)
+                hbox:
+                    xfill True
+                    yalign 0.5
 
-style pref_audio_header_label is gui_label
-style pref_audio_header_label_text:
-    size 16
-    bold True
-    color "#f1f5f9"
+                    vbox:
+                        spacing 3
+                        text "🛡 GESTIÓN DE PERFIL Y PROGRESO":
+                            font gui.interface_text_font
+                            size 13
+                            bold True
+                            color theme_accent
+                            kerning 1
+                        text "Reinicia todos los logros, puntos de XP y estadísticas para comenzar como un nuevo usuario:":
+                            font gui.interface_text_font
+                            size 11
+                            color "#94a3b8"
 
-style pref_volume_percent_text is gui_text:
-    size 15
-    bold True
-    color (persistent.theme_color or "#b82626")
-    xalign 1.0
-
-style pref_fine_label is gui_text:
-    size 13
-    color "#94a3b8"
-    yalign 0.5
-
-style audio_preset_btn is gui_button:
-    padding (12, 9, 12, 9)
-    xfill True
-    background Frame("gui/custom_btn/pill_idle.png", 6, 6)
-    hover_background Frame("gui/custom_btn/pill_hover.png", 6, 6)
-    selected_background Frame("gui/custom_btn/pill_selected.png", 6, 6)
-
-style audio_preset_btn_text is gui_button_text:
-    size 13
-    bold True
-    color "#94a3b8"
-    hover_color "#ffffff"
-    selected_color "#ffffff"
-    xalign 0.5
-    yalign 0.5
-
-style audio_modern_bar is gui_slider:
-    ysize 18
-    xsize 620
-    yalign 0.5
-
-style audio_listen_btn is gui_button:
-    padding (16, 9, 16, 9)
-    xsize 165
-    yalign 0.5
-    background Frame("gui/custom_btn/act_idle.png", 6, 6)
-    hover_background Frame("gui/custom_btn/act_hover.png", 6, 6)
-
-style audio_listen_btn_text is gui_button_text:
-    size 13
-    bold True
-    color "#e2e8f0"
-    hover_color "#ffffff"
-    xalign 0.5
-    yalign 0.5
+                    button:
+                        action Confirm(_("¿Deseas restablecer todo el progreso, logros y XP a cero absoluto como un nuevo usuario?"), Function(reset_all_progress))
+                        padding (18, 9, 18, 9)
+                        background Frame(Solid("#7f1d1d"), 4, 4)
+                        hover_background Frame(Solid("#991b1b"), 4, 4)
+                        xalign 1.0
+                        text "⚠️ Restablecer a Cero":
+                            font gui.interface_text_font
+                            size 11
+                            bold True
+                            color "#ffffff"
 
 style audio_master_mute_btn is gui_button:
     padding (10, 5, 10, 5)
