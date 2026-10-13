@@ -163,23 +163,25 @@ label start:
     with Dissolve(1.5)
 
     "La lluvia caía como agujas líquidas aquella tarde sobre el asfalto grisáceo de Matsumoto."
-    "Aoi, mi hermana menor, apenas tenía siete años. Caminaba dos pasos delante de mí, dando saltitos torpes mientras el viento sacudía su pequeño paraguas amarillo."
+    "El aire olía a gasóleo quemado, ozono y tierra empapada. El viento glacial de las cordilleras de Nagano cortaba la piel."
+    "Aoi caminaba unos metros adelante con su pequeño paraguas amarillo, saltando de charco en charco sin sospechar la carnicería que el destino preparaba en la penumbra."
 
-    # Silueta de Aoi infantil en el cruce de peatones
-    show silueta_aoi at silueta_center with Dissolve(1.0)
+    # -------------------------------------------------------------------------
+    # EXPLORACIÓN 2D PRE-ACCIDENTE EN NAGANO: EL PASO DE PEATONES
+    # -------------------------------------------------------------------------
+    "Una premonición sofocante me paralizó la nuca. El tiempo pareció volverse espeso como brea."
+    "Podía moverme... pero cada latido de mi corazón sonaba como un tambor de guerra en mis oídos."
 
-    aoi "¡Mira, hermano! Si pisas solo las líneas blancas del paso de peatones, los monstruos de la niebla no te alcanzan..."
+    # Llamada a la pantalla 2D interactiva pre-accidente a pantalla completa
+    call screen street_2d_crossing(persistent.selected_gender)
 
-    shinshu "Aoi, camina despacio. El suelo está resbaladizo y mamá nos espera al otro lado de la estación."
+    play sound "audio/rain.wav" loop fadein 1.0
 
-    "Y entonces... la atmósfera se quebró."
-    "El aire se volvió denso, oliendo a ozono quemado y óxido ferroso."
-    "El sonido de las gotas de lluvia pareció detenerse en seco a escasos centímetros del suelo."
+    "El hedor a neumático quemado y óxido ferroso se volvió nauseabundo."
+    "Un chirrido ensordecedor de frenos hidráulicos rasgó la niebla desde la curva en pendiente de Matsumoto."
+    "A través del velo de lluvia emergieron dos faros incandescentes y monstruosos, rugiendo como una bestia de cuatro toneladas de acero desbocada sin control."
 
-    "Un chirrido ensordecedor de neumáticos desgarrando el asfalto helado resonó desde la curva."
-    "A través de la niebla espesa no surgieron luces comunes. Eran dos faros deformes, cegadores y rojizos, como las pupilas incandescentes de una bestia de acero lanzada a tumba abierta."
-
-    # Efecto sonoro de impacto brutal
+    # Sonido del impacto visceral
     play sound "audio/crash.wav"
 
     if persistent.selected_gender == "mujer":
@@ -188,48 +190,52 @@ label start:
         # ---------------------------------------------------------------------
         with vpunch
 
-        hide silueta_aoi
         scene bg destello_rojo
         with vision_flash_aoi
 
-        "El tiempo no me concedió espacio para reaccionar."
-        "Un impacto atronador de acero y velocidad embistió mi pequeño cuerpo de lleno. El paraguas amarillo salió volando por los aires hacia la niebla..."
-        "En mi último segundo de lucidez, vi la silueta desesperada de mi hermano Shinshu corriendo hacia mí con los brazos extendidos, desgarrándose la voz al gritar mi nombre antes de que mi cabeza se estrellara contra el bordillo del asfalto helado."
+        "El parachoques macizo de acero forjado me embistió en el costado con la brutalidad de un martillo demoledor."
+        "Un chasquido desgarrador resonó dentro de mi tórax: costillas partiéndose y astillándose hacia los pulmones, la pelvis pulverizada por el empuje cinético."
+        "Salí disparada por los aires como una muñeca rota. El paraguas amarillo se desgarró en jirones danzando en la niebla..."
+        "Mi cráneo golpeó con violencia salvaje contra el bordillo de piedra helada de la acera. Un crujido seco. Sangre tibia, espesa y carmesí brotó a borbotones cubriéndome el rostro y anegando el agua sucia del asfalto."
+
+        "En mis últimos estertores de consciencia, vi la silueta desesperada de mi hermano Shinshu arrojándose de rodillas a mi lado en el barro, cubriéndose las manos con mi sangre mientras gritaba mi nombre con la garganta desgarrada en alaridos de locura."
 
         stop sound fadeout 1.5
 
         scene bg negro
         with fade_muerte
 
-        "Y luego... el silencio más absoluto. Un abismo de oscuridad infinita."
+        "Luego... el abismo absoluto. Un coma negro, profundo y gélido que devoraría medio año de mi vida."
 
         jump chapter1_aoi
 
     else:
         # ---------------------------------------------------------------------
-        # BIFURCACIÓN OMEGA: IMPACTO RECIBIDO POR SHINSHU (RUTA HOMBRE)
+        # BIFURCACIÓN OMEGA: SACRIFICIO VIOLENTO DE SHINSHU (RUTA HOMBRE)
         # ---------------------------------------------------------------------
-        "El tiempo no me concedió espacio para la vacilación."
-        "Un impulso ciego y visceral se apoderó de mis músculos: me arrojé hacia adelante con toda la desesperación de mis manos infantiles, empujando a Aoi fuera de la trayectoria mortal hacia la acera."
+        "Un impulso visceral y salvaje se apoderó de mis fibras musculares."
+        "No hubo espacio para pensar. Me arrojé hacia adelante en una zancada desesperada, embistiendo a Aoi con ambas manos para arrojarla fuera de la trayectoria del camión hacia el bordillo seguro."
 
         with vpunch
 
-        hide silueta_aoi
         scene bg destello_rojo
         with vision_flash
 
-        "Un crujido espantoso. Huesos pulverizándose contra el parachoques blindado."
-        "Mi cuerpo suspendido en el aire antes de estrellarse contra el pavimento congelado."
-        "Recuerdo la sangre tibia escurriéndose entre el agua de lluvia... y sobre todo, una figura inmóvil detrás del parabrisas del camión. Una silueta sin rostro que me miraba con fijeza espectral."
+        "Y entonces... el monstruo de hierro me alcanzó de lleno."
+        "El parachoques de acero pulverizó mi fémur y partió mis costillas con un estrépito repugnante de ramas secas quebrándose bajo una bota de hierro."
+        "El aire de mis pulmones fue expulsado en un vómito ardiente de sangre y esquirlas óseas."
+        "Mi cuerpo voló varios metros antes de estrellarse contra el asfalto congelado, rebotando en un charco teñido de rojo intenso. La sangre arterial manaba caliente de mi sien, mezclándose con la lluvia torrencial."
 
-        misterio "{i}«La muerte no se cancela, niño... solo transfiere sus ojos a quien la desafía.»{/i}"
+        "A través de mi ojo izquierdo agonizante, vislumbré una silueta encapuchada e inmóvil detrás del parabrisas astillado del camión. Dos pupilas rojas ardían en la penumbra del habitáculo, mirándome con una sonrisa espectral."
+
+        misterio "{i}«La muerte no se cancela, niño... Has comprado la vida de tu hermana con tu propia sangre. Ahora tus ojos me pertenecen.»{/i}"
 
         stop sound fadeout 1.8
 
         scene bg negro
         with fade_lento
 
-        "Después de aquella voz gutural... no hubo dolor. Solo un abismo insondable de coma profundo que devoró años enteros de mi existencia."
+        "El dolor se extinguió en un frío sepulcral. Caí en un coma profundo e insondable que sumiría a mi familia en el horror."
 
         jump chapter1_shinshu_despertar
 
