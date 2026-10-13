@@ -269,54 +269,8 @@ screen quick_menu():
 
     zorder 100
 
-    if quick_menu:
-
-        frame:
-            xalign 0.5
-            yalign 0.992
-            background Frame(Solid("#070b16d8"), 6, 6)
-            padding (12, 4, 12, 4)
-
-            hbox:
-                spacing 10
-                yalign 0.5
-
-                textbutton _("⏪ Historial"):
-                    action ShowMenu('history')
-                    text_size 11
-                    text_color "#94a3b8"
-                    text_hover_color "#ffffff"
-
-                textbutton _("⏭ Saltar"):
-                    action Skip() alternate Skip(fast=True, confirm=True)
-                    text_size 11
-                    text_color "#94a3b8"
-                    text_hover_color "#ffffff"
-
-                textbutton _("▶ Auto"):
-                    action Preference("auto-forward", "toggle")
-                    text_size 11
-                    text_color "#94a3b8"
-                    text_hover_color "#ffffff"
-
-                textbutton _("💾 Guardar"):
-                    action ShowMenu('save')
-                    text_size 11
-                    text_color "#94a3b8"
-                    text_hover_color "#ffffff"
-
-                textbutton _("📂 Cargar"):
-                    action ShowMenu('load')
-                    text_size 11
-                    text_color "#94a3b8"
-                    text_hover_color "#ffffff"
-
-                textbutton _("⚙ Menú"):
-                    action ShowMenu('preferences')
-                    text_size 11
-                    text_color (persistent.theme_color or "#e63946")
-                    text_hover_color "#ffffff"
-                    text_bold True
+    # En PC de escritorio se elimina completamente como solicitó el usuario
+    pass
 
 
 ## Este código asegura que la pantalla 'quick_menu' se muestra en el juego,
@@ -2691,281 +2645,301 @@ screen help():
 
     use game_menu(_("Ayuda y Controles"), scroll="viewport"):
 
-        style_prefix "help"
+        $ is_mujer = (persistent.selected_gender == "mujer")
+        $ theme_accent = "#c084fc" if is_mujer else "#fb7185"
+        $ theme_border = persistent.theme_border or ("#a855f7" if is_mujer else "#f43f5e")
+        $ theme_bg = persistent.theme_color or ("#3b0764" if is_mujer else "#4c0519")
 
         vbox:
-            spacing 23
+            spacing 18
+            xfill True
 
-            hbox:
-                spacing 12
+            # -----------------------------------------------------------------
+            # 1. CABECERA: GUÍA OFICIAL DE CONTROLES Y SISTEMAS
+            # -----------------------------------------------------------------
+            frame:
+                xfill True
+                background Frame(Solid("#090e1cf5"), 8, 8)
+                padding (22, 14, 22, 14)
 
-                textbutton _("Teclado") action SetScreenVariable("device", "keyboard")
-                textbutton _("Ratón") action SetScreenVariable("device", "mouse")
-                textbutton _("📱 Celular / Táctil") action SetScreenVariable("device", "mobile")
-                textbutton _("🏥 Exploración 2D") action SetScreenVariable("device", "exploration")
+                hbox:
+                    xfill True
+                    yalign 0.5
 
-                if GamepadExists():
-                    textbutton _("Mando") action SetScreenVariable("device", "gamepad")
+                    hbox:
+                        spacing 14
+                        yalign 0.5
 
+                        frame:
+                            background Frame(Solid(theme_bg), 6, 6)
+                            padding (10, 4, 10, 4)
+                            yalign 0.5
+                            text ("♀ LÍNEA AMATISTA" if is_mujer else "♂ LÍNEA CARMESÍ"):
+                                font gui.interface_text_font
+                                size 12
+                                bold True
+                                color "#ffffff"
+
+                        vbox:
+                            spacing 2
+                            text "MANUAL OFICIAL DE CONTROLES Y SISTEMAS • NEXUS":
+                                font gui.interface_text_font
+                                size 14
+                                bold True
+                                color "#f8fafc"
+                                kerning 1
+
+                            text "Teclado, ratón, dispositivos móviles nativos, exploración hospitalaria 2D y mandos":
+                                font gui.interface_text_font
+                                size 11
+                                color "#94a3b8"
+
+                    frame:
+                        background Frame(Solid("#0f172a"), 4, 4)
+                        padding (12, 5, 12, 5)
+                        yalign 0.5
+                        text "MOTOR V1.2.1 • 1080p FULLSCREEN":
+                            font gui.interface_text_font
+                            size 11
+                            bold True
+                            color theme_accent
+
+            # -----------------------------------------------------------------
+            # 2. SELECTOR DE DISPOSITIVOS / PESTAÑAS (PILLS MODERNAS)
+            # -----------------------------------------------------------------
+            frame:
+                xfill True
+                background Frame(Solid("#0b1120e6"), 8, 8)
+                padding (12, 10, 12, 10)
+
+                hbox:
+                    spacing 10
+                    xalign 0.5
+
+                    button:
+                        padding (18, 8, 18, 8)
+                        background Frame(Solid(theme_bg if device == "keyboard" else "#131d33"), 6, 6)
+                        hover_background Frame(Solid("#1e293b"), 6, 6)
+                        action SetScreenVariable("device", "keyboard")
+                        text "⌨ Teclado":
+                            font gui.interface_text_font
+                            size 13
+                            bold True
+                            color ("#ffffff" if device == "keyboard" else "#94a3b8")
+
+                    button:
+                        padding (18, 8, 18, 8)
+                        background Frame(Solid(theme_bg if device == "mouse" else "#131d33"), 6, 6)
+                        hover_background Frame(Solid("#1e293b"), 6, 6)
+                        action SetScreenVariable("device", "mouse")
+                        text "🖱 Ratón":
+                            font gui.interface_text_font
+                            size 13
+                            bold True
+                            color ("#ffffff" if device == "mouse" else "#94a3b8")
+
+                    button:
+                        padding (18, 8, 18, 8)
+                        background Frame(Solid(theme_bg if device == "mobile" else "#131d33"), 6, 6)
+                        hover_background Frame(Solid("#1e293b"), 6, 6)
+                        action SetScreenVariable("device", "mobile")
+                        text "📱 Celular / Táctil":
+                            font gui.interface_text_font
+                            size 13
+                            bold True
+                            color ("#ffffff" if device == "mobile" else "#94a3b8")
+
+                    button:
+                        padding (18, 8, 18, 8)
+                        background Frame(Solid(theme_bg if device == "exploration" else "#131d33"), 6, 6)
+                        hover_background Frame(Solid("#1e293b"), 6, 6)
+                        action SetScreenVariable("device", "exploration")
+                        text "🏥 Exploración 2D":
+                            font gui.interface_text_font
+                            size 13
+                            bold True
+                            color ("#ffffff" if device == "exploration" else "#94a3b8")
+
+                    if GamepadExists():
+                        button:
+                            padding (18, 8, 18, 8)
+                            background Frame(Solid(theme_bg if device == "gamepad" else "#131d33"), 6, 6)
+                            hover_background Frame(Solid("#1e293b"), 6, 6)
+                            action SetScreenVariable("device", "gamepad")
+                            text "🎮 Mando":
+                                font gui.interface_text_font
+                                size 13
+                                bold True
+                                color ("#ffffff" if device == "gamepad" else "#94a3b8")
+
+            # -----------------------------------------------------------------
+            # 3. CONTENIDO ESPECÍFICO SEGÚN PESTAÑA SELECCIONADA
+            # -----------------------------------------------------------------
             if device == "keyboard":
-                use keyboard_help
+                use keyboard_help(theme_accent, theme_border)
             elif device == "mouse":
-                use mouse_help
+                use mouse_help(theme_accent, theme_border)
             elif device == "mobile":
-                use mobile_help
+                use mobile_help(theme_accent, theme_border)
             elif device == "exploration":
-                use exploration_help
+                use exploration_help(theme_accent, theme_border)
             elif device == "gamepad":
-                use gamepad_help
+                use gamepad_help(theme_accent, theme_border)
 
 
-screen keyboard_help():
+screen help_row_card(key_text, title_text, desc_text, theme_accent, theme_border):
+    frame:
+        xfill True
+        background Frame(Solid("#070b16f2"), 6, 6)
+        padding (16, 12, 16, 12)
 
-    hbox:
-        label _("W, A, S, D")
-        text _("Mueve al personaje en la Exploración 2D del Hospital.")
-
-    hbox:
-        label _("Teclas de flecha")
-        text _("Navega la interfaz y camina en la Exploración 2D.")
-
-    hbox:
-        label _("Espacio / E")
-        text _("Avanza el diálogo o investiga pistas en la Exploración 2D.")
-
-    hbox:
-        label _("Intro")
-        text _("Avanza el diálogo e interactúa con objetos seleccionados.")
-
-    hbox:
-        label _("Escape")
-        text _("Accede al menú del juego y pausa la exploración.")
-
-    hbox:
-        label _("Ctrl")
-        text _("Salta el diálogo mientras se presiona.")
-
-    hbox:
-        label _("Tabulador")
-        text _("Activa/desactiva el salto continuo de diálogo.")
-
-    hbox:
-        label _("Av. pág.")
-        text _("Retrocede al diálogo anterior en el historial.")
-
-    hbox:
-        label _("Re. pág.")
-        text _("Avanza hacia el diálogo siguiente.")
-
-    hbox:
-        label "H"
-        text _("Oculta la interfaz para contemplar las ilustraciones.")
-
-    hbox:
-        label "S"
-        text _("Captura la pantalla actual.")
-
-
-screen mobile_help():
-
-    vbox:
-        spacing 14
-
-        frame:
-            background Solid("#111827")
-            padding (16, 12, 16, 12)
+        hbox:
             xfill True
-            vbox:
-                spacing 4
-                text "CONTROLES TÁCTILES EN CELULARES (ANDROID E IOS)":
-                    font gui.interface_text_font
-                    size 14
-                    bold True
-                    color "#38bdf8"
-                text "NEXUS está optimizado para dispositivos móviles con gestos táctiles y controles virtuales:":
-                    font gui.interface_text_font
-                    size 11
-                    color "#94a3b8"
+            yalign 0.5
+            spacing 20
 
-        hbox:
-            label _("Tocar con un dedo")
-            text _("Avanza el diálogo, confirma elecciones e interactúa con los botones.")
-
-        hbox:
-            label _("Tocar con dos dedos")
-            text _("Abre el Menú del juego (Guardar, Cargar, Preferencias y Salir).")
-
-        hbox:
-            label _("Deslizar hacia arriba")
-            text _("Abre el Historial para revisar textos y diálogos anteriores.")
-
-        hbox:
-            label _("Deslizar hacia abajo")
-            text _("Oculta la caja de diálogo para apreciar el arte visual.")
-
-        hbox:
-            label _("Mantener presionado")
-            text _("Activa el salto rápido de texto mientras el dedo esté apoyado.")
-
-        hbox:
-            label _("Cruceta virtual (D-Pad)")
-            text _("Usa los botones táctiles (▲, ▼, ◀, ▶) para caminar en el Hospital 2D.")
-
-        hbox:
-            label _("Toque directo en salas")
-            text _("Toca cualquier sala o icono del hospital para que tu personaje camine hacia ella e investigue al instante.")
-
-        frame:
-            background Solid("#1e293b")
-            padding (14, 10, 14, 10)
-            xfill True
-            vbox:
-                spacing 4
-                text "GUÍA DE EJECUCIÓN EN CELULARES:":
+            # Pastilla con la tecla / comando
+            frame:
+                xsize 220
+                background Frame(Solid("#10192e"), 4, 4)
+                padding (10, 6, 10, 6)
+                yalign 0.5
+                text key_text:
+                    substitute False
                     font gui.interface_text_font
                     size 12
                     bold True
-                    color "#f59e0b"
-                text "En dispositivos Android se recomienda ejecutar el paquete de NEXUS a través de JoiPlay (con el plugin oficial de Ren'Py) para disfrutar de aceleración gráfica, sonido envolvente y soporte táctil completo sin problemas de compatibilidad del instalador. En iOS, mediante navegadores web compatibles o simuladores de VN.":
-                    font gui.interface_text_font
-                    size 11
-                    color "#cbd5e1"
-                    line_spacing 4
+                    color theme_accent
+                    xalign 0.5
 
-
-screen exploration_help():
-
-    vbox:
-        spacing 14
-
-        frame:
-            background Solid("#111827")
-            padding (16, 12, 16, 12)
-            xfill True
+            # Descripción de la función
             vbox:
-                spacing 4
-                text "SISTEMA DE EXPLORACIÓN 2D DEL HOSPITAL (CAPÍTULO 1)":
+                spacing 2
+                yalign 0.5
+                text title_text:
+                    substitute False
                     font gui.interface_text_font
-                    size 14
+                    size 13
                     bold True
-                    color "#e63946"
-                text "En el Capítulo 1 podrás mover a Shinshu o Aoi en tiempo real por el pabellón hospitalario:":
+                    color "#f8fafc"
+                text desc_text:
+                    substitute False
                     font gui.interface_text_font
                     size 11
                     color "#94a3b8"
 
-        hbox:
-            label _("W, A, S, D")
-            text _("Desplaza al protagonista: W (Arriba), S (Abajo), A (Izquierda), D (Derecha).")
 
-        hbox:
-            label _("Flechas de dirección")
-            text _("Controles alternativos de movimiento en teclado.")
+screen keyboard_help(theme_accent="#fb7185", theme_border="#f43f5e"):
+    vbox:
+        spacing 8
+        xfill True
 
-        hbox:
-            label _("Espacio / E / Intro")
-            text _("Inspecciona un expediente, camilla o pista cuando estés cerca.")
-
-        hbox:
-            label _("Toque directo en el mapa")
-            text _("En celular o PC, toca directamente cualquier sala o icono para desplazarte e investigarlo al instante.")
-
-        hbox:
-            label _("Cruceta táctil móvil")
-            text _("Botones virtuales en pantalla (▲, ▼, ◀, ▶) para jugar cómodamente en móviles.")
-
-        hbox:
-            label _("Continuar historia")
-            text _("Al descubrir al menos 2 pistas o expedientes, se desbloquea el botón para avanzar hacia el desenlace causal.")
+        use help_row_card("[[ W, A, S, D ]]", "Caminar en el Hospital 2D", "Desplaza al protagonista en tiempo real por los pabellones y pisos.", theme_accent, theme_border)
+        use help_row_card("[[ Flechas Direccionales ]]", "Navegación Alternativa y Menús", "Permite caminar o alternar entre opciones interactivas de pantalla.", theme_accent, theme_border)
+        use help_row_card("[[ Espacio / E / Intro ]]", "Investigar / Avanzar Diálogo", "Inspecciona pistas, camillas y expedientes cercanos, o avanza el relato.", theme_accent, theme_border)
+        use help_row_card("[[ Escape (ESC) ]]", "Menú del Sistema / Pausa", "Accede a Guardar, Cargar, Galería y Ajustes, o cierra expedientes abiertos.", theme_accent, theme_border)
+        use help_row_card("[[ Ctrl ]]", "Salto Rápido Manteniendo", "Acelera el avance del diálogo mientras la tecla se mantenga pulsada.", theme_accent, theme_border)
+        use help_row_card("[[ Tabulador ]]", "Alternar Avance Automático", "Activa o desactiva la lectura continua automática de diálogos.", theme_accent, theme_border)
+        use help_row_card("[[ Re. Pág / Rueda Arriba ]]", "Historial de Diálogos", "Consulta conversaciones y descripciones previas de la escena.", theme_accent, theme_border)
+        use help_row_card("[[ H ]]", "Ocultar Interfaz", "Despeja la pantalla para contemplar las ilustraciones y el arte visual.", theme_accent, theme_border)
+        use help_row_card("[[ S ]]", "Captura de Pantalla", "Toma una fotografía instantánea del juego y la guarda en disco.", theme_accent, theme_border)
 
 
-screen mouse_help():
+screen mouse_help(theme_accent="#fb7185", theme_border="#f43f5e"):
+    vbox:
+        spacing 8
+        xfill True
 
-    hbox:
-        label _("Clic izquierdo")
-        text _("Avanza el diálogo y activa la interfaz.")
-
-    hbox:
-        label _("Clic medio")
-        text _("Oculta la interfaz.")
-
-    hbox:
-        label _("Clic derecho")
-        text _("Accede al menú del juego.")
-
-    hbox:
-        label _("Rueda del ratón arriba")
-        text _("Retrocede al diálogo anterior.")
-
-    hbox:
-        label _("Rueda del ratón abajo")
-        text _("Avanza hacia el diálogo siguiente.")
+        use help_row_card("Clic Izquierdo", "Avanzar y Seleccionar", "Avanza los textos, confirma elecciones de bifurcación y activa botones.", theme_accent, theme_border)
+        use help_row_card("Clic Derecho", "Menú del Sistema", "Abre la pantalla de menú principal durante cualquier momento de la partida.", theme_accent, theme_border)
+        use help_row_card("Clic Central (Rueda)", "Ocultar Interfaz", "Despeja rápidamente todos los cuadros de texto e iconos en pantalla.", theme_accent, theme_border)
+        use help_row_card("Rueda hacia Arriba", "Revisar Historial", "Desplaza hacia atrás para leer conversaciones anteriores.", theme_accent, theme_border)
+        use help_row_card("Rueda hacia Abajo", "Avanzar Texto", "Avanza con comodidad al siguiente párrafo o línea de diálogo.", theme_accent, theme_border)
+        use help_row_card("Clic en el Mapa 2D", "Navegación e Inspección Directa", "Haz clic en cualquier habitación o camilla para caminar e inspeccionar de inmediato.", theme_accent, theme_border)
 
 
-screen gamepad_help():
+screen mobile_help(theme_accent="#fb7185", theme_border="#f43f5e"):
+    vbox:
+        spacing 10
+        xfill True
 
-    hbox:
-        label _("Gatillo derecho\nA/Botón inferior")
-        text _("Avanza el diálogo y activa la interfaz.")
+        # Banner de Motor Nativo
+        frame:
+            xfill True
+            background Frame(Solid("#0a152df5"), 6, 6)
+            padding (18, 12, 18, 12)
+            vbox:
+                spacing 4
+                text "📱 SOPORTE NATIVO AUTÓNOMO PARA ANDROID Y CELULARES":
+                    font gui.interface_text_font
+                    size 13
+                    bold True
+                    color theme_accent
+                text "NEXUS incluye paquete APK nativo autónomo de alta definición para Android y versión web inmersiva para iOS. Disfruta de aceleración gráfica total, audio envolvente y gestos táctiles optimizados:":
+                    font gui.interface_text_font
+                    size 11
+                    color "#cbd5e1"
 
-    hbox:
-        label _("Gatillo izquierdo\nBotón sup. frontal izq.")
-        text _("Retrocede al diálogo anterior.")
-
-    hbox:
-        label _("Botón sup. frontal der.")
-        text _("Avanza hacia el diálogo siguiente.")
-
-    hbox:
-        label _("D-Pad, Sticks")
-        text _("Navega la interfaz.")
-
-    hbox:
-        label _("Inicio, Guía, B/Botón Derecho")
-        text _("Accede al menú del juego.")
-
-    hbox:
-        label _("Y/Botón superior")
-        text _("Oculta la interfaz.")
-
-    textbutton _("Calibrar") action GamepadCalibrate()
+        use help_row_card("Tocar con un Dedo", "Avanzar y Confirmar", "Toca la pantalla para avanzar diálogos o elegir ramificaciones de la trama.", theme_accent, theme_border)
+        use help_row_card("Esquina Superior Derecha", "Botones [ 💾 Guardar ] y [ ⚙ Menú ]", "Acceso rápido exclusivo en móviles en la esquina superior para guardar o entrar al menú.", theme_accent, theme_border)
+        use help_row_card("Tocar con Dos Dedos", "Abrir Menú de Pausa", "Pausa la partida y accede al guardado, carga y configuración.", theme_accent, theme_border)
+        use help_row_card("Deslizar hacia Arriba", "Abrir Historial", "Arrastra el dedo hacia arriba para consultar el registro de diálogos.", theme_accent, theme_border)
+        use help_row_card("Deslizar hacia Abajo", "Ocultar Interfaz", "Arrastra hacia abajo para limpiar la pantalla y ver el arte completo.", theme_accent, theme_border)
+        use help_row_card("Mantener Pulsado", "Salto Rápido de Texto", "Apoya el dedo de forma continua para adelantar el texto rápidamente.", theme_accent, theme_border)
+        use help_row_card("Cruceta Virtual (▲ ▼ ◀ ▶)", "Caminar en el Hospital 2D", "Botones virtuales táctiles ergonómicos integrados en la exploración.", theme_accent, theme_border)
+        use help_row_card("Toque Directo en Salas", "Teletransporte e Inspección", "Toca cualquier sala o camilla en la pantalla para moverte e interactuar.", theme_accent, theme_border)
 
 
-style help_button is gui_button
-style help_button_text is gui_button_text
-style help_label is gui_label
-style help_label_text is gui_label_text
-style help_text is gui_text
+screen exploration_help(theme_accent="#fb7185", theme_border="#f43f5e"):
+    vbox:
+        spacing 10
+        xfill True
 
-style help_button:
-    padding (16, 8, 16, 8)
-    background Frame("gui/custom_btn/btn_idle.png", 6, 6)
-    hover_background Frame("gui/custom_btn/btn_hover.png", 6, 6)
-    selected_background Frame("gui/custom_btn/btn_selected.png", 6, 6)
-    xmargin 8
+        # Banner de Exploración
+        frame:
+            xfill True
+            background Frame(Solid("#180c1df5" if theme_accent == "#c084fc" else "#210912f5"), 6, 6)
+            padding (18, 12, 18, 12)
+            vbox:
+                spacing 4
+                text "🏥 SISTEMA DE EXPLORACIÓN 2D MULTI-PISO A PANTALLA COMPLETA":
+                    font gui.interface_text_font
+                    size 13
+                    bold True
+                    color theme_accent
+                text "El Capítulo 1 se expande a pantalla completa inmersiva (1920x1080) con múltiples pisos hospitalarios, decenas de salas, pacientes en estado crítico, expedientes forenses y eventos de tensión y decisión en tiempo real:":
+                    font gui.interface_text_font
+                    size 11
+                    color "#cbd5e1"
 
-style help_button_text:
-    size 14
-    bold True
-    color "#94a3b8"
-    hover_color "#ffffff"
-    selected_color "#ffffff"
+        use help_row_card("[[ W, A, S, D ]] / Flechas", "Desplazamiento del Protagonista", "Camina con fluidez en 2D por pasillos, enfermería, morgue y pabellones.", theme_accent, theme_border)
+        use help_row_card("Selector de Pisos / Ascensor", "Navegación Vertical Hospitalaria", "Piso 1: Urgencias & Morgue Fría | Piso 2: Cirugía & UCI | Piso 3: Traumatología.", theme_accent, theme_border)
+        use help_row_card("[[ Espacio ]] / [[ E ]] / Tocar", "Inspeccionar Sala o Paciente", "Acércate a un punto interactivo para abrir su expediente clínico o testimonio.", theme_accent, theme_border)
+        use help_row_card("Encuentros y Forcejeos", "Toma de Decisiones y Peleas", "Interactúa con médicos sospechosos, pacientes agitados y evita el colapso.", theme_accent, theme_border)
+        use help_row_card("Puntos Causa Clave", "Avanzar Desenlace de la Trama", "Reúne al menos 2 pistas cruciales para desbloquear el avance del capítulo.", theme_accent, theme_border)
 
-style help_label:
-    xsize 320
-    right_padding 24
 
-style help_label_text:
-    size 15
-    bold True
-    color (persistent.theme_color or "#e63946")
-    xalign 1.0
-    textalign 1.0
+screen gamepad_help(theme_accent="#fb7185", theme_border="#f43f5e"):
+    vbox:
+        spacing 8
+        xfill True
 
-style help_text:
-    size 15
-    color "#cbd5e1"
-    yalign 0.5
+        use help_row_card("Botón A / Gatillo Derecho", "Avanzar / Interactuar", "Avanza los textos y confirma selecciones en el hospital.", theme_accent, theme_border)
+        use help_row_card("Botón B / Menú", "Abrir Menú Principal", "Abre la pantalla de menú o retrocede en los expedientes.", theme_accent, theme_border)
+        use help_row_card("Gatillo Izquierdo / LB", "Retroceder en Historial", "Permite revisar el registro de diálogos anteriores.", theme_accent, theme_border)
+        use help_row_card("Stick Izquierdo / D-Pad", "Moverse en el Hospital 2D", "Control analógico fluido para caminar en la exploración.", theme_accent, theme_border)
+        use help_row_card("Botón Y", "Ocultar Interfaz", "Despeja los cuadros de texto para apreciar las ilustraciones.", theme_accent, theme_border)
+
+        frame:
+            xalign 0.5
+            background Frame(Solid("#0f172a"), 6, 6)
+            padding (16, 8, 16, 8)
+            textbutton _("Calibrar Mando") action GamepadCalibrate():
+                text_font gui.interface_text_font
+                text_size 12
+                text_bold True
+                text_color "#38bdf8"
+
 
 
 
@@ -3410,7 +3384,37 @@ style pref_vbox:
 screen quick_menu():
     variant "touch"
     zorder 100
-    pass
+
+    if quick_menu:
+        frame:
+            xalign 0.98
+            ypos 16
+            background Frame(Solid("#070b16f0"), 6, 6)
+            padding (6, 5, 6, 5)
+
+            hbox:
+                spacing 8
+                yalign 0.5
+
+                button:
+                    action ShowMenu('save')
+                    padding (12, 6, 12, 6)
+                    background Frame(Solid("#0f172acc"), 4, 4)
+                    hover_background Frame(Solid("#1e293bcc"), 4, 4)
+                    text _("💾 Guardar"):
+                        size 11
+                        bold True
+                        color "#e2e8f0"
+
+                button:
+                    action ShowMenu('preferences')
+                    padding (12, 6, 12, 6)
+                    background Frame(Solid(persistent.theme_color or "#be123c"), 4, 4)
+                    hover_background Frame(Solid(persistent.theme_hover or "#e11d48"), 4, 4)
+                    text _("⚙ Menú"):
+                        size 11
+                        bold True
+                        color "#ffffff"
 
 
 style window:

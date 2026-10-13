@@ -1,157 +1,296 @@
 ## =============================================================================
-## SISTEMA DE EXPLORACIÓN 2D DEL HOSPITAL (CAPÍTULO 1 - HOMBRE Y MUJER)
+## SISTEMA DE EXPLORACIÓN 2D Y CRUCE PRE-ACCIDENTE - NEXUS
 ## =============================================================================
-## Permite al jugador recorrer el pabellón hospitalario en 2D en tiempo real
-## utilizando las teclas [W, A, S, D], las [Flechas de Dirección], toques directos
-## en pantalla o la cruceta táctil virtual para celulares.
+## Proporciona:
+## 1. screen street_2d_crossing: Cruce 2D interactivo a pantalla completa antes del impacto en Nagano.
+## 2. screen hospital_2d_exploration: Exploración 2D hospitalaria MULTI-PISO a pantalla completa (1920x1080).
 ## =============================================================================
 
-default hospital_pos_x = 480
-default hospital_pos_y = 360
+default hospital_pos_x = 960
+default hospital_pos_y = 540
+default hospital_current_floor = 3
 default hospital_player_facing = "down"
 default hospital_investigated = set()
 default hospital_modal_clue = None
+default hospital_events_done = set()
+
+default street_pos_x = 420
+default street_pos_y = 620
+default street_investigated = set()
+default street_modal_clue = None
 
 init python:
 
     # -------------------------------------------------------------------------
-    # DEFINICIÓN DE PISTAS Y SALAS: HOSPITAL GENERAL DE SHINSHU (HOMBRE)
+    # DATOS: CRUCE PEATONAL PRE-ACCIDENTE EN NAGANO (2D)
     # -------------------------------------------------------------------------
-    HOSPITAL_AREAS_SHINSHU = [
+    STREET_AREAS = [
         {
-            "id": "kenji_bed",
-            "name": "Habitación 304 • Camilla de Kenji",
-            "x": 440, "y": 270, "radius": 95,
-            "icon": "🛏️",
-            "tag": "COMPAÑERO",
-            "color": "#38bdf8",
-            "title": "Kenji Takahashi y el Gotero de las 18:00",
-            "text": "Kenji te saluda con una sonrisa cansada pero optimista desde su camilla.\n\n«¡Oye, Ren! A las seis en punto me toca la última dosis de antibiótico. En cuanto me quiten la escayola de la pierna, te invito a un ramen picante en Matsumoto.»\n\nSin embargo, al mirar de cerca el gotero colgado sobre su cabecera, notas una etiqueta manuscrita pegada sobre el envase de suero: «Lote Especial N-4». Un frío helado te recorre la espina dorsal."
+            "id": "aoi_umbrella",
+            "name": "Aoi Kazama • Paraguas Amarillo",
+            "x": 680, "y": 620, "radius": 110,
+            "icon": "☂️",
+            "tag": "HERMANA",
+            "color": "#facc15",
+            "title": "La Inocencia al Borde del Abismo",
+            "text": "Aoi da pequeños saltos infantiles sobre las líneas blancas del cruce peatonal de Matsumoto.\n\n«¡Mira, hermano! Si pisas solo las líneas blancas, los monstruos de la niebla no te alcanzan...»\n\nEl viento helado de las montañas azota su paraguas amarillo. Su risa pura contrasta con el hedor a gasolina y caucho quemado que empieza a filtrarse entre la neblina."
         },
         {
-            "id": "nursing_station",
-            "name": "Estación de Enfermería Central",
-            "x": 1020, "y": 260, "radius": 95,
-            "icon": "📋",
-            "tag": "REGISTRO",
-            "color": "#f59e0b",
-            "title": "Bandeja de Medicación de Sato",
-            "text": "Sobre el mostrador de enfermería reposa la planilla de distribución horaria de la tarde.\n\nUna jeringa precargada y una ampolla de cristal ámbar están apartadas en una cubeta de acero inoxidable, rotuladas para Takahashi (Habitación 304) a las 18:00.\n\nAl lado, una circular interna advierte: «Suministro confidencial autorizado exclusivamente por jefatura quirúrgica del Dr. Moriyama»."
+            "id": "puddle_blood",
+            "name": "Charco en el Asfalto • Reflejo Sangriento",
+            "x": 980, "y": 620, "radius": 110,
+            "icon": "🩸",
+            "tag": "PREMONICIÓN",
+            "color": "#ef4444",
+            "title": "El Presagio Escarlata en el Agua",
+            "text": "Miras hacia el charco de agua de lluvia acumulado sobre el asfalto agrietado.\n\nEn lugar de reflejar el cielo plomizo de la tarde, la superficie se torna espesa y viscosa como un charco de sangre arterial fresca.\n\nUn sonido espectral de huesos pulverizándose resuena dentro de tu cráneo. Un dolor punzante te desgarra el nervio óptico."
         },
         {
-            "id": "pharmacy_depot",
-            "name": "Depósito de Farmacia y Toxicología",
-            "x": 1200, "y": 550, "radius": 95,
-            "icon": "☣️",
+            "id": "traffic_light",
+            "name": "Semáforo Peatonal Averiado",
+            "x": 1360, "y": 500, "radius": 110,
+            "icon": "🚦",
             "tag": "ANOMALÍA",
-            "color": "#ef4444",
-            "title": "Armario de Fármacos de Restricción",
-            "text": "El armario metálico de sustancias especiales tiene el precinto de seguridad violentado.\n\nEntre los analgésicos comunes divisas un frasco entreabierto con advertencias de toxicidad: «Tox-NB7: Reactivo bloqueador neuromuscular de parálisis respiratoria fulminante».\n\n¿Por qué hay un paralizante letal en un pabellón traumatológico ordinario? Tu pupila izquierda palpita con un ardor punzante al tocar el frío cristal."
+            "color": "#f97316",
+            "title": "La Señal Eléctrica Quebrada",
+            "text": "La luz peatonal verde titila de manera errática, chisporroteando bajo la lluvia torrencial.\n\nPor un instante se apaga por completo, y en su lugar la silueta roja de la mano estalla en un destello carmesí violento.\n\nLa electricidad de la farola zumba con un chillido agudo. Algo no encaja en la atmósfera: el tiempo parece ralentizarse a cada paso."
         },
         {
-            "id": "hallway_window",
-            "name": "Ventanal Panorámico a la Tormenta",
-            "x": 720, "y": 420, "radius": 95,
-            "icon": "🌧️",
-            "tag": "MEMORIA",
-            "color": "#94a3b8",
-            "title": "La Lluvia de Shinshu y el Pacto",
-            "text": "Miras a través del cristal empapado por el temporal. La lluvia cae furiosa sobre las cordilleras alpinas de Shinshu, exactamente igual que aquella tarde en el paso de peatones de Matsumoto donde te arrojaste para salvar a Aoi.\n\nRecuerdas el sonido de neumáticos patinando y aquel susurro glacial en tu mente agonizante.\n\nTu ojo izquierdo no te dio una segunda oportunidad por compasión: te dio una sentencia para contemplar la muerte de cerca."
-        },
-        {
-            "id": "dr_office",
-            "name": "Despacho de Jefatura Quirúrgica",
-            "x": 860, "y": 640, "radius": 95,
-            "icon": "🚪",
-            "tag": "JEFATURA",
-            "color": "#e63946",
-            "title": "La Frialdad del Dr. Moriyama",
-            "text": "A través de la puerta entreabierta de caoba, divisas al Dr. Moriyama revisando un informe confidencial bajo una lámpara halógena.\n\nSu voz suena seca y glacial al teléfono: «Los pacientes del pabellón oeste deben mantenerse bajo monitoreo estricto. La administración de las dieciocho horas procederá conforme a la directiva». \n\nSus ojos se clavan un instante en los tuyos a través del pasillo con una frialdad que te hiela la sangre."
+            "id": "engine_fog",
+            "name": "La Curva de la Niebla • Rugido Mortal",
+            "x": 1550, "y": 680, "radius": 120,
+            "icon": "🚛",
+            "tag": "AMENAZA",
+            "color": "#dc2626",
+            "title": "Dos Faros Ciegos en la Oscuridad",
+            "text": "Desde la curva cerrada de la carretera desciende un camión pesado a velocidad suicida.\n\nEl chirrido de los frenos bloqueados desgarrando el pavimento helado es ensordecedor. Las luces delanteras penetran la niebla como dos ojos incandescentes sedientos de sangre.\n\n¡Está directo en curso de colisión contra el paso peatonal!"
         }
     ]
 
     # -------------------------------------------------------------------------
-    # DEFINICIÓN DE PISTAS Y SALAS: HOSPITAL GENERAL DE NAGANO (MUJER)
+    # DATOS: HOSPITAL MULTI-PISO (PISOS 1, 2 Y 3)
     # -------------------------------------------------------------------------
-    HOSPITAL_AREAS_AOI = [
-        {
-            "id": "yuna_bed",
-            "name": "Habitación 201 • Camilla de Yuna",
-            "x": 440, "y": 270, "radius": 95,
-            "icon": "🛏️",
-            "tag": "COMPAÑERA",
-            "color": "#c084fc",
-            "title": "Yuna Sasaki y el Temor a la Discusión",
-            "text": "Yuna está sentada en su cama, abrazando sus rodillas con la mirada clavada en la puerta.\n\n«Aoi... mi padre vendrá esta tarde. Siempre dice que mis recaídas y mis gastos médicos están destruyendo a la familia. Tengo miedo de que vuelva a gritarme y perder el control...»\n\nSu respiración temblorosa refleja una angustia desgarradora que te recuerda al dolor silencioso que tú misma soportas."
-        },
-        {
-            "id": "bathroom_mirror",
-            "name": "Lavabo y Espejo Causal",
-            "x": 380, "y": 580, "radius": 95,
-            "icon": "🪞",
-            "tag": "EVENTO NEXUS",
-            "color": "#a855f7",
-            "title": "El Reflejo Premonitorio Distorsionado",
-            "text": "Te acercas al lavabo del corredor. Al abrir el grifo, el vapor sobre el espejo comienza a ondularse como agua hirviendo con un brillo amatista sobrenatural.\n\nPor un segundo espeluznante, divisas en el reflejo la sombra de Yuna cayendo de espaldas y un reguero espeso de sangre carmesí extendiéndose por las baldosas.\n\nLa premonición es inminente. El destino fatal está a punto de ejecutarse."
-        },
-        {
-            "id": "nursing_chart",
-            "name": "Puesto Médico y Expediente Clínico",
-            "x": 1020, "y": 260, "radius": 95,
-            "icon": "📋",
-            "tag": "EXPEDIENTE",
-            "color": "#f59e0b",
-            "title": "Historial de Aoi: Seis Meses de Coma",
-            "text": "Lees disimuladamente tu expediente médico sobre el mostrador:\n\n«Paciente: Aoi Kazama, 17 años. Despertar tras casi medio año de coma postraumático. Estado: Depresión severa y riesgo alto de autolesión tras notificársele el suicidio de su hermano Shinshu Kazama, ocurrido un mes antes de su despertar».\n\nEl pecho te arde de culpa: Shinshu se quitó la vida pensando que tú jamás despertarías."
-        },
-        {
-            "id": "broken_stand",
-            "name": "Rincón del Corredor • Soporte Roto",
-            "x": 620, "y": 320, "radius": 95,
-            "icon": "⚠️",
-            "tag": "OBJETO LETAL",
-            "color": "#ef4444",
-            "title": "La Varilla Metálica Puntiaguda",
-            "text": "Junto al rodapié metálico divisas un antiguo soporte de suero desmontado y quebrado.\n\nUna varilla de acero oxidada y afilada sobresale a escasos centímetros del suelo, apuntando hacia arriba como una bayoneta oculta.\n\nSi alguien es empujado con fuerza en esa dirección durante un forcejeo... la caída resultaría mortal en el acto."
-        },
-        {
-            "id": "rooftop_window",
-            "name": "Ventanal Sur • Vista a la Azotea",
-            "x": 860, "y": 640, "radius": 95,
-            "icon": "🌧️",
-            "tag": "MEMORIA",
-            "color": "#94a3b8",
-            "title": "El Salto que Quebró a la Familia",
-            "text": "Contemplas la cornisa del edificio este a través de los cristales batidos por la lluvia.\n\nAllí fue donde tu hermano Shinshu pasó sus últimos días sumido en el remordimiento antes de saltar al vacío.\n\nUna lágrima quema tu mejilla, pero en tu corazón nace una determinación de acero: «Shinshu murió por no poder salvarme... Yo no permitiré que nadie más muera ante mis ojos»."
-        }
-    ]
+    HOSPITAL_FLOORS_DATA = {
+        # ---------------------------------------------------------------------
+        # PISO 3: TRAUMATOLOGÍA, HABITACIONES Y PABELLÓN DE INTERNACIÓN
+        # ---------------------------------------------------------------------
+        3: [
+            {
+                "id": "kenji_room_304",
+                "floor": 3,
+                "name": "Habitación 304 • Camilla de Kenji Takahashi",
+                "x": 520, "y": 420, "radius": 110,
+                "icon": "🛏️",
+                "tag": "COMPAÑERO",
+                "color": "#38bdf8",
+                "title": "Kenji Takahashi y la Aguja de las 18:00",
+                "text": "Kenji descansa con una férula rígida de titanio en su pierna izquierda.\n\n«¡Oye, Ren! A las seis en punto viene Sato con la última dosis intravenosa. Dicen que es un tratamiento concentrado para asegurar que los huesos suelden rápido...»\n\nAl mirar el gotero con tu ojo izquierdo, la solución salina se ve turbia, burbujeante y pestilente. En tus retinas arde la visión de Kenji retorciéndose entre vómitos de sangre negra si esa dosis ingresa a su torrente venoso.",
+                "action_choice": "Revisar la etiqueta química del suero N-4"
+            },
+            {
+                "id": "room_302_agony",
+                "floor": 3,
+                "name": "Habitación 302 • Paciente en Delirio Terminal",
+                "x": 260, "y": 420, "radius": 110,
+                "icon": "⚠️",
+                "tag": "DELIRIO",
+                "color": "#ef4444",
+                "title": "El Agónico Grito de las Sombras Rojas",
+                "text": "Un hombre de mediana edad está amarrado a la camilla con correas de cuero reforzadas. Sus muñecas sangran de tanto forcejear.\n\n«¡NO DEJEN QUE APAGUEN LAS LUCES! ¡LOS OJOS ROJOS ESTÁN EN LAS PAREDES! ¡EL DOCTOR ME METIÓ AGUJAS NEGRAS EN EL CUELLO!»\n\nSus ojos inyectados en sangre se clavan en ti. Espuma sanguinolenta gotea por su barbilla mientras convulsiona frenéticamente.",
+                "action_choice": "Sujetar sus correas e intentar calmar sus espasmos"
+            },
+            {
+                "id": "nursing_station_floor3",
+                "floor": 3,
+                "name": "Estación Central de Enfermería (Piso 3)",
+                "x": 1080, "y": 420, "radius": 110,
+                "icon": "📋",
+                "tag": "MEDICACIÓN",
+                "color": "#f59e0b",
+                "title": "Bandeja Quirúrgica de la Enfermera Sato",
+                "text": "Sobre el mostrador de acero inoxidable reposa una bandeja con jeringas de vidrio precargadas.\n\nUna ampolla de vidrio ámbar tiene la etiqueta arrancada con bisturí, dejando visible solo una inscripción roja: «Tox-NB7 • Dosis letal fulminante». Está asignada a la camilla 304 para las 18:00.\n\n¿Por qué el personal de guardia tiene orden de inocular un veneno paralizante en un pabellón de traumatología ordinario?",
+                "action_choice": "Registrar en sigilo los expedientes confidenciales"
+            },
+            {
+                "id": "room_305_yuna",
+                "floor": 3,
+                "name": "Habitación 305 / 201 • Camilla de Yuna Sasaki",
+                "x": 1420, "y": 420, "radius": 110,
+                "icon": "🛏️",
+                "tag": "COMPAÑERA",
+                "color": "#c084fc",
+                "title": "Yuna Sasaki y la Visita Violenta",
+                "text": "Yuna está sentada con la cabeza baja, apretando sus rodillas contra el pecho con terror en la mirada.\n\n«Aoi... mi padre viene en camino. Dijo que si la aseguradora no cubre los gastos, me sacará arrastrándome del hospital... Tengo miedo de lo que me haga cuando entre por esa puerta...»\n\nJunto a su puerta, una varilla metálica de un gotero roto sobresale en el suelo con una punta afilada capaz de atravesar un cráneo.",
+                "action_choice": "Ofrecerle protección y retirar la varilla puntiaguda"
+            },
+            {
+                "id": "elevator_floor3",
+                "floor": 3,
+                "name": "Ascensor Central & Escaleras de Emergencia",
+                "x": 800, "y": 720, "radius": 120,
+                "icon": "🛗",
+                "tag": "NEXUS VERTICAL",
+                "color": "#10b981",
+                "title": "Acceso a Pisos Inferiores",
+                "text": "El ascensor chirría pesadamente entre los pisos. Al lado, la puerta metálica de las escaleras de emergencia conduce hacia abajo.\n\n• PISO 2: UCI de Aislamiento Crítico, Quirófano 2 y Farmacia de Toxicología.\n• PISO 1: Urgencias de Choque, Morgue Fría y Sala de Desechos Biológicos.\n\nPuedes cambiar de piso directamente con los botones de la barra superior o las opciones de interacción.",
+                "action_choice": "Descender al Piso 2 (UCI & Quirófanos)"
+            },
+            {
+                "id": "storm_window_floor3",
+                "floor": 3,
+                "name": "Gran Ventanal Sur • Vistas a la Azotea",
+                "x": 1660, "y": 720, "radius": 110,
+                "icon": "🌧️",
+                "tag": "MEMORIA",
+                "color": "#94a3b8",
+                "title": "El Vacío Helado de Shinshu",
+                "text": "El temporal golpea con furia salvaje los ventanales reforzados. Relámpagos lívidos iluminan las cordilleras de Nagano.\n\nAbajo, el tejado de urgencias se ve empapado en penumbra. Desde esta altura exacta fue donde ocurrió el salto mortal hacia el vacío.\n\nLa culpa y el remordimiento pesan como plomo derretido en el pecho.",
+                "action_choice": "Contemplar la lluvia y afilar la concentración mental"
+            }
+        ],
 
-    def get_hospital_areas(perspective):
-        areas = HOSPITAL_AREAS_AOI if perspective == "mujer" else HOSPITAL_AREAS_SHINSHU
-        default_color = "#c084fc" if perspective == "mujer" else "#e63946"
-        for a in areas:
-            if "color" not in a or not a["color"]:
-                a["color"] = default_color
-            if "icon" not in a:
-                a["icon"] = "✦"
-            if "name" not in a:
-                a["name"] = "Área Hospitalaria"
-            if "radius" not in a:
-                a["radius"] = 95
-            if "tag" not in a:
-                a["tag"] = "PISTA"
-            if "title" not in a:
-                a["title"] = "Expediente"
-            if "text" not in a:
-                a["text"] = "Sin observaciones adicionales."
-        return areas
+        # ---------------------------------------------------------------------
+        # PISO 2: UCI DE AISLAMIENTO, QUIRÓFANOS Y TOXICOLOGÍA
+        # ---------------------------------------------------------------------
+        2: [
+            {
+                "id": "icu_critical_floor2",
+                "floor": 2,
+                "name": "UCI de Aislamiento • Monitor en Alarma",
+                "x": 340, "y": 420, "radius": 110,
+                "icon": "⚡",
+                "tag": "CRÍTICO",
+                "color": "#ef4444",
+                "title": "El Paciente en Taquicardia Ventricular",
+                "text": "El monitor cardíaco emite un pitido frenético: 168 pulsaciones por minuto.\n\nEl paciente intubado en la cama 3 tiembla con convulsiones clónicas. Por la comisura de sus labios escurre saliva teñida de sangre oscura.\n\nEn su bolsa de suero cuelga la misma etiqueta roja: «Reactivo Experimental Nexus Causal». El personal lo observa a través del cristal sin intervenir, cronometrando su resistencia.",
+                "action_choice": "Intervenir la válvula de oxígeno para estabilizarlo"
+            },
+            {
+                "id": "operating_room_floor2",
+                "floor": 2,
+                "name": "Quirófano 2 • Luces Cialíticas y Sangre Fresca",
+                "x": 720, "y": 420, "radius": 110,
+                "icon": "🩸",
+                "tag": "HORROR QUIRÚRGICO",
+                "color": "#dc2626",
+                "title": "Mesa Quirúrgica Manchada de Rojo",
+                "text": "La puerta vaivén del quirófano está encajada con una pinza de campo. El olor es repugnante: carne quemada por electrobisturí, antiséptico rancio y sangre tibia.\n\nSobre la camilla metálica hay un charco de sangre arterial fresca que gotea lentamente hacia el sumidero del suelo. Bandejas con sierras de hueso y separadores costales manchados de rojo atestiguan una cirugía brutal que acaba de terminar.",
+                "action_choice": "Examinar los rastros biológicos y las muestras de tejido"
+            },
+            {
+                "id": "pharmacy_toxic_floor2",
+                "floor": 2,
+                "name": "Depósito de Farmacia y Toxicología",
+                "x": 1180, "y": 420, "radius": 110,
+                "icon": "☣️",
+                "tag": "TOXICOLOGÍA",
+                "color": "#f97316",
+                "title": "Armario de Sustancias de Restricción",
+                "text": "El armario blindado de fármacos controlados tiene la cerradura forzada.\n\nFrascos de toxinas paralizantes de acción rápida (Tox-NB7) yacen alineados en cajas con el sello del «Hospital General de Chūbu - División Quirúrgica Especial».\n\nEste hospital no está curando pacientes: los está utilizando como conejillos de indias para experimentos de muerte inducida y reanimación causal.",
+                "action_choice": "Confiscar una ampolla de reactivo como prueba irrefutable"
+            },
+            {
+                "id": "dr_office_floor2",
+                "floor": 2,
+                "name": "Despacho de Jefatura Quirúrgica (Dr. Moriyama)",
+                "x": 1560, "y": 420, "radius": 110,
+                "icon": "🚪",
+                "tag": "CONSPIRACIÓN",
+                "color": "#a855f7",
+                "title": "Los Informes Secretos del Dr. Moriyama",
+                "text": "Sobre el escritorio de roble hay un expediente marcado con cinta de seguridad roja: «Proyecto Sujetos Despiertos • Kasugai y Takahashi».\n\n«El sujeto Kasugai exhibe alteraciones retinianas fotomórficas tras el traumatismo masivo. Capacidad premonitoria confirmada. La eliminación de Takahashi mediante Tox-NB7 a las 18:00 servirá como prueba de campo para evaluar si el sujeto es capaz de alterar el flujo causal».\n\n¡Moriyama planeó el asesinato de Kenji deliberadamente para probar tus ojos!",
+                "action_choice": "Sustraer el informe confidencial antes de ser descubierto"
+            },
+            {
+                "id": "elevator_floor2",
+                "floor": 2,
+                "name": "Ascensor Central (Piso 2)",
+                "x": 960, "y": 720, "radius": 120,
+                "icon": "🛗",
+                "tag": "CONEXIÓN",
+                "color": "#10b981",
+                "title": "Distribuidor Central del Edificio",
+                "text": "Desde aquí puedes subir al Piso 3 (Pabellón de Internación y Camillas) o descender al Piso 1 (Urgencias y Morgue Fría subterránea).",
+                "action_choice": "Cambiar de Piso"
+            }
+        ],
 
-    def get_nearest_hospital_area(perspective, px, py):
-        areas = get_hospital_areas(perspective)
+        # ---------------------------------------------------------------------
+        # PISO 1: URGENCIAS, MORGUE FRÍA Y DESECHOS BIOLÓGICOS
+        # ---------------------------------------------------------------------
+        1: [
+            {
+                "id": "er_triage_floor1",
+                "floor": 1,
+                "name": "Sala de Urgencias y Triage Masivo",
+                "x": 360, "y": 420, "radius": 110,
+                "icon": "🚑",
+                "tag": "URGENCIAS",
+                "color": "#ef4444",
+                "title": "Heridos de Autopista y Gritos de Dolor",
+                "text": "La planta baja es un caos dantesco. Dos camillas ingresan a toda prisa con heridos de un choque múltiple en la ruta alpina.\n\nUn joven grita desgarrándose la voz mientras médicos comprimen una arteria femoral rota. La sangre empapa el linóleo blanco.\n\nEl olor a gasas ensangrentadas y alcohol yodado te transporta de golpe al instante en que tu propio cuerpo fue pulverizado por el camión.",
+                "action_choice": "Ayudar a despejar el pasillo para la camilla crítica"
+            },
+            {
+                "id": "morgue_cold_floor1",
+                "floor": 1,
+                "name": "Morgue Fría • Depósito de Cadáveres",
+                "x": 780, "y": 420, "radius": 110,
+                "icon": "⚰️",
+                "tag": "MORGUE",
+                "color": "#38bdf8",
+                "title": "Las Bandejas Frías y el Anciano Kuroda",
+                "text": "La temperatura desciende a 3°C al abrir la pesada puerta hermética de la morgue subterránea.\n\nEn la gaveta de acero número 7 reposa el cuerpo del anciano Kuroda bajo una sábana blanca manchada de fluido biológico. Su rostro conserva la mueca de terror con la que murió en el baño a las 20:15.\n\nEn su cuello divisas una pequeña marca violácea: el orificio exacto de una punción letal con reactivo Tox-NB7. No fue un simple infarto natural: ¡Kuroda también fue asesinado!",
+                "action_choice": "Inspeccionar las marcas forenses del cuello del cadáver"
+            },
+            {
+                "id": "bio_waste_floor1",
+                "floor": 1,
+                "name": "Sala de Incineración y Residuos Peligrosos",
+                "x": 1220, "y": 420, "radius": 110,
+                "icon": "🔥",
+                "tag": "INCINERACIÓN",
+                "color": "#dc2626",
+                "title": "El Fuego Que Borra las Pruebas",
+                "text": "El horno incinerador ruge en el fondo de la sala, irradiando una ola de calor asfixiante.\n\nUn contenedor de residuos biológicos contiene batas ensangrentadas, frascos vacíos de Tox-NB7 y expedientes clínicos quemados a medias.\n\nEstán destruyendo a toda prisa las evidencias de los pacientes que fallecieron misteriosamente durante la última semana.",
+                "action_choice": "Rescatar fragmentos de expedientes del contenedor"
+            },
+            {
+                "id": "security_checkpoint_floor1",
+                "floor": 1,
+                "name": "Control de Seguridad y Salida Bloqueada",
+                "x": 1600, "y": 420, "radius": 110,
+                "icon": "👮",
+                "tag": "VIGILANCIA",
+                "color": "#64748b",
+                "title": "Guardias Armados en la Salida Oeste",
+                "text": "Dos guardias de seguridad privada vigilan la salida trasera con porras eléctricas y radios de onda corta.\n\nHablan en voz baja: «Nadie del pabellón oeste sale sin el sello de Moriyama. Si el muchacho de los ojos raros intenta cruzar el perímetro, inmovilícenlo de inmediato».\n\nEl hospital es una prisión sellada. Salvar a Kenji y escapar con vida requerirá astucia y determinación implacable.",
+                "action_choice": "Registrar sus frecuencias de radio y patrullaje"
+            },
+            {
+                "id": "elevator_floor1",
+                "floor": 1,
+                "name": "Ascensor Central (Piso 1)",
+                "x": 960, "y": 720, "radius": 120,
+                "icon": "🛗",
+                "tag": "CONEXIÓN",
+                "color": "#10b981",
+                "title": "Retorno a Pabellones Superiores",
+                "text": "El ascensor te permite regresar rápidamente al Piso 2 (Cirugía y Toxicología) o al Piso 3 (Habitación 304 con Kenji Takahashi).",
+                "action_choice": "Subir al Piso 3 (Habitaciones)"
+            }
+        ]
+    }
+
+    def get_current_floor_areas(floor):
+        return HOSPITAL_FLOORS_DATA.get(floor, HOSPITAL_FLOORS_DATA[3])
+
+    def get_nearest_floor_area(floor, px, py):
+        areas = get_current_floor_areas(floor)
         for a in areas:
             ax = a.get("x", 0)
             ay = a.get("y", 0)
-            rad = a.get("radius", 95)
+            rad = a.get("radius", 110)
             dist = ((ax - px) ** 2 + (ay - py) ** 2) ** 0.5
             if dist <= rad:
                 return a
@@ -160,26 +299,22 @@ init python:
     def move_hospital_player(dx, dy, facing, perspective):
         global hospital_pos_x, hospital_pos_y, hospital_player_facing
         hospital_player_facing = facing
-
         new_x = hospital_pos_x + dx
         new_y = hospital_pos_y + dy
-
-        # Delimitación y colisiones con los muros del pabellón
-        min_x, max_x = 360, 1260
-        min_y, max_y = 220, 680
-
-        hospital_pos_x = max(min_x, min(max_x, new_x))
-        hospital_pos_y = max(min_y, min(max_y, new_y))
+        # Límites de movimiento en pantalla completa 1920x1080
+        hospital_pos_x = max(120, min(1800, new_x))
+        hospital_pos_y = max(180, min(860, new_y))
         renpy.restart_interaction()
 
-    def teleport_and_inspect_area(area, perspective):
-        global hospital_pos_x, hospital_pos_y
-        if area:
-            hospital_pos_x = area.get("x", hospital_pos_x)
-            hospital_pos_y = area.get("y", hospital_pos_y)
-            inspect_hospital_area(area)
+    def set_hospital_floor(floor):
+        global hospital_current_floor, hospital_pos_x, hospital_pos_y
+        hospital_current_floor = floor
+        hospital_pos_x = 960
+        hospital_pos_y = 660
+        renpy.play("audio/heartbeat.wav")
+        renpy.restart_interaction()
 
-    def inspect_hospital_area(area):
+    def inspect_floor_area(area):
         global hospital_modal_clue, hospital_investigated
         if area:
             hospital_modal_clue = area
@@ -187,7 +322,7 @@ init python:
             if area_id:
                 hospital_investigated.add(area_id)
             tag = area.get("tag", "")
-            if "NEXUS" in tag or "ANOMALÍA" in tag or "OBJETO" in tag:
+            if "TOXICOLOGÍA" in tag or "HORROR" in tag or "MORGUE" in tag:
                 renpy.play("audio/eye_vision.wav")
             else:
                 renpy.play("audio/heartbeat.wav")
@@ -198,54 +333,203 @@ init python:
         hospital_modal_clue = None
         renpy.restart_interaction()
 
+    def trigger_clue_event(event_key):
+        global hospital_events_done
+        hospital_events_done.add(event_key)
+        renpy.play("audio/eye_vision.wav")
+        renpy.restart_interaction()
+
+    # Funciones para la calle 2D previa al accidente
+    def move_street_player(dx, dy):
+        global street_pos_x, street_pos_y
+        street_pos_x = max(180, min(1740, street_pos_x + dx))
+        street_pos_y = max(420, min(800, street_pos_y + dy))
+        renpy.restart_interaction()
+
+    def inspect_street_area(area):
+        global street_modal_clue, street_investigated
+        if area:
+            street_modal_clue = area
+            area_id = area.get("id", "")
+            if area_id:
+                street_investigated.add(area_id)
+            if area_id in ["puddle_blood", "engine_fog"]:
+                renpy.play("audio/crash.wav")
+            else:
+                renpy.play("audio/heartbeat.wav")
+            renpy.restart_interaction()
+
+    def close_street_modal():
+        global street_modal_clue
+        street_modal_clue = None
+        renpy.restart_interaction()
+
 
 ## =============================================================================
-## PANTALLA PRINCIPAL DE EXPLORACIÓN 2D DEL HOSPITAL
+## 1. PANTALLA 2D PRE-ACCIDENTE EN NAGANO: EL PASO DE PEATONES BAJO LA LLUVIA
 ## =============================================================================
-screen hospital_2d_exploration(perspective="hombre"):
+screen street_2d_crossing(perspective="hombre"):
     modal True
     tag menu
 
-    $ current_areas = get_hospital_areas(perspective)
-    $ near_area = get_nearest_hospital_area(perspective, hospital_pos_x, hospital_pos_y)
     $ is_male = (perspective != "mujer")
     $ theme_tint = "#e63946" if is_male else "#c084fc"
-    $ progress_count = len([a for a in current_areas if a.get("id") in hospital_investigated])
-    $ total_count = len(current_areas)
-    $ can_continue = (progress_count >= 2)
+    $ near_street_area = None
+    python:
+        for a in STREET_AREAS:
+            ax = a.get("x", 0)
+            ay = a.get("y", 0)
+            dist = ((ax - street_pos_x) ** 2 + (ay - street_pos_y) ** 2) ** 0.5
+            if dist <= a.get("radius", 110):
+                near_street_area = a
+                break
 
-    # Controles por Teclado: Arriba, Abajo, Izquierda, Derecha (WASD y Flechas)
-    key "K_UP" action Function(move_hospital_player, 0, -32, "up", perspective)
-    key "w" action Function(move_hospital_player, 0, -32, "up", perspective)
-    key "W" action Function(move_hospital_player, 0, -32, "up", perspective)
+    # Controles por Teclado (WASD y Flechas)
+    key "K_UP" action Function(move_street_player, 0, -36)
+    key "w" action Function(move_street_player, 0, -36)
+    key "W" action Function(move_street_player, 0, -36)
 
-    key "K_DOWN" action Function(move_hospital_player, 0, 32, "down", perspective)
-    key "s" action Function(move_hospital_player, 0, 32, "down", perspective)
-    key "S" action Function(move_hospital_player, 0, 32, "down", perspective)
+    key "K_DOWN" action Function(move_street_player, 0, 36)
+    key "s" action Function(move_street_player, 0, 36)
+    key "S" action Function(move_street_player, 0, 36)
 
-    key "K_LEFT" action Function(move_hospital_player, -32, 0, "left", perspective)
-    key "a" action Function(move_hospital_player, -32, 0, "left", perspective)
-    key "A" action Function(move_hospital_player, -32, 0, "left", perspective)
+    key "K_LEFT" action Function(move_street_player, -36, 0)
+    key "a" action Function(move_street_player, -36, 0)
+    key "A" action Function(move_street_player, -36, 0)
 
-    key "K_RIGHT" action Function(move_hospital_player, 32, 0, "right", perspective)
-    key "d" action Function(move_hospital_player, 32, 0, "right", perspective)
-    key "D" action Function(move_hospital_player, 32, 0, "right", perspective)
+    key "K_RIGHT" action Function(move_street_player, 36, 0)
+    key "d" action Function(move_street_player, 36, 0)
+    key "D" action Function(move_street_player, 36, 0)
 
-    # Teclas de Interacción / Inspección
-    if near_area and not hospital_modal_clue:
-        key "K_SPACE" action Function(inspect_hospital_area, near_area)
-        key "K_RETURN" action Function(inspect_hospital_area, near_area)
-        key "e" action Function(inspect_hospital_area, near_area)
-        key "E" action Function(inspect_hospital_area, near_area)
+    if near_street_area and not street_modal_clue:
+        key "K_SPACE" action Function(inspect_street_area, near_street_area)
+        key "K_RETURN" action Function(inspect_street_area, near_street_area)
+        key "e" action Function(inspect_street_area, near_street_area)
+        key "E" action Function(inspect_street_area, near_street_area)
 
-    add "#03060c"
+    # Fondo oscuro de noche de tormenta
+    add Solid("#070b14")
 
-    # --- ENCABEZADO SUPERIOR DEL PABELLÓN ---
+    # --- REPRESENTACIÓN 2D DEL CRUCE PEATONAL A PANTALLA COMPLETA ---
+    fixed:
+        xfill True
+        yfill True
+
+        # Acera superior (Farolas y comercios borrosos)
+        frame:
+            xpos 0
+            ypos 0
+            xsize 1920
+            ysize 380
+            background Solid("#0f172a")
+
+            # Carteles luminosos lejanos de Matsumoto
+            hbox:
+                xpos 80
+                ypos 70
+                spacing 40
+                frame:
+                    background Solid("#1e293b")
+                    padding (16, 8, 16, 8)
+                    text "松本駅前通り • MATSUMOTO STATION":
+                        size 12
+                        color "#64748b"
+                        bold True
+                frame:
+                    background Solid("#31101d")
+                    padding (16, 8, 16, 8)
+                    text "⚠️ AVISO METEOROLÓGICO: TEMPORAL SEVERO EN CHŪBU":
+                        size 12
+                        color "#f43f5e"
+                        bold True
+
+        # Calzada de asfalto mojado (Paso peatonal y carretera)
+        frame:
+            xpos 0
+            ypos 380
+            xsize 1920
+            ysize 460
+            background Solid("#090d16")
+
+            # Franjas blancas del paso de peatones (Cebra)
+            hbox:
+                xpos 380
+                ypos 40
+                spacing 48
+                for i in range(11):
+                    frame:
+                        xsize 60
+                        ysize 380
+                        background Solid("#e2e8f018" if i % 2 == 0 else "#f8fafc25")
+
+        # Acera inferior de seguridad
+        frame:
+            xpos 0
+            ypos 840
+            xsize 1920
+            ysize 240
+            background Solid("#0b1222")
+
+        # --- DIBUJADO DE PUNTOS INTERACTIVOS EN LA CALLE ---
+        for spot in STREET_AREAS:
+            $ is_inspected = (spot["id"] in street_investigated)
+            $ mark_color = "#10b981" if is_inspected else spot["color"]
+
+            button:
+                xpos spot["x"] - 65
+                ypos spot["y"] - 65
+                xsize 130
+                ysize 130
+                background Solid("#060a14b0")
+                hover_background Solid(mark_color)
+                action Function(inspect_street_area, spot)
+
+                vbox:
+                    xalign 0.5
+                    yalign 0.5
+                    spacing 4
+                    text spot["icon"]:
+                        size 32
+                        xalign 0.5
+                    text spot["tag"]:
+                        size 10
+                        color mark_color
+                        bold True
+                        xalign 0.5
+
+        # --- AVATAR DEL JUGADOR EN LA CALLE 2D ---
+        frame:
+            xpos street_pos_x - 30
+            ypos street_pos_y - 30
+            xsize 60
+            ysize 60
+            background Solid(theme_tint)
+
+            text ("♂" if is_male else "♀"):
+                size 24
+                color "#ffffff"
+                bold True
+                xalign 0.5
+                yalign 0.5
+
+        # Silueta de Aoi infantil caminando a unos pasos
+        frame:
+            xpos 700
+            ypos 600
+            xsize 44
+            ysize 44
+            background Solid("#facc15")
+            text "☂️":
+                size 22
+                xalign 0.5
+                yalign 0.5
+
+    # --- BARRA SUPERIOR HUD ---
     frame:
         xfill True
-        ysize 88
-        background Solid("#070b16f2")
-        padding (32, 14, 32, 14)
+        ysize 76
+        background Solid("#060a14f0")
+        padding (32, 12, 32, 12)
 
         hbox:
             xfill True
@@ -254,417 +538,561 @@ screen hospital_2d_exploration(perspective="hombre"):
             hbox:
                 spacing 16
                 yalign 0.5
-                text ("♂ LÍNEA CARMESÍ" if is_male else "♀ LÍNEA AMATISTA"):
-                    font gui.interface_text_font
-                    size 14
-                    bold True
-                    color theme_tint
-                    yalign 0.5
-
-                text "•":
-                    color "#475569"
-                    yalign 0.5
-
-                text ("HOSPITAL GENERAL DE SHINSHU (PABELLÓN OESTE - 17:45)" if is_male else "HOSPITAL GENERAL DE NAGANO (PLANTA SEGUNDA - MEDIANOCHE)"):
+                text ("🌧️ MATSUMOTO, CHŪBU • CRUCE PEATONAL PREVIO AL IMPACTO"):
                     font gui.name_text_font
-                    size 17
+                    size 16
+                    bold True
                     color "#f8fafc"
-                    bold True
-                    yalign 0.5
 
-            # Contador de progreso de investigación
-            hbox:
-                spacing 12
-                yalign 0.5
                 frame:
-                    background Solid("#111827")
-                    padding (14, 6, 14, 6)
-                    hbox:
-                        spacing 8
-                        text "EXPEDIENTES DESCUBIERTOS:":
-                            font gui.interface_text_font
-                            size 11
-                            color "#94a3b8"
-                            bold True
-                        text (str(progress_count) + " / " + str(total_count)):
-                            font gui.interface_text_font
-                            size 13
-                            bold True
-                            color theme_tint
-
-    # --- PLANO ARQUITECTÓNICO 2D DEL HOSPITAL (TABLERO DE EXPLORACIÓN) ---
-    frame:
-        xalign 0.5
-        yalign 0.51
-        xsize 1380
-        ysize 690
-        background Frame(Solid("#080d1af0"), 8, 8)
-        padding (20, 20, 20, 20)
-
-        fixed:
-            xfill True
-            yfill True
-
-            # Salas y zonas delimitadas en el mapa 2D
-            # Sala 1: Habitación de Internación (Noroeste)
-            frame:
-                xpos 340
-                ypos 190
-                xsize 280
-                ysize 180
-                background Solid("#0e1628d0")
-                text ("HABITACIÓN 304" if is_male else "HABITACIÓN 201"):
-                    size 11
-                    color "#64748b"
-                    xalign 0.5
-                    ypos 8
-                    bold True
-
-            # Sala 2: Pasillo Central y Ventanales (Centro)
-            frame:
-                xpos 640
-                ypos 330
-                xsize 220
-                ysize 200
-                background Solid("#121b30d0")
-                text "CORREDOR Y VENTANALES":
-                    size 10
-                    color "#64748b"
-                    xalign 0.5
-                    ypos 8
-                    bold True
-
-            # Sala 3: Estación de Enfermería (Noreste)
-            frame:
-                xpos 900
-                ypos 190
-                xsize 260
-                ysize 180
-                background Solid("#0f1b2bd0")
-                text "ESTACIÓN DE ENFERMERÍA":
-                    size 11
-                    color "#64748b"
-                    xalign 0.5
-                    ypos 8
-                    bold True
-
-            # Sala 4: Lavabos / Aislamiento (Suroeste)
-            frame:
-                xpos 340
-                ypos 490
-                xsize 260
-                ysize 180
-                background Solid("#11152bd0")
-                text ("LAVABOS Y PABELLÓN OESTE" if is_male else "LAVABO Y ESPEJO PREMONITORIO"):
-                    size 10
-                    color "#64748b"
-                    xalign 0.5
-                    ypos 8
-                    bold True
-
-            # Sala 5: Farmacia / Despacho de Jefatura (Sureste)
-            frame:
-                xpos 800
-                ypos 490
-                xsize 360
-                ysize 180
-                background Solid("#1e131cd0" if is_male else "#1a1024d0")
-                text ("JEFATURA MÉDICA Y FARMACIA" if is_male else "DESPACHO Y ARCHIVO"):
-                    size 11
-                    color "#64748b"
-                    xalign 0.5
-                    ypos 8
-                    bold True
-
-            # RENDER DE CADA PUNTO DE INTERÉS (HOTSPOTS TÁCTILES)
-            # Permite hacer clic o tocar con el dedo en celular para caminar directamente a la sala e investigarla
-            for area in current_areas:
-                $ is_found = (area.get("id") in hospital_investigated)
-                $ spot_color = "#10b981" if is_found else area.get("color", theme_tint)
-                $ ax = area.get("x", 500)
-                $ ay = area.get("y", 300)
-
-                button:
-                    xpos (ax - 42)
-                    ypos (ay - 42)
-                    xsize 84
-                    ysize 84
-                    background Frame(Solid(spot_color + "30"), 8, 8)
-                    hover_background Frame(Solid(spot_color + "80"), 8, 8)
-                    # Al tocar en celular o hacer clic, el personaje camina hacia la sala y la investiga
-                    action Function(teleport_and_inspect_area, area, perspective)
-
-                    vbox:
-                        xalign 0.5
-                        yalign 0.5
-                        spacing 2
-                        text area.get("icon", "✦"):
-                            size 26
-                            xalign 0.5
-                        text ("✔" if is_found else "✦"):
-                            size 12
-                            color spot_color
-                            bold True
-                            xalign 0.5
-
-                # Etiqueta de la sala
-                text area.get("name", "Sala"):
-                    xpos ax
-                    ypos (ay + 46)
-                    xanchor 0.5
-                    font gui.interface_text_font
-                    size 10
-                    color ("#a7f3d0" if is_found else "#cbd5e1")
-                    bold True
-
-            # RENDER DEL AVATAR DEL JUGADOR EN 2D
-            frame:
-                xpos (hospital_pos_x - 30)
-                ypos (hospital_pos_y - 30)
-                xsize 60
-                ysize 60
-                background Frame(Solid(theme_tint + "40"), 30, 30)
-
-                vbox:
-                    xalign 0.5
-                    yalign 0.5
-                    spacing 1
-
-                    text ("▲" if hospital_player_facing == "up" else ("▼" if hospital_player_facing == "down" else ("◀" if hospital_player_facing == "left" else "▶"))):
-                        size 12
-                        color "#ffffff"
-                        bold True
-                        xalign 0.5
-
-                    text ("♂" if is_male else "♀"):
-                        size 22
+                    background Solid("#1e293b")
+                    padding (10, 4, 10, 4)
+                    text "EXPLORACIÓN 2D PRE-ACCIDENTE":
+                        size 11
                         bold True
                         color theme_tint
-                        xalign 0.5
 
-            # Nombre sobre la cabeza del jugador
-            text (("SHINSHU" if is_male else "AOI") + " (TÚ)"):
-                xpos hospital_pos_x
-                ypos (hospital_pos_y - 48)
-                xanchor 0.5
-                font gui.interface_text_font
-                size 10
-                bold True
-                color "#f8fafc"
-                outlines [(1, "#000000ee", 0, 0)]
+            # Indicador de peligro inminente
+            frame:
+                background Solid("#450a0a")
+                padding (14, 6, 14, 6)
+                text "⚠️ PELIGRO INMINENTE • 18:00 TORMENTA":
+                    size 11
+                    bold True
+                    color "#fca5a5"
 
-            # Alerta interactiva flotante cuando el jugador está cerca de una pista
-            if near_area and not hospital_modal_clue:
-                frame:
-                    xpos hospital_pos_x
-                    ypos (hospital_pos_y + 44)
-                    xanchor 0.5
-                    background Frame(Solid("#111827fa"), 6, 6)
-                    padding (12, 6, 12, 6)
-
-                    textbutton _("[[ E / ESPACIO ]] INVESTIGAR") substitute False:
-                        action Function(inspect_hospital_area, near_area)
-                        text_font gui.interface_text_font
-                        text_size 11
-                        text_bold True
-                        text_color theme_tint
-
-    # --- BARRA INFERIOR DE CONTROLES ADAPTADA A CELULARES Y PC ---
+    # --- BARRA INFERIOR DE ACCIÓN Y DECISIÓN ---
     frame:
         xfill True
-        ysize 115
         yalign 1.0
-        background Solid("#050811f6")
-        padding (30, 10, 30, 10)
+        ysize 90
+        background Solid("#070b16f2")
+        padding (24, 12, 24, 12)
 
         hbox:
             xfill True
             yalign 0.5
 
-            # CRUCETA TÁCTIL VIRTUAL PARA CELULARES Y MOUSE
+            # Controles táctiles para celulares
             hbox:
                 spacing 6
                 yalign 0.5
 
-                text "MÓVIL / TÁCTIL:":
-                    font gui.interface_text_font
-                    size 11
-                    color "#64748b"
-                    bold True
-                    yalign 0.5
-
                 button:
-                    action Function(move_hospital_player, -32, 0, "left", perspective)
+                    action Function(move_street_player, -36, 0)
                     background Solid("#1e293b")
-                    hover_background Solid("#334155")
-                    padding (14, 10, 14, 10)
+                    padding (12, 8, 12, 8)
                     text "◀ A":
-                        size 13
-                        color "#e2e8f0"
+                        size 12
                         bold True
+                        color "#e2e8f0"
 
                 button:
-                    action Function(move_hospital_player, 0, -32, "up", perspective)
+                    action Function(move_street_player, 0, -36)
                     background Solid("#1e293b")
-                    hover_background Solid("#334155")
-                    padding (14, 10, 14, 10)
+                    padding (12, 8, 12, 8)
                     text "▲ W":
-                        size 13
-                        color "#e2e8f0"
+                        size 12
                         bold True
+                        color "#e2e8f0"
 
                 button:
-                    action Function(move_hospital_player, 0, 32, "down", perspective)
+                    action Function(move_street_player, 0, 36)
                     background Solid("#1e293b")
-                    hover_background Solid("#334155")
-                    padding (14, 10, 14, 10)
+                    padding (12, 8, 12, 8)
                     text "▼ S":
-                        size 13
-                        color "#e2e8f0"
+                        size 12
                         bold True
+                        color "#e2e8f0"
 
                 button:
-                    action Function(move_hospital_player, 32, 0, "right", perspective)
+                    action Function(move_street_player, 36, 0)
                     background Solid("#1e293b")
-                    hover_background Solid("#334155")
-                    padding (14, 10, 14, 10)
+                    padding (12, 8, 12, 8)
                     text "▶ D":
-                        size 13
-                        color "#e2e8f0"
+                        size 12
                         bold True
+                        color "#e2e8f0"
 
-                # Botón de Acción Táctil en Celular
-                if near_area:
+                if near_street_area:
                     button:
-                        action Function(inspect_hospital_area, near_area)
+                        action Function(inspect_street_area, near_street_area)
                         background Solid(theme_tint)
-                        hover_background Solid("#10b981")
-                        padding (16, 10, 16, 10)
-                        text "🔍 INVESTIGAR":
-                            size 13
-                            color "#ffffff"
+                        padding (14, 8, 14, 8)
+                        text "🔍 INSPECCIONAR":
+                            size 12
                             bold True
+                            color "#ffffff"
 
-            # Guía de juego en pantalla
+            # Instrucciones
             vbox:
-                yalign 0.5
                 xalign 0.5
+                yalign 0.5
                 spacing 2
-                text _("• Teclado: [[W, A, S, D]] o [[Flechas]] para caminar • [[Espacio / E]] para investigar") substitute False:
-                    font gui.interface_text_font
+                text _("• Muévete con [[W, A, S, D]] o [[Flechas]] • [[Espacio]] para inspeccionar señales y hablar con Aoi") substitute False:
                     size 11
                     color "#94a3b8"
-                text _("• Celular: Toca la cruceta táctil o toca directamente cualquier sala en el plano") substitute False:
-                    font gui.interface_text_font
-                    size 11
-                    color "#38bdf8"
 
-            # Botón de Continuar la Historia (se activa al encontrar 2 o más pistas)
-            hbox:
-                spacing 14
-                yalign 0.5
+            # Botón Decisivo del Destino: Provocar la reacción al camión
+            button:
+                action Return("decision_accidente")
+                background Solid("#b91c1c")
+                hover_background Solid("#ef4444")
+                padding (20, 12, 20, 12)
+                text "⚡ ¡EL CAMIÓN SE ACERCA! ACTUAR AHORA ▶":
+                    size 12
+                    bold True
+                    color "#ffffff"
 
-                if can_continue:
-                    textbutton _("CONTINUAR HISTORIA ▶"):
-                        action Return()
-                        text_font gui.interface_text_font
-                        text_size 13
-                        text_bold True
-                        text_color "#ffffff"
-                        background Solid(theme_tint)
-                        hover_background Solid("#10b981")
-                        padding (22, 12, 22, 12)
-                else:
-                    frame:
-                        background Solid("#1e293b")
-                        padding (16, 12, 16, 12)
-                        text ("Investiga al menos 2 pistas (" + str(progress_count) + "/2)"):
-                            font gui.interface_text_font
-                            size 11
-                            color "#64748b"
-                            bold True
-
-
-    # --- MODAL FLOTANTE DE DETALLE DE LA PISTA INVESTIGADA ---
-    if hospital_modal_clue:
-        $ clue_color = hospital_modal_clue.get("color", theme_tint)
-
-        # Fondo translúcido que permite cerrar al tocar fuera
+    # --- MODAL FLOTANTE DE DETALLE EN LA CALLE ---
+    if street_modal_clue:
         button:
             xfill True
             yfill True
             background Solid("#000000ba")
-            action Function(close_hospital_modal)
+            action Function(close_street_modal)
 
         frame:
             xalign 0.5
             yalign 0.5
             xsize 920
             background Frame(Solid("#0d1322fa"), 12, 12)
-            padding (36, 30, 36, 30)
+            padding (36, 28, 36, 28)
 
             vbox:
-                spacing 16
+                spacing 14
                 xfill True
 
-                # Cabecera de la pista
+                hbox:
+                    xfill True
+                    yalign 0.5
+                    hbox:
+                        spacing 12
+                        text street_modal_clue.get("icon", "✦"):
+                            size 28
+                        vbox:
+                            spacing 2
+                            text street_modal_clue.get("name", ""):
+                                size 12
+                                bold True
+                                color street_modal_clue.get("color", "#facc15")
+                            text street_modal_clue.get("title", ""):
+                                size 18
+                                bold True
+                                color "#ffffff"
+
+                frame:
+                    xfill True
+                    ysize 2
+                    background Solid(street_modal_clue.get("color", "#facc15"))
+
+                text street_modal_clue.get("text", ""):
+                    size 14
+                    color "#cbd5e1"
+                    line_spacing 5
+
+                null height 6
+
+                button:
+                    action Function(close_street_modal)
+                    xalign 1.0
+                    background Solid("#1e293b")
+                    padding (20, 8, 20, 8)
+                    text "✕ CONTINUAR EN LA CALLE [[ESC]]" substitute False:
+                        size 12
+                        bold True
+                        color "#ffffff"
+
+
+## =============================================================================
+## 2. EXPLORACIÓN 2D DEL HOSPITAL A PANTALLA COMPLETA MULTI-PISO (1920x1080)
+## =============================================================================
+screen hospital_2d_exploration(perspective="hombre"):
+    modal True
+    tag menu
+
+    $ is_male = (perspective != "mujer")
+    $ theme_tint = "#e63946" if is_male else "#c084fc"
+    $ current_areas = get_current_floor_areas(hospital_current_floor)
+    $ near_area = get_nearest_floor_area(hospital_current_floor, hospital_pos_x, hospital_pos_y)
+    $ progress_count = len(hospital_investigated)
+    $ can_continue = (progress_count >= 2)
+
+    # Teclas de movimiento WASD y Flechas
+    key "K_UP" action Function(move_hospital_player, 0, -36, "up", perspective)
+    key "w" action Function(move_hospital_player, 0, -36, "up", perspective)
+    key "W" action Function(move_hospital_player, 0, -36, "up", perspective)
+
+    key "K_DOWN" action Function(move_hospital_player, 0, 36, "down", perspective)
+    key "s" action Function(move_hospital_player, 0, 36, "down", perspective)
+    key "S" action Function(move_hospital_player, 0, 36, "down", perspective)
+
+    key "K_LEFT" action Function(move_hospital_player, -36, 0, "left", perspective)
+    key "a" action Function(move_hospital_player, -36, 0, "left", perspective)
+    key "A" action Function(move_hospital_player, -36, 0, "left", perspective)
+
+    key "K_RIGHT" action Function(move_hospital_player, 36, 0, "right", perspective)
+    key "d" action Function(move_hospital_player, 36, 0, "right", perspective)
+    key "D" action Function(move_hospital_player, 36, 0, "right", perspective)
+
+    # Teclas de interacción
+    if near_area and not hospital_modal_clue:
+        key "K_SPACE" action Function(inspect_floor_area, near_area)
+        key "K_RETURN" action Function(inspect_floor_area, near_area)
+        key "e" action Function(inspect_floor_area, near_area)
+        key "E" action Function(inspect_floor_area, near_area)
+
+    # Fondo oscuro global de la pantalla completa 1920x1080
+    add Solid("#040711")
+
+    # --- PLANO ARQUITECTÓNICO DEL PISO COMPLETO (1920x1080 TOTAL) ---
+    fixed:
+        xfill True
+        yfill True
+
+        # Pasillo principal de baldosas gélidas
+        frame:
+            xpos 80
+            ypos 100
+            xsize 1760
+            ysize 740
+            background Frame(Solid("#080f20f2"), 8, 8)
+
+            # Rejilla arquitectónica del plano
+            fixed:
+                xfill True
+                yfill True
+
+                # Corredor transversal
+                frame:
+                    xpos 0
+                    ypos 280
+                    xsize 1760
+                    ysize 180
+                    background Solid("#0d172fe0")
+
+                    text ("CORREDOR CENTRAL • " + ("PISO 3: PABELLÓN DE TRAUMATOLOGÍA" if hospital_current_floor == 3 else ("PISO 2: CIRUGÍA Y AISLAMIENTO" if hospital_current_floor == 2 else "PISO 1: URGENCIAS Y MORGUE"))):
+                        size 11
+                        color "#334155"
+                        bold True
+                        xalign 0.5
+                        yalign 0.5
+                        kerning 2
+
+        # --- DIBUJADO DE LAS SALAS Y HABITACIONES DEL PISO ACTUAL ---
+        for area in current_areas:
+            $ is_found = (area.get("id") in hospital_investigated)
+            $ spot_color = "#10b981" if is_found else area.get("color", theme_tint)
+
+            # Tarjeta de sala interactiva en el mapa
+            button:
+                xpos area["x"] - 130
+                ypos area["y"] - 90
+                xsize 260
+                ysize 160
+                background Solid("#091024d8")
+                hover_background Solid(spot_color)
+                action Function(inspect_floor_area, area)
+
+                vbox:
+                    xalign 0.5
+                    yalign 0.5
+                    spacing 6
+                    text area.get("icon", "✦"):
+                        size 30
+                        xalign 0.5
+                    text area.get("name", "Habitación"):
+                        size 11
+                        bold True
+                        color "#f8fafc"
+                        xalign 0.5
+                        textalign 0.5
+                    frame:
+                        background Solid("#050812")
+                        padding (8, 3, 8, 3)
+                        xalign 0.5
+                        text area.get("tag", "PABELLÓN"):
+                            size 9
+                            bold True
+                            color spot_color
+
+        # --- AVATAR DEL PROTAGONISTA EN TIEMPO REAL ---
+        frame:
+            xpos hospital_pos_x - 32
+            ypos hospital_pos_y - 32
+            xsize 64
+            ysize 64
+            background Solid(theme_tint)
+
+            text ("♂" if is_male else "♀"):
+                size 26
+                bold True
+                color "#ffffff"
+                xalign 0.5
+                yalign 0.5
+
+    # --- BARRA SUPERIOR HUD CON NAVEGADOR DE PISOS (1, 2, 3) ---
+    frame:
+        xfill True
+        ysize 84
+        background Solid("#060a16f6")
+        padding (28, 12, 28, 12)
+
+        hbox:
+            xfill True
+            yalign 0.5
+
+            hbox:
+                spacing 16
+                yalign 0.5
+
+                text ("♂ LÍNEA CARMESÍ" if is_male else "♀ LÍNEA AMATISTA"):
+                    size 13
+                    bold True
+                    color theme_tint
+
+                text "•":
+                    color "#475569"
+
+                text "HOSPITAL GENERAL DE CHŪBU • PANTALLA COMPLETA":
+                    size 15
+                    bold True
+                    color "#f8fafc"
+
+            # SELECTOR DIRECTO DE PISOS HOSPITALARIOS (PISO 1, 2, 3)
+            hbox:
+                spacing 10
+                yalign 0.5
+
+                button:
+                    padding (14, 6, 14, 6)
+                    background Solid(theme_tint if hospital_current_floor == 1 else "#0f172a")
+                    action Function(set_hospital_floor, 1)
+                    text "PISO 1: Morgue & Urgencias":
+                        size 11
+                        bold True
+                        color ("#ffffff" if hospital_current_floor == 1 else "#94a3b8")
+
+                button:
+                    padding (14, 6, 14, 6)
+                    background Solid(theme_tint if hospital_current_floor == 2 else "#0f172a")
+                    action Function(set_hospital_floor, 2)
+                    text "PISO 2: UCI & Quirófanos":
+                        size 11
+                        bold True
+                        color ("#ffffff" if hospital_current_floor == 2 else "#94a3b8")
+
+                button:
+                    padding (14, 6, 14, 6)
+                    background Solid(theme_tint if hospital_current_floor == 3 else "#0f172a")
+                    action Function(set_hospital_floor, 3)
+                    text "PISO 3: Habitaciones 301-305":
+                        size 11
+                        bold True
+                        color ("#ffffff" if hospital_current_floor == 3 else "#94a3b8")
+
+            # CONTADOR TOTAL DE EVIDENCIAS REUNIDAS
+            frame:
+                background Solid("#0b1222")
+                padding (12, 6, 12, 6)
+                hbox:
+                    spacing 8
+                    text "EXPEDIENTES DESCUBIERTOS:":
+                        size 10
+                        color "#94a3b8"
+                        bold True
+                    text str(progress_count):
+                        size 13
+                        color theme_tint
+                        bold True
+
+    # --- BARRA INFERIOR DE NAVEGACIÓN Y AVANCE DE TRAMA ---
+    frame:
+        xfill True
+        yalign 1.0
+        ysize 92
+        background Solid("#060a16f6")
+        padding (24, 12, 24, 12)
+
+        hbox:
+            xfill True
+            yalign 0.5
+
+            # CRUCETA TÁCTIL VIRTUAL PARA CELULARES
+            hbox:
+                spacing 6
+                yalign 0.5
+
+                button:
+                    action Function(move_hospital_player, -36, 0, "left", perspective)
+                    background Solid("#1e293b")
+                    padding (12, 8, 12, 8)
+                    text "◀ A":
+                        size 12
+                        bold True
+                        color "#e2e8f0"
+
+                button:
+                    action Function(move_hospital_player, 0, -36, "up", perspective)
+                    background Solid("#1e293b")
+                    padding (12, 8, 12, 8)
+                    text "▲ W":
+                        size 12
+                        bold True
+                        color "#e2e8f0"
+
+                button:
+                    action Function(move_hospital_player, 0, 36, "down", perspective)
+                    background Solid("#1e293b")
+                    padding (12, 8, 12, 8)
+                    text "▼ S":
+                        size 12
+                        bold True
+                        color "#e2e8f0"
+
+                button:
+                    action Function(move_hospital_player, 36, 0, "right", perspective)
+                    background Solid("#1e293b")
+                    padding (12, 8, 12, 8)
+                    text "▶ D":
+                        size 12
+                        bold True
+                        color "#e2e8f0"
+
+                if near_area:
+                    button:
+                        action Function(inspect_floor_area, near_area)
+                        background Solid(theme_tint)
+                        padding (14, 8, 14, 8)
+                        text "🔍 INVESTIGAR":
+                            size 12
+                            bold True
+                            color "#ffffff"
+
+            # GUÍA DE CONTROL
+            vbox:
+                xalign 0.5
+                yalign 0.5
+                spacing 2
+                text _("• Teclado: [[W, A, S, D]] o [[Flechas]] • [[Espacio / E]] para investigar • Haz clic en salas para moverte") substitute False:
+                    size 11
+                    color "#94a3b8"
+                text _("• Pisos: Usa los botones de piso arriba o inspecciona el Ascensor para cambiar de nivel") substitute False:
+                    size 11
+                    color "#38bdf8"
+
+            # BOTÓN DE CONTINUAR LA HISTORIA
+            if can_continue:
+                button:
+                    action Return()
+                    background Solid(theme_tint)
+                    hover_background Solid("#10b981")
+                    padding (22, 12, 22, 12)
+                    text "CONTINUAR HISTORIA ▶":
+                        size 13
+                        bold True
+                        color "#ffffff"
+            else:
+                frame:
+                    background Solid("#1e293b")
+                    padding (16, 12, 16, 12)
+                    text ("Reúne al menos 2 expedientes (" + str(progress_count) + "/2)"):
+                        size 11
+                        bold True
+                        color "#64748b"
+
+    # --- MODAL FLOTANTE DE DETALLE CON DECISIONES Y COMBATE/FORCEJEO ---
+    if hospital_modal_clue:
+        $ clue_c = hospital_modal_clue.get("color", theme_tint)
+
+        button:
+            xfill True
+            yfill True
+            background Solid("#000000cb")
+            action Function(close_hospital_modal)
+
+        frame:
+            xalign 0.5
+            yalign 0.5
+            xsize 980
+            background Frame(Solid("#0a1020fa"), 12, 12)
+            padding (36, 28, 36, 28)
+
+            vbox:
+                spacing 14
+                xfill True
+
+                # Cabecera
                 hbox:
                     xfill True
                     yalign 0.5
 
                     hbox:
-                        spacing 12
-                        yalign 0.5
+                        spacing 14
                         text hospital_modal_clue.get("icon", "✦"):
-                            size 28
-                            yalign 0.5
+                            size 32
                         vbox:
                             spacing 2
-                            text hospital_modal_clue.get("name", "Área de Investigación"):
-                                font gui.interface_text_font
+                            text hospital_modal_clue.get("name", ""):
                                 size 12
                                 bold True
-                                color clue_color
-                            text hospital_modal_clue.get("title", "Expediente"):
-                                font gui.name_text_font
+                                color clue_c
+                            text hospital_modal_clue.get("title", ""):
                                 size 20
                                 bold True
-                                color "#f8fafc"
+                                color "#ffffff"
 
                     frame:
                         background Solid("#1e293b")
                         padding (10, 4, 10, 4)
-                        yalign 0.5
-                        text hospital_modal_clue.get("tag", "PISTA"):
-                            font gui.interface_text_font
+                        text ("PISO " + str(hospital_current_floor)):
                             size 11
-                            color "#e2e8f0"
                             bold True
+                            color "#e2e8f0"
 
-                # Línea divisoria de acento
                 frame:
                     xfill True
                     ysize 2
-                    background Solid(clue_color)
+                    background Solid(clue_c)
 
-                # Texto de la pista / diálogo
+                # Descripción visceral y detallada
                 text hospital_modal_clue.get("text", ""):
-                    font gui.interface_text_font
                     size 14
                     color "#cbd5e1"
-                    line_spacing 6
+                    line_spacing 5
 
-                null height 8
+                null height 6
 
-                # Botón de cierre del modal
-                button:
-                    action Function(close_hospital_modal)
-                    xalign 1.0
-                    background Solid(clue_color)
-                    hover_background Solid("#334155")
-                    padding (24, 10, 24, 10)
-                    text "✕ SEGUIR EXPLORANDO [[ESC / TOCAR]]" substitute False:
-                        font gui.interface_text_font
-                        size 12
-                        bold True
-                        color "#ffffff"
+                # Botones de Acción / Decisión Interactiva
+                hbox:
+                    spacing 12
+                    xalign 0.5
+
+                    button:
+                        action Function(trigger_clue_event, hospital_modal_clue.get("id", "") + "_vision")
+                        background Solid("#7f1d1d")
+                        hover_background Solid("#b91c1c")
+                        padding (14, 8, 14, 8)
+                        text "🩸 OJO DEL DESTINO (PREMONICIÓN)":
+                            size 11
+                            bold True
+                            color "#fecaca"
+
+                    button:
+                        action Function(trigger_clue_event, hospital_modal_clue.get("id", "") + "_struggle")
+                        background Solid("#1e3a8a")
+                        hover_background Solid("#2563eb")
+                        padding (14, 8, 14, 8)
+                        text ("⚡ " + hospital_modal_clue.get("action_choice", "Intervenir con determinación")):
+                            size 11
+                            bold True
+                            color "#dbeafe"
+
+                    button:
+                        action Function(close_hospital_modal)
+                        background Solid("#1e293b")
+                        padding (16, 8, 16, 8)
+                        text "✕ SEGUIR EXPLORANDO [[ESC]]" substitute False:
+                            size 11
+                            bold True
+                            color "#ffffff"
