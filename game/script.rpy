@@ -446,8 +446,15 @@ label chapter1_shinshu_despertar:
     scene bg hospital_tarde
     with Dissolve(1.2)
 
-    "Tras recorrer los pasillos y recopilar las inquietantes anomalías del pabellón, regresé a la habitación 304 antes del anochecer."
+    "Tras recorrer los tres pisos del hospital y recolectar evidencias del pabellón, regresé a la habitación 304 antes del anochecer."
     "Eran casi las 17:45. La tormenta arreciaba contra los cristales."
+
+    if getattr(persistent, "has_tox_sample", False):
+        "Toco disimuladamente el bolsillo de mi camisón. El frío cristal de la ampolla de Tox-NB7 que confisqué en el depósito de toxicología del Piso 2 me confirma que este hospital ejecuta pacientes en secreto."
+    if getattr(persistent, "discovered_kuroda_murder", False):
+        "La imagen del anciano Kuroda en la morgue subterránea con la punción violácea en el cuello sigue ardiendo en mi mente. La muerte en este lugar no es fruto del azar: fue un asesinato premeditado."
+    if getattr(persistent, "pacified_room_302", False):
+        "Recuerdo las palabras desesperadas del paciente que inmovilicé en la sala 302: la cubeta del tercer cajón del carro de paro oculta la dosis letal de las dieciocho horas."
 
     # -------------------------------------------------------------------------
     # LA HABITACIÓN COMPARTIDA Y KENJI TAKAHASHI
@@ -514,6 +521,9 @@ label chapter1_shinshu_despertar:
     menu:
         "¿Qué camino tomas ante la inminente llegada de las 18:00?"
 
+        "Confrontar a Sato y al Dr. Moriyama con las pruebas incautadas en la exploración 2D" if (getattr(persistent, "has_tox_sample", False) or getattr(persistent, "stole_moriyama_files", False) or getattr(persistent, "requisitioned_sato_schedule", False)):
+            jump ruta_evidencia_forense_2d
+
         "Advertir directamente a Kenji y exigirle que rechace la inyección":
             jump ruta_decir_a_kenji
 
@@ -522,6 +532,52 @@ label chapter1_shinshu_despertar:
 
         "Arrancarte las vías intravenosas, salir al pasillo y alertar a los médicos jefes":
             jump ruta_avisar_doctores
+
+
+# -----------------------------------------------------------------------------
+# RUTA 0: EVIDENCIA FORENSE ASEGURADA EN LA EXPLORACIÓN 2D
+# -----------------------------------------------------------------------------
+label ruta_evidencia_forense_2d:
+
+    "El terror se transformó en una determinación gélida e implacable."
+    "Ya no era un paciente indefenso suplicando que creyeran en sus pesadillas: tenía en mis manos las pruebas físicas de la conspiración clínica descubiertas durante mi recorrido por los tres pisos."
+    "A las 17:58 en punto, cuando los pasos de la enfermera Sato resonaron en el pasillo cargando la cubeta de acero inoxidable, me puse de pie y me interpuse firmemente en el umbral de la puerta."
+
+    show silueta_enfermera at silueta_left with Dissolve(0.6)
+
+    enf "Joven Kasugai, debe volver a su cama de inmediato. Tengo que administrar la medicación de las dieciocho horas a su compañero Takahashi."
+
+    p "No tocará ese catéter, enfermera Sato. No con esto."
+
+    "Saco del bolsillo la ampolla precintada de Tox-NB7 y el expediente médico sustraído del despacho de jefatura, arrojándolos sobre su bandeja con un golpe seco de cristal."
+
+    play sound "audio/glass_break.wav"
+
+    enf "¡¿D-de dónde...?! ¡¿Cómo consiguió eso?!"
+
+    "El rostro de Sato palidece hasta adquirir la blancura de la cera mortuoria. Sus manos tiemblan con tanta fuerza que la jeringa resbala de sus dedos y se hace añicos contra el suelo."
+
+    show silueta_doctor at silueta_right with Dissolve(0.8)
+
+    doc "¿Qué significa este alboroto en mi pabellón...?"
+
+    p "Dr. Moriyama. Aquí tiene el registro de distribución de fármacos con su propia firma, y la muestra del paralizante neuromuscular con el que planeaban asfixiar a Takahashi, tal como hicieron con Kuroda en el cubículo tres."
+
+    "El Dr. Moriyama se petrifica. Su mirada analítica y arrogante se desmorona en una mueca de incredulidad y furia contenida."
+    "Por primera vez en todo su reinado hospitalario, el cirujano jefe sabe que ha sido acorralado sin escapatoria posible."
+
+    doc "Sato... retire todo el instrumental del pabellón oeste inmediatamente. Esta ronda queda cancelada bajo auditoría técnica."
+
+    hide silueta_enfermera with Dissolve(0.5)
+    hide silueta_doctor with Dissolve(0.5)
+
+    "Kenji me mira desde su camilla con los ojos desorbitados por el asombro y la gratitud más pura."
+
+    kenji "Ren... viejo... ¿tú... tú acabas de salvarme la vida frente al jefe supremo del hospital? ¡No tengo palabras para agradecerte esto...!"
+
+    $ grant_achievement("salvar_kenji")
+
+    jump final_capitulo_esperanza
 
 
 # -----------------------------------------------------------------------------
@@ -1141,9 +1197,13 @@ label chapter1_aoi:
     # -------------------------------------------------------------------------
     "Miro el filo que sostengo en mis dedos temblorosos. La muerte me rodea, pero por primera vez desde el coma... tengo el poder de actuar."
     "¿Qué debo hacer con este don maldito?"
-    "¿Qué camino eliges para enfrentar la muerte inminente de Yuna?"
 
     menu:
+        "¿Qué camino eliges para enfrentar la muerte inminente de Yuna?"
+
+        "Confiar en la protección previa: la varilla mortal ya fue desmontada durante la exploración 2D" if getattr(persistent, "removed_lethal_spike", False):
+            jump aoi_decision_retirar_2d_ready
+
         "1. Advertir desesperadamente a Yuna sobre la discusión con su padre y el objeto mortal.":
             jump aoi_decision_advertir
 
@@ -1152,6 +1212,39 @@ label chapter1_aoi:
 
         "3. No intervenir; convencerme de que solo fue una pesadilla o un delirio provocado por mi trauma.":
             jump aoi_decision_ignorar
+
+
+# -----------------------------------------------------------------------------
+# RAMA 0 (AOI): PROTECCIÓN ASEGURADA PREVIAMENTE EN LA EXPLORACIÓN 2D
+# -----------------------------------------------------------------------------
+label aoi_decision_retirar_2d_ready:
+
+    "Una chispa de esperanza renace en lo más profundo de mi ser."
+    "Recuerdo con absoluta certeza que durante mi recorrido por el hospital en 2D, ya inspeccioné esa misma habitación y desmonté la varilla afilada de acero del rodapié."
+    "El filo de bisturí que guardaba en mi mano cae al lavabo con un sonido limpio. No necesito quitarme la vida: la muerte puede ser evitada."
+
+    scene bg hospital_tarde
+    with Dissolve(1.5)
+
+    "La tarde cae sobre Nagano. Tal como vi en el espejo, el padre de Yuna entra enfurecido por los gastos médicos."
+    "La discusión sube de tono hasta el estallido inevitable:"
+
+    padre_yuna "¡Estoy harto de tus quejas y de tus gastos médicos! ¡Desde que naciste no has hecho más que arruinar a esta familia!"
+    yuna "¡Tú nunca estuviste para mí! ¡Ojalá mamá no te hubiera conocido jamás!"
+
+    play sound "audio/crash.wav"
+
+    "El padre empuja a Yuna con fuerza desmedida. Yuna sale despedida hacia el rincón de la cama..."
+    "Pero allí... donde debía estar la punta de acero letal... solo hay un suelo despejado y limpio."
+    "Yuna cae sobre las mantas y el linóleo sin sufrir una sola herida. El crujido de muerte jamás llega a ocurrir."
+
+    padre_yuna "¡Yuna...! ¡Hija mía...! ¡Dios mío, perdóname... no quise empujarte así...!"
+
+    "El padre cae de rodillas llorando desconsoladamente y abrazando a su hija, quebrando para siempre el ciclo de violencia y tragedia."
+
+    $ grant_achievement("salvar_yuna")
+
+    jump final_capitulo_aoi_esperanza
 
 
 # -----------------------------------------------------------------------------

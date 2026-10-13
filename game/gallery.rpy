@@ -348,9 +348,29 @@ screen character_gallery():
         $ current_chars = get_gallery_characters()
         $ cur_char = get_current_gallery_char()
 
-        vbox:
-            spacing 14
-            xfill True
+        if not getattr(persistent, "completed_chapter_1", False):
+            frame:
+                xfill True
+                ysize 500
+                background Solid("#080c16fa")
+                vbox:
+                    xalign 0.5
+                    yalign 0.5
+                    spacing 16
+                    add "gui/icons/icon_achievements.png" xalign 0.5 ysize 48 fit "contain"
+                    text "EXPEDIENTE RESTRINGIDO":
+                        size 22
+                        bold True
+                        color "#e2e8f0"
+                        xalign 0.5
+                    text "Debes completar el Capítulo 1 para desbloquear la Galería de Personajes.":
+                        size 14
+                        color "#94a3b8"
+                        xalign 0.5
+        else:
+            vbox:
+                spacing 14
+                xfill True
 
             # -----------------------------------------------------------------
             # 1. CABECERA EXPANDIDA: EXPEDIENTE NEXUS Y ESTADO CAUSAL
@@ -701,9 +721,15 @@ screen character_gallery():
                                     hbox:
                                         spacing 8
                                         yalign 0.5
-                                        text "📁":
-                                            size 12
-                                        text "EXPEDIENTE BIOGRÁFICO Y CLÍNICO":
+                                        frame:
+                                            background Frame(Solid("#1e293b"), 4, 4)
+                                            padding (8, 3, 8, 3)
+                                            text "EXPEDIENTE":
+                                                font gui.interface_text_font
+                                                size 10
+                                                bold True
+                                                color "#38bdf8"
+                                        text "BIOGRÁFICO Y CLÍNICO":
                                             font gui.interface_text_font
                                             size 12
                                             bold True
@@ -726,9 +752,15 @@ screen character_gallery():
                                     hbox:
                                         spacing 8
                                         yalign 0.5
-                                        text "🦋":
-                                            size 12
-                                        text "RAMIFICACIONES Y DESTINOS (EFECTO MARIPOSA)":
+                                        frame:
+                                            background Frame(Solid(theme_accent), 4, 4)
+                                            padding (8, 3, 8, 3)
+                                            text "EFECTO MARIPOSA":
+                                                font gui.interface_text_font
+                                                size 10
+                                                bold True
+                                                color "#ffffff"
+                                        text "RAMIFICACIONES Y DESTINOS":
                                             font gui.interface_text_font
                                             size 12
                                             bold True

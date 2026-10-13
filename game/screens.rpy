@@ -71,6 +71,12 @@ style vslider:
     base_bar Frame("gui/slider/vertical_[prefix_]bar.png", gui.vslider_borders, tile=gui.slider_tile)
     thumb "gui/slider/vertical_[prefix_]thumb.png"
 
+style nexus_clean_slider is slider:
+    ysize 30
+    base_bar Frame("gui/phone/slider/horizontal_[prefix_]bar.png", 6, 6)
+    thumb "gui/phone/slider/horizontal_[prefix_]thumb.png"
+    thumb_offset 15
+
 
 style frame:
     padding gui.frame_borders.padding
@@ -269,8 +275,36 @@ screen quick_menu():
 
     zorder 100
 
-    # En PC de escritorio se elimina completamente como solicitó el usuario
-    pass
+    if quick_menu:
+        frame:
+            xalign 0.98
+            ypos 16
+            background Frame(Solid("#070b16f0"), 6, 6)
+            padding (6, 5, 6, 5)
+
+            hbox:
+                spacing 8
+                yalign 0.5
+
+                button:
+                    action ShowMenu('save')
+                    padding (14, 7, 14, 7)
+                    background Frame(Solid("#0f172acc"), 4, 4)
+                    hover_background Frame(Solid("#1e293bcc"), 4, 4)
+                    text _("Guardar"):
+                        size 11
+                        bold True
+                        color "#e2e8f0"
+
+                button:
+                    action ShowMenu('preferences')
+                    padding (14, 7, 14, 7)
+                    background Frame(Solid(persistent.theme_color or "#be123c"), 4, 4)
+                    hover_background Frame(Solid(persistent.theme_hover or "#e11d48"), 4, 4)
+                    text _("Menú"):
+                        size 11
+                        bold True
+                        color "#ffffff"
 
 
 ## Este código asegura que la pantalla 'quick_menu' se muestra en el juego,
@@ -555,14 +589,15 @@ screen navigation():
                             add "gui/icons/icon_save.png" yalign 0.5 ysize 24 fit "contain"
                             text _("Guardar Partida") style "nav_icon_text"
 
-                button:
-                    action ShowMenu("load")
-                    style "nav_icon_button"
-                    hbox:
-                        spacing 18
-                        yalign 0.5
-                        add "gui/icons/icon_load.png" yalign 0.5 ysize 24 fit "contain"
-                        text _("Cargar Partida") style "nav_icon_text"
+                if main_menu:
+                    button:
+                        action ShowMenu("load")
+                        style "nav_icon_button"
+                        hbox:
+                            spacing 18
+                            yalign 0.5
+                            add "gui/icons/icon_load.png" yalign 0.5 ysize 24 fit "contain"
+                            text _("Cargar Partida") style "nav_icon_text"
 
                 button:
                     action ShowMenu("preferences")
@@ -665,20 +700,6 @@ screen navigation():
                         yalign 0.5
                         add "gui/icons/icon_return.png" yalign 0.5 ysize 24 fit "contain"
                         text _("Volver a la Historia") style "nav_return_friendly_text"
-            else:
-                vbox:
-                    xalign 0.5
-                    spacing 3
-                    text "HOSPITAL GENERAL DE SHINSHU":
-                        size 10
-                        color "#646d7e"
-                        xalign 0.5
-                        kerning 1.5
-                    text "TEMA ACTIVO: [persistent.theme_name]":
-                        size 9
-                        color (persistent.theme_border or "#9e1b1b")
-                        xalign 0.5
-                        kerning 1
 
 
 style sidebar_navigation_panel:
@@ -686,7 +707,7 @@ style sidebar_navigation_panel:
     ypos 0
     xsize 450
     ysize 1080
-    background Frame(Solid("#090b10f5"), 0, 0)
+    background Frame(Solid("#060810c0"), 0, 0)
     padding (25, 25, 25, 25)
 
 style nav_icon_button is gui_button:
@@ -799,7 +820,7 @@ screen protagonist_selection():
                         color "#64748b"
                         xalign 1.0
 
-                text "♂ SHINSHU KAZAMA":
+                text "SHINSHU KAZAMA":
                     font gui.name_text_font
                     size 26
                     color "#f8fafc"
@@ -880,7 +901,7 @@ screen protagonist_selection():
                         color "#64748b"
                         xalign 1.0
 
-                text "♀ AOI KAZAMA":
+                text "AOI KAZAMA":
                     font gui.name_text_font
                     size 26
                     color "#f8fafc"
@@ -1338,83 +1359,13 @@ screen main_menu():
 
     tag menu
 
-    add gui.main_menu_background
-
-    # Fondo cinematográfico animado con alternancia continua entre los dos destinos
-    frame:
-        xpos 450
+    # Fondo cinematográfico animado a pantalla completa total (1920x1080)
+    add "main_menu_animated_bg":
+        fit "cover"
+        xpos 0
         ypos 0
-        xsize 1470
+        xsize 1920
         ysize 1080
-        background None
-
-        # Fondo dinámico animado sin siluetas invasivas
-        add "main_menu_animated_bg":
-            fit "cover"
-            xsize 1470
-            ysize 1080
-
-        # Capa de oscurecimiento suave central para máxima legibilidad del logo (sin siluetas de personajes)
-        frame:
-            xalign 0.35
-            yalign 0.5
-            xsize 850
-            ysize 520
-            background Frame(Solid("#090b12a8"), 10, 10)
-            padding (40, 35, 40, 35)
-
-            vbox:
-                xalign 0.5
-                yalign 0.5
-                spacing 22
-
-                add "images/nexus_logo.png":
-                    xalign 0.5
-                    ysize 175
-                    fit "contain"
-
-                if persistent.selected_gender == "mujer":
-                    text "「 運 命 の 瞳 、 輪 廻 の 淵 」":
-                        size 22
-                        color (persistent.theme_border or "#c084fc")
-                        xalign 0.5
-                        bold True
-                        kerning 4
-
-                    text "Despertaste tras seis meses de coma y la muerte de tu hermano un mes atrás.\nUn reflejo en el espejo del hospital revela la muerte antes de que ocurra.":
-                        size 16
-                        color "#d8b4fe"
-                        xalign 0.5
-                        text_align 0.5
-                        line_spacing 6
-                elif persistent.selected_gender == "hombre":
-                    text "「 瞳 の 奥 に 、 死 が 映 る 」":
-                        size 22
-                        color (persistent.theme_border or "#e63946")
-                        xalign 0.5
-                        bold True
-                        kerning 4
-
-                    text "En el corazón de Nagano, la muerte aguarda en cada mirada.\nUn don que nació de una herida. Una elección que decide quién respira mañana.":
-                        size 16
-                        color "#a4adbe"
-                        xalign 0.5
-                        text_align 0.5
-                        line_spacing 6
-                else:
-                    text "「 宿 命 の 瞳 、 二 つ の 運 命 」":
-                        size 22
-                        color "#e63946"
-                        xalign 0.5
-                        bold True
-                        kerning 4
-
-                    text "Dos almas entrelazadas en el epicentro de Nagano.\nElige tu perspectiva al comenzar la historia y desafía las leyes del destino.":
-                        size 16
-                        color "#cbd5e1"
-                        xalign 0.5
-                        text_align 0.5
-                        line_spacing 6
 
     use navigation
 
@@ -1534,23 +1485,260 @@ screen about():
 
     tag menu
 
-    ## Esta sentencia 'use' incluye la pantalla 'game_menu' dentro de esta. El
-    ## elemento 'vbox' se incluye entonces dentro del 'viewport' al interno de
-    ## la pantalla 'game_menu'.
     use game_menu(_("Acerca de"), scroll="viewport"):
 
-        style_prefix "about"
+        $ is_mujer = (persistent.selected_gender == "mujer")
+        $ theme_accent = "#c084fc" if is_mujer else "#fb7185"
+        $ theme_border = persistent.theme_border or ("#a855f7" if is_mujer else "#f43f5e")
+        $ theme_bg = persistent.theme_color or ("#3b0764" if is_mujer else "#4c0519")
 
         vbox:
+            spacing 18
+            xfill True
 
-            label "[config.name!t]"
-            text _("Versión [config.version!t]\n")
+            # -----------------------------------------------------------------
+            # 1. CABECERA EXPANDIDA: EXPEDIENTE OFICIAL DE NEXUS
+            # -----------------------------------------------------------------
+            frame:
+                xfill True
+                background Frame(Solid("#090e1cf5"), 8, 8)
+                padding (22, 16, 22, 16)
 
-            ## 'gui.about' se ajusta habitualmente en 'options.rpy'.
-            if gui.about:
-                text "[gui.about!t]\n"
+                hbox:
+                    xfill True
+                    yalign 0.5
 
-            text _("Hecho con {a=https://www.renpy.org/}Ren'Py{/a} [renpy.version_only].\n\n[renpy.license!t]")
+                    hbox:
+                        spacing 16
+                        yalign 0.5
+
+                        frame:
+                            background Frame(Solid(theme_bg), 6, 6)
+                            padding (12, 6, 12, 6)
+                            yalign 0.5
+                            text "EXPEDIENTE v[config.version!t]":
+                                font gui.interface_text_font
+                                size 12
+                                bold True
+                                color "#ffffff"
+
+                        vbox:
+                            spacing 2
+                            text "NEXUS: LOS OJOS DEL DESTINO":
+                                font gui.interface_text_font
+                                size 16
+                                bold True
+                                color "#f8fafc"
+                                kerning 2
+
+                            text "Novela Visual Psicológica, Misterio Forense y Efecto Mariposa Causal":
+                                font gui.interface_text_font
+                                size 11
+                                color "#94a3b8"
+
+                    frame:
+                        background Frame(Solid("#0f172a"), 4, 4)
+                        padding (12, 5, 12, 5)
+                        text "CANAL: RELEASE OFICIAL":
+                            font gui.interface_text_font
+                            size 11
+                            bold True
+                            color "#38bdf8"
+
+            # -----------------------------------------------------------------
+            # 2. SINOPSIS Y MARCO NARRATIVO
+            # -----------------------------------------------------------------
+            frame:
+                xfill True
+                background Frame(Solid("#080c18f8"), 8, 8)
+                padding (22, 18, 22, 18)
+
+                vbox:
+                    spacing 12
+                    xfill True
+
+                    text "SINOPSIS Y MARCO NARRATIVO":
+                        font gui.interface_text_font
+                        size 13
+                        bold True
+                        color theme_accent
+                        kerning 1
+
+                    text "En la penumbra invernal de Nagano, un accidente fatal en la Ruta 19 fractura la realidad de dos hermanos. Shinshu Kazama, forense que percibe los ecos térmicos de los fallecidos, y Aoi Kazama, quien tras medio año en coma despierta capaz de reescribir causas y efectos. Entre conspiraciones clínicas en el Hospital General de Shinshu y el letal veneno NB-7, cada elección bifurca la línea temporal.":
+                        font gui.interface_text_font
+                        size 12
+                        color "#cbd5e1"
+                        line_spacing 5
+
+            # -----------------------------------------------------------------
+            # 3. FICHA TÉCNICA Y SISTEMAS DEL JUEGO
+            # -----------------------------------------------------------------
+            frame:
+                xfill True
+                background Frame(Solid("#080c18f8"), 8, 8)
+                padding (22, 18, 22, 18)
+
+                vbox:
+                    spacing 14
+                    xfill True
+
+                    text "ARQUITECTURA TÉCNICA Y MECÁNICAS":
+                        font gui.interface_text_font
+                        size 13
+                        bold True
+                        color theme_accent
+                        kerning 1
+
+                    grid 2 2:
+                        xfill True
+                        spacing 14
+
+                        # Tarjeta 1: Motor
+                        frame:
+                            xfill True
+                            background Frame(Solid("#0c1220ee"), 6, 6)
+                            padding (16, 12, 16, 12)
+                            vbox:
+                                spacing 4
+                                text "Motor Gráfico & Core":
+                                    size 12
+                                    bold True
+                                    color "#ffffff"
+                                text "Ren'Py 8.3 / Python 3.12 64-bit":
+                                    size 11
+                                    color "#94a3b8"
+
+                        # Tarjeta 2: Perspectiva Dual
+                        frame:
+                            xfill True
+                            background Frame(Solid("#0c1220ee"), 6, 6)
+                            padding (16, 12, 16, 12)
+                            vbox:
+                                spacing 4
+                                text "Perspectiva Dual Asimétrica":
+                                    size 12
+                                    bold True
+                                    color "#ffffff"
+                                text "Rutas exclusivas e independientes (Hombre / Mujer)":
+                                    size 11
+                                    color "#94a3b8"
+
+                        # Tarjeta 3: Exploración 2D
+                        frame:
+                            xfill True
+                            background Frame(Solid("#0c1220ee"), 6, 6)
+                            padding (16, 12, 16, 12)
+                            vbox:
+                                spacing 4
+                                text "Exploración 2D Inmersiva":
+                                    size 12
+                                    bold True
+                                    color "#ffffff"
+                                text "Hospital General con consecuencias decisivas en la trama":
+                                    size 11
+                                    color "#94a3b8"
+
+                        # Tarjeta 4: Multiplataforma
+                        frame:
+                            xfill True
+                            background Frame(Solid("#0c1220ee"), 6, 6)
+                            padding (16, 12, 16, 12)
+                            vbox:
+                                spacing 4
+                                text "Distribución Multiplataforma":
+                                    size 12
+                                    bold True
+                                    color "#ffffff"
+                                text "Windows PC, Linux, macOS, iOS y Android APK":
+                                    size 11
+                                    color "#94a3b8"
+
+            # -----------------------------------------------------------------
+            # 4. CRÉDITOS Y EQUIPO DE DESARROLLO
+            # -----------------------------------------------------------------
+            frame:
+                xfill True
+                background Frame(Solid("#080c18f8"), 8, 8)
+                padding (22, 18, 22, 18)
+
+                vbox:
+                    spacing 12
+                    xfill True
+
+                    text "CRÉDITOS Y PRODUCCIÓN":
+                        font gui.interface_text_font
+                        size 13
+                        bold True
+                        color theme_accent
+                        kerning 1
+
+                    hbox:
+                        spacing 20
+                        xfill True
+
+                        vbox:
+                            spacing 6
+                            xsize 300
+                            text "Dirección General & Guion:":
+                                size 11
+                                bold True
+                                color "#94a3b8"
+                            text "Miguel Carlos Rojas":
+                                size 13
+                                bold True
+                                color "#f8fafc"
+
+                        vbox:
+                            spacing 6
+                            xsize 300
+                            text "Diseño de Interfaz & Sistemas:":
+                                size 11
+                                bold True
+                                color "#94a3b8"
+                            text "Nexus Engineering Team":
+                                size 13
+                                bold True
+                                color "#f8fafc"
+
+                        vbox:
+                            spacing 6
+                            xsize 300
+                            text "Banda Sonora Original & SFX:":
+                                size 11
+                                bold True
+                                color "#94a3b8"
+                            text "Temas Temáticos & Ambientación Nagano":
+                                size 13
+                                bold True
+                                color "#f8fafc"
+
+            # -----------------------------------------------------------------
+            # 5. LICENCIA Y ENLACES OFICIALES
+            # -----------------------------------------------------------------
+            frame:
+                xfill True
+                background Frame(Solid("#060a14ee"), 6, 6)
+                padding (20, 14, 20, 14)
+
+                hbox:
+                    xfill True
+                    yalign 0.5
+
+                    vbox:
+                        spacing 3
+                        text "REPOSITORIO OFICIAL GITHUB":
+                            size 11
+                            bold True
+                            color "#38bdf8"
+                        text "https://github.com/MiguelCarlosRojas/Nexus":
+                            size 12
+                            color "#94a3b8"
+
+                    text "© 2026 Nexus Visual Novel Project. Hecho con Ren'Py [renpy.version_only].":
+                        size 10
+                        color "#64748b"
+                        xalign 1.0
+                        yalign 0.5
 
 
 style about_label is gui_label
@@ -1775,7 +1963,7 @@ screen preferences():
                             background Frame(Solid(theme_bg), 6, 6)
                             padding (10, 4, 10, 4)
                             yalign 0.5
-                            text ("♀ LÍNEA AMATISTA" if is_mujer else "♂ LÍNEA CARMESÍ"):
+                            text ("LÍNEA AMATISTA" if is_mujer else "LÍNEA CARMESÍ"):
                                 font gui.interface_text_font
                                 size 12
                                 bold True
@@ -1816,7 +2004,7 @@ screen preferences():
                     spacing 12
                     xfill True
 
-                    text "🖥 PANTALLA Y MODO DE VENTANA":
+                    text "PANTALLA Y MODO DE VENTANA":
                         font gui.interface_text_font
                         size 13
                         bold True
@@ -1840,7 +2028,7 @@ screen preferences():
                                 padding (16, 8, 16, 8)
                                 background Frame(Solid(theme_bg if preferences.fullscreen == False else "#0f172acc"), 4, 4)
                                 hover_background Frame(Solid("#1e293bcc"), 4, 4)
-                                text "🗖 Modo Ventana":
+                                text "Modo Ventana":
                                     font gui.interface_text_font
                                     size 12
                                     bold True
@@ -1851,7 +2039,7 @@ screen preferences():
                                 padding (16, 8, 16, 8)
                                 background Frame(Solid(theme_bg if preferences.fullscreen == True else "#0f172acc"), 4, 4)
                                 hover_background Frame(Solid("#1e293bcc"), 4, 4)
-                                text "⛶ Pantalla Completa":
+                                text "Pantalla Completa":
                                     font gui.interface_text_font
                                     size 12
                                     bold True
@@ -1911,38 +2099,12 @@ screen preferences():
                     spacing 12
                     xfill True
 
-                    text "🎨 PERSONALIZACIÓN VISUAL Y TEMA JAPONÉS":
+                    text "PERSONALIZACIÓN VISUAL Y TEXTO":
                         font gui.interface_text_font
                         size 13
                         bold True
                         color theme_accent
                         kerning 1
-
-                    hbox:
-                        xfill True
-                        yalign 0.5
-                        text "Tema de Interfaz:":
-                            font gui.interface_text_font
-                            size 13
-                            color "#e2e8f0"
-                            xsize 240
-
-                        hbox:
-                            spacing 8
-                            yalign 0.5
-                            $ theme_list = [("Carmesí", "🔴 Carmesí"), ("Amatista Sakura", "🌸 Amatista Sakura"), ("Azul Noche", "🔵 Azul Noche"), ("Oro Shinshu", "🟡 Oro Shinshu"), ("Jade Imperial", "🟢 Jade Imperial")]
-                            for t_name, t_label in theme_list:
-                                $ is_t_sel = (persistent.theme_name == t_name)
-                                button:
-                                    action Function(set_theme, t_name)
-                                    padding (12, 6, 12, 6)
-                                    background Frame(Solid(theme_bg if is_t_sel else "#0f172acc"), 4, 4)
-                                    hover_background Frame(Solid("#1e293bcc"), 4, 4)
-                                    text t_label:
-                                        font gui.interface_text_font
-                                        size 11
-                                        bold is_t_sel
-                                        color ("#ffffff" if is_t_sel else "#94a3b8")
 
                     hbox:
                         xfill True
@@ -2008,7 +2170,7 @@ screen preferences():
                     spacing 12
                     xfill True
 
-                    text "👁 EFECTOS CINEMATOGRÁFICOS Y ACCESIBILIDAD":
+                    text "EFECTOS CINEMATOGRÁFICOS Y ACCESIBILIDAD":
                         font gui.interface_text_font
                         size 13
                         bold True
@@ -2126,7 +2288,7 @@ screen preferences():
                     spacing 16
                     xfill True
 
-                    text "🎵 AUDIO Y BANDA SONORA":
+                    text "AUDIO Y BANDA SONORA":
                         font gui.interface_text_font
                         size 13
                         bold True
@@ -2177,18 +2339,19 @@ screen preferences():
                                             color ("#ffffff" if is_v_sel else "#94a3b8")
                                             xalign 0.5
 
-                            # Barra fina y botón de escucha
+                            # Barra de volumen estilizada y botón de escucha
                             hbox:
                                 spacing 16
                                 yalign 0.5
                                 xfill True
-                                text "Ajuste fino:":
+                                text "Ajuste Fino:":
                                     font gui.interface_text_font
                                     size 11
                                     color "#94a3b8"
+                                    yalign 0.5
                                 bar:
                                     value Preference("music volume")
-                                    ysize 14
+                                    style "nexus_clean_slider"
                                     xsize 560
                                     yalign 0.5
                                 button:
@@ -2196,7 +2359,7 @@ screen preferences():
                                     padding (14, 6, 14, 6)
                                     background Frame(Solid(theme_bg), 4, 4)
                                     hover_background Frame(Solid(theme_border), 4, 4)
-                                    text "▶ Escuchar Tema":
+                                    text "Escuchar Tema":
                                         font gui.interface_text_font
                                         size 11
                                         bold True
@@ -2245,18 +2408,19 @@ screen preferences():
                                             color ("#ffffff" if is_sfx_sel else "#94a3b8")
                                             xalign 0.5
 
-                            # Barra fina y botón de prueba
+                            # Barra de volumen estilizada y botón de prueba
                             hbox:
                                 spacing 16
                                 yalign 0.5
                                 xfill True
-                                text "Ajuste fino:":
+                                text "Ajuste Fino:":
                                     font gui.interface_text_font
                                     size 11
                                     color "#94a3b8"
+                                    yalign 0.5
                                 bar:
                                     value Preference("sound volume")
-                                    ysize 14
+                                    style "nexus_clean_slider"
                                     xsize 560
                                     yalign 0.5
                                 button:
@@ -2264,7 +2428,7 @@ screen preferences():
                                     padding (14, 6, 14, 6)
                                     background Frame(Solid(theme_bg), 4, 4)
                                     hover_background Frame(Solid(theme_border), 4, 4)
-                                    text "🔔 Probar Sonido":
+                                    text "Probar Sonido":
                                         font gui.interface_text_font
                                         size 11
                                         bold True
@@ -2295,7 +2459,7 @@ screen preferences():
                                 padding (16, 7, 16, 7)
                                 background Frame(Solid("#1e293b"), 4, 4)
                                 hover_background Frame(Solid(theme_bg), 4, 4)
-                                text (_("🔇 Reactivar Sonido") if (_preferences.get_mute('music') and _preferences.get_mute('sfx')) else _("🔇 Silenciar Todo")):
+                                text (_("Reactivar Sonido") if (_preferences.get_mute('music') and _preferences.get_mute('sfx')) else _("Silenciar Todo")):
                                     font gui.interface_text_font
                                     size 11
                                     bold True
@@ -2313,7 +2477,7 @@ screen preferences():
                     spacing 12
                     xfill True
 
-                    text "⚡ VELOCIDAD Y TIEMPOS DE LECTURA":
+                    text "VELOCIDAD Y TIEMPOS DE LECTURA":
                         font gui.interface_text_font
                         size 13
                         bold True
@@ -2328,23 +2492,10 @@ screen preferences():
                             size 13
                             color "#e2e8f0"
                             xsize 240
+                            yalign 0.5
                         bar:
                             value Preference("text speed")
-                            ysize 14
-                            xsize 600
-                            yalign 0.5
-
-                    hbox:
-                        xfill True
-                        yalign 0.5
-                        text "Tiempo de Autoavance:":
-                            font gui.interface_text_font
-                            size 13
-                            color "#e2e8f0"
-                            xsize 240
-                        bar:
-                            value Preference("auto-forward time")
-                            ysize 14
+                            style "nexus_clean_slider"
                             xsize 600
                             yalign 0.5
 
@@ -2362,7 +2513,7 @@ screen preferences():
 
                     vbox:
                         spacing 3
-                        text "🛡 GESTIÓN DE PERFIL Y PROGRESO":
+                        text "GESTIÓN DE PERFIL Y PROGRESO":
                             font gui.interface_text_font
                             size 13
                             bold True
@@ -2379,7 +2530,7 @@ screen preferences():
                         background Frame(Solid("#7f1d1d"), 4, 4)
                         hover_background Frame(Solid("#991b1b"), 4, 4)
                         xalign 1.0
-                        text "⚠️ Restablecer a Cero":
+                        text "Restablecer a Cero":
                             font gui.interface_text_font
                             size 11
                             bold True
@@ -2552,39 +2703,150 @@ screen history():
 
     tag menu
 
-    ## Evita la predicción de esta pantalla, que podría ser demasiado grande.
     predict False
 
-    use game_menu(_("Historial"), scroll=("vpgrid" if gui.history_height else "viewport"), yinitial=1.0, spacing=gui.history_spacing):
+    use game_menu(_("Historial"), scroll="viewport"):
 
-        style_prefix "history"
+        $ is_mujer = (persistent.selected_gender == "mujer")
+        $ theme_accent = "#c084fc" if is_mujer else "#fb7185"
+        $ theme_border = persistent.theme_border or ("#a855f7" if is_mujer else "#f43f5e")
+        $ theme_bg = persistent.theme_color or ("#3b0764" if is_mujer else "#4c0519")
 
-        for h in _history_list:
+        vbox:
+            spacing 16
+            xfill True
 
-            window:
+            # -----------------------------------------------------------------
+            # 1. CABECERA: REGISTRO DE LA HISTORIA
+            # -----------------------------------------------------------------
+            frame:
+                xfill True
+                background Frame(Solid("#090e1cf5"), 8, 8)
+                padding (22, 14, 22, 14)
 
-                ## Esto distribuye los elementos apropiadamente si
-                ## 'history_height' es 'None'.
-                has fixed:
-                    yfit True
+                hbox:
+                    xfill True
+                    yalign 0.5
 
-                if h.who:
+                    hbox:
+                        spacing 14
+                        yalign 0.5
 
-                    label h.who:
-                        style "history_name"
-                        substitute False
+                        frame:
+                            background Frame(Solid(theme_bg), 6, 6)
+                            padding (10, 4, 10, 4)
+                            yalign 0.5
+                            text ("LÍNEA AMATISTA" if is_mujer else "LÍNEA CARMESÍ"):
+                                font gui.interface_text_font
+                                size 12
+                                bold True
+                                color "#ffffff"
 
-                        ## Toma el color del texto 'who' de 'Character', si ha
-                        ## sido establecido.
-                        if "color" in h.who_args:
-                            text_color h.who_args["color"]
+                        vbox:
+                            spacing 2
+                            text "REGISTRO DE LA HISTORIA • BITÁCORA CAUSAL":
+                                font gui.interface_text_font
+                                size 14
+                                bold True
+                                color "#f8fafc"
+                                kerning 1
 
-                $ what = renpy.filter_text_tags(h.what, allow=gui.history_allow_tags)
-                text what:
-                    substitute False
+                            text "Consulta todas las conversaciones, pensamientos íntimos y revelaciones acontecidas":
+                                font gui.interface_text_font
+                                size 11
+                                color "#94a3b8"
 
-        if not _history_list:
-            label _("El historial está vacío.")
+                    frame:
+                        background Frame(Solid("#0f172a"), 4, 4)
+                        padding (12, 5, 12, 5)
+                        yalign 0.5
+                        text (str(len(_history_list)) + " ENTRADAS"):
+                            font gui.interface_text_font
+                            size 11
+                            bold True
+                            color theme_accent
+
+            # -----------------------------------------------------------------
+            # 2. LISTA DE ENTRADAS EN TARJETAS GLASSMORPHISM
+            # -----------------------------------------------------------------
+            vbox:
+                spacing 10
+                xfill True
+
+                for idx, h in enumerate(_history_list):
+                    frame:
+                        xfill True
+                        background Frame(Solid("#080d1af2"), 6, 6)
+                        padding (18, 14, 18, 14)
+
+                        vbox:
+                            spacing 8
+                            xfill True
+
+                            hbox:
+                                xfill True
+                                yalign 0.5
+
+                                if h.who:
+                                    $ char_col = h.who_args.get("color", theme_accent) if ("who_args" in dir(h) and h.who_args) else theme_accent
+                                    frame:
+                                        background Frame(Solid("#10192e"), 4, 4)
+                                        padding (10, 3, 10, 3)
+                                        text h.who:
+                                            substitute False
+                                            font gui.name_text_font
+                                            size 13
+                                            bold True
+                                            color char_col
+                                else:
+                                    frame:
+                                        background Frame(Solid("#1e293b"), 4, 4)
+                                        padding (8, 3, 8, 3)
+                                        text "NARRACIÓN / REFLEXIÓN":
+                                            substitute False
+                                            font gui.interface_text_font
+                                            size 10
+                                            bold True
+                                            color "#94a3b8"
+
+                                text ("#" + str(idx + 1)):
+                                    font gui.interface_text_font
+                                    size 10
+                                    color "#475569"
+                                    xalign 1.0
+
+                            frame:
+                                xfill True
+                                ysize 1
+                                background Solid("#1e293b50")
+
+                            $ what = renpy.filter_text_tags(h.what, allow=gui.history_allow_tags)
+                            text what:
+                                substitute False
+                                font gui.text_font
+                                size 14
+                                color "#e2e8f0"
+                                line_spacing 4
+
+                if not _history_list:
+                    frame:
+                        xfill True
+                        background Frame(Solid("#080d1af2"), 8, 8)
+                        padding (40, 35, 40, 35)
+                        vbox:
+                            xalign 0.5
+                            spacing 8
+                            text "BITÁCORA VACÍA":
+                                font gui.interface_text_font
+                                size 15
+                                bold True
+                                color "#64748b"
+                                xalign 0.5
+                            text "Aún no hay diálogos registrados en esta línea temporal. Inicia la historia para comenzar el registro.":
+                                font gui.interface_text_font
+                                size 12
+                                color "#475569"
+                                xalign 0.5
 
 
 ## Esto determina qué etiquetas se permiten en la pantalla de historial.
@@ -2674,7 +2936,7 @@ screen help():
                             background Frame(Solid(theme_bg), 6, 6)
                             padding (10, 4, 10, 4)
                             yalign 0.5
-                            text ("♀ LÍNEA AMATISTA" if is_mujer else "♂ LÍNEA CARMESÍ"):
+                            text ("LÍNEA AMATISTA" if is_mujer else "LÍNEA CARMESÍ"):
                                 font gui.interface_text_font
                                 size 12
                                 bold True
@@ -2721,7 +2983,7 @@ screen help():
                         background Frame(Solid(theme_bg if device == "keyboard" else "#131d33"), 6, 6)
                         hover_background Frame(Solid("#1e293b"), 6, 6)
                         action SetScreenVariable("device", "keyboard")
-                        text "⌨ Teclado":
+                        text "Teclado":
                             font gui.interface_text_font
                             size 13
                             bold True
@@ -2732,7 +2994,7 @@ screen help():
                         background Frame(Solid(theme_bg if device == "mouse" else "#131d33"), 6, 6)
                         hover_background Frame(Solid("#1e293b"), 6, 6)
                         action SetScreenVariable("device", "mouse")
-                        text "🖱 Ratón":
+                        text "Ratón":
                             font gui.interface_text_font
                             size 13
                             bold True
@@ -2743,7 +3005,7 @@ screen help():
                         background Frame(Solid(theme_bg if device == "mobile" else "#131d33"), 6, 6)
                         hover_background Frame(Solid("#1e293b"), 6, 6)
                         action SetScreenVariable("device", "mobile")
-                        text "📱 Celular / Táctil":
+                        text "Celular / Táctil":
                             font gui.interface_text_font
                             size 13
                             bold True
@@ -2754,7 +3016,7 @@ screen help():
                         background Frame(Solid(theme_bg if device == "exploration" else "#131d33"), 6, 6)
                         hover_background Frame(Solid("#1e293b"), 6, 6)
                         action SetScreenVariable("device", "exploration")
-                        text "🏥 Exploración 2D":
+                        text "Exploración 2D":
                             font gui.interface_text_font
                             size 13
                             bold True
@@ -2766,7 +3028,7 @@ screen help():
                             background Frame(Solid(theme_bg if device == "gamepad" else "#131d33"), 6, 6)
                             hover_background Frame(Solid("#1e293b"), 6, 6)
                             action SetScreenVariable("device", "gamepad")
-                            text "🎮 Mando":
+                            text "Mando":
                                 font gui.interface_text_font
                                 size 13
                                 bold True
@@ -2870,7 +3132,7 @@ screen mobile_help(theme_accent="#fb7185", theme_border="#f43f5e"):
             padding (18, 12, 18, 12)
             vbox:
                 spacing 4
-                text "📱 SOPORTE NATIVO AUTÓNOMO PARA ANDROID Y CELULARES":
+                text "SOPORTE NATIVO AUTÓNOMO PARA ANDROID Y CELULARES":
                     font gui.interface_text_font
                     size 13
                     bold True
@@ -2881,12 +3143,12 @@ screen mobile_help(theme_accent="#fb7185", theme_border="#f43f5e"):
                     color "#cbd5e1"
 
         use help_row_card("Tocar con un Dedo", "Avanzar y Confirmar", "Toca la pantalla para avanzar diálogos o elegir ramificaciones de la trama.", theme_accent, theme_border)
-        use help_row_card("Esquina Superior Derecha", "Botones [ 💾 Guardar ] y [ ⚙ Menú ]", "Acceso rápido exclusivo en móviles en la esquina superior para guardar o entrar al menú.", theme_accent, theme_border)
+        use help_row_card("Esquina Superior Derecha", "Botones Guardar y Menú", "Acceso rápido exclusivo en móviles en la esquina superior para guardar o entrar al menú.", theme_accent, theme_border)
         use help_row_card("Tocar con Dos Dedos", "Abrir Menú de Pausa", "Pausa la partida y accede al guardado, carga y configuración.", theme_accent, theme_border)
         use help_row_card("Deslizar hacia Arriba", "Abrir Historial", "Arrastra el dedo hacia arriba para consultar el registro de diálogos.", theme_accent, theme_border)
         use help_row_card("Deslizar hacia Abajo", "Ocultar Interfaz", "Arrastra hacia abajo para limpiar la pantalla y ver el arte completo.", theme_accent, theme_border)
         use help_row_card("Mantener Pulsado", "Salto Rápido de Texto", "Apoya el dedo de forma continua para adelantar el texto rápidamente.", theme_accent, theme_border)
-        use help_row_card("Cruceta Virtual (▲ ▼ ◀ ▶)", "Caminar en el Hospital 2D", "Botones virtuales táctiles ergonómicos integrados en la exploración.", theme_accent, theme_border)
+        use help_row_card("Cruceta Virtual (WASD / Flechas)", "Caminar en el Hospital 2D", "Botones virtuales táctiles ergonómicos integrados en la exploración.", theme_accent, theme_border)
         use help_row_card("Toque Directo en Salas", "Teletransporte e Inspección", "Toca cualquier sala o camilla en la pantalla para moverte e interactuar.", theme_accent, theme_border)
 
 
@@ -2902,7 +3164,7 @@ screen exploration_help(theme_accent="#fb7185", theme_border="#f43f5e"):
             padding (18, 12, 18, 12)
             vbox:
                 spacing 4
-                text "🏥 SISTEMA DE EXPLORACIÓN 2D MULTI-PISO A PANTALLA COMPLETA":
+                text "SISTEMA DE EXPLORACIÓN 2D MULTI-PISO A PANTALLA COMPLETA":
                     font gui.interface_text_font
                     size 13
                     bold True
@@ -2970,6 +3232,22 @@ screen confirm(message, yes_action, no_action):
     # Fondo oscurecido con profundidad
     add Solid("#04060dd0")
 
+    # Normalización automática de mensajes a español oficial
+    $ msg_str = str(message)
+    $ msg_lower = msg_str.lower()
+    if "main menu" in msg_lower or "menú principal" in msg_lower:
+        $ display_modal_msg = "¿Estás seguro de que deseas volver al Menú Principal?\nSe perderá cualquier progreso no guardado."
+    elif "quit" in msg_lower or "salir" in msg_lower:
+        $ display_modal_msg = "¿Estás seguro de que deseas salir del juego?"
+    elif "overwrite" in msg_lower or "sobrescribir" in msg_lower:
+        $ display_modal_msg = "¿Estás seguro de que deseas sobrescribir esta partida guardada?"
+    elif "loading" in msg_lower or "cargar" in msg_lower:
+        $ display_modal_msg = "Cargar una partida reemplazará el progreso actual no guardado.\n¿Deseas continuar?"
+    elif "replay" in msg_lower or "repetición" in msg_lower:
+        $ display_modal_msg = "¿Estás seguro de que deseas finalizar la repetición?"
+    else:
+        $ display_modal_msg = _(message)
+
     frame at modal_popup_anim:
         style "nexus_modal_frame"
 
@@ -2998,7 +3276,7 @@ screen confirm(message, yes_action, no_action):
 
             # Cuerpo del mensaje
             null height 6
-            text _(message):
+            text display_modal_msg:
                 size 16
                 color "#f1f5f9"
                 xalign 0.5
@@ -3401,7 +3679,7 @@ screen quick_menu():
                     padding (12, 6, 12, 6)
                     background Frame(Solid("#0f172acc"), 4, 4)
                     hover_background Frame(Solid("#1e293bcc"), 4, 4)
-                    text _("💾 Guardar"):
+                    text _("Guardar"):
                         size 11
                         bold True
                         color "#e2e8f0"
@@ -3411,7 +3689,7 @@ screen quick_menu():
                     padding (12, 6, 12, 6)
                     background Frame(Solid(persistent.theme_color or "#be123c"), 4, 4)
                     hover_background Frame(Solid(persistent.theme_hover or "#e11d48"), 4, 4)
-                    text _("⚙ Menú"):
+                    text _("Menú"):
                         size 11
                         bold True
                         color "#ffffff"
@@ -3541,7 +3819,7 @@ screen achievements():
                             background Frame(Solid(theme_bg), 6, 6)
                             padding (10, 4, 10, 4)
                             yalign 0.5
-                            text ("♀ LÍNEA AMATISTA" if is_mujer else "♂ LÍNEA CARMESÍ"):
+                            text ("LÍNEA AMATISTA" if is_mujer else "LÍNEA CARMESÍ"):
                                 font gui.interface_text_font
                                 size 12
                                 bold True
@@ -3599,7 +3877,7 @@ screen achievements():
                     padding (16, 12, 16, 12)
                     vbox:
                         spacing 2
-                        text "🏆 HAZAÑAS":
+                        text "HAZAÑAS":
                             font gui.interface_text_font
                             size 10
                             bold True
@@ -3623,7 +3901,7 @@ screen achievements():
                     padding (16, 12, 16, 12)
                     vbox:
                         spacing 2
-                        text "⚡ EXPERIENCIA":
+                        text "EXPERIENCIA":
                             font gui.interface_text_font
                             size 10
                             bold True
@@ -3649,7 +3927,7 @@ screen achievements():
                         spacing 3
                         hbox:
                             xfill True
-                            text "📊 PROGRESO":
+                            text "PROGRESO":
                                 font gui.interface_text_font
                                 size 10
                                 bold True
@@ -3683,7 +3961,7 @@ screen achievements():
                     padding (16, 12, 16, 12)
                     vbox:
                         spacing 2
-                        text "🧬 RECORRIDO":
+                        text "RECORRIDO":
                             font gui.interface_text_font
                             size 10
                             bold True
@@ -3716,7 +3994,7 @@ screen achievements():
                         spacing 10
                         yalign 0.5
 
-                        $ tabs = [("Todos", "✦ Todos"), ("Desbloqueados", "🔓 Desbloqueados"), ("Bloqueados", "🔒 Bloqueados"), ("Recientes", "⏱ Recientes"), ("Ranking", "👑 Ranking XP")]
+                        $ tabs = [("Todos", "Todos"), ("Desbloqueados", "Desbloqueados"), ("Bloqueados", "Bloqueados"), ("Recientes", "⏱ Recientes"), ("Ranking", "👑 Ranking XP")]
                         for filter_key, filter_label in tabs:
                             $ is_tab_sel = (persistent.achievement_filter == filter_key)
                             button:
@@ -3763,7 +4041,7 @@ screen achievements():
                         hbox:
                             xfill True
                             yalign 0.5
-                            text "🏆 TABLA DE LÍDERES CAUSAL • TOP 20 POR XP":
+                            text "TABLA DE LÍDERES CAUSAL • TOP 20 POR XP":
                                 font gui.interface_text_font
                                 size 13
                                 bold True
@@ -3812,7 +4090,7 @@ screen achievements():
                                     padding (24, 12, 24, 12)
                                     background Frame(Solid(theme_bg), 6, 6)
                                     hover_background Frame(Solid(theme_border), 6, 6)
-                                    text "🚀 Sumarme al ranking global":
+                                    text "Sumarme al ranking global":
                                         font gui.interface_text_font
                                         size 13
                                         bold True
@@ -3882,7 +4160,7 @@ screen achievements():
 
                                 hbox:
                                     xalign 0.5
-                                    text ("✓ Publicado en el ranking con el apodo: " + str(persistent.player_nickname)):
+                                    text ("Publicado en el ranking con el apodo: " + str(persistent.player_nickname)):
                                         font gui.interface_text_font
                                         size 12
                                         color "#10b981"
@@ -3935,7 +4213,7 @@ screen achievements():
                                                 fit "contain"
                                                 ysize 28
                                         else:
-                                            text "🔒":
+                                            text "Bloqueado":
                                                 xalign 0.5
                                                 yalign 0.5
                                                 size 16
@@ -4003,7 +4281,7 @@ screen achievements():
                                                 color ("#ffffff" if is_unlocked else "#94a3b8")
 
                                         if is_unlocked:
-                                            text "✓ COMPLETADO":
+                                            text "COMPLETADO":
                                                 font gui.interface_text_font
                                                 size 10
                                                 bold True

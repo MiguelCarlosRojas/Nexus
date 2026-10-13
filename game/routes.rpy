@@ -120,14 +120,34 @@ screen alternate_routes():
     tag menu
 
     use game_menu(_("Líneas Alternas y Eventos Causa"), scroll="viewport"):
-        vbox:
-            spacing 24
-            xfill True
+        if not getattr(persistent, "completed_chapter_1", False):
+            frame:
+                xfill True
+                ysize 500
+                background Solid("#080c16fa")
+                vbox:
+                    xalign 0.5
+                    yalign 0.5
+                    spacing 16
+                    add "gui/icons/icon_achievements.png" xalign 0.5 ysize 48 fit "contain"
+                    text "REGISTRO TEMPORAL RESTRINGIDO":
+                        size 22
+                        bold True
+                        color "#e2e8f0"
+                        xalign 0.5
+                    text "Debes completar el Capítulo 1 para desbloquear las Líneas Alternas y Eventos Causa.":
+                        size 14
+                        color "#94a3b8"
+                        xalign 0.5
+        else:
+            vbox:
+                spacing 24
+                xfill True
 
-            # Resumen de estado de exploración causal aislado por perspectiva
-            $ current_routes = ROUTES_SHINSHU if persistent.selected_gender != "mujer" else ROUTES_AOI
-            $ completed_nodes = sum(1 for r in current_routes if r.get("unlocked", False))
-            $ total_nodes = len(current_routes)
+                # Resumen de estado de exploración causal aislado por perspectiva
+                $ current_routes = ROUTES_SHINSHU if persistent.selected_gender != "mujer" else ROUTES_AOI
+                $ completed_nodes = sum(1 for r in current_routes if r.get("unlocked", False))
+                $ total_nodes = len(current_routes)
 
             frame:
                 background Solid("#080d1a")
