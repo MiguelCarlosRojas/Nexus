@@ -550,11 +550,11 @@ screen hospital_2d_exploration(perspective="hombre"):
                 yalign 0.5
                 xalign 0.5
                 spacing 2
-                text "• Teclado: [W, A, S, D] o [Flechas] para caminar • [Espacio / E] para investigar":
+                text _("• Teclado: [[W, A, S, D]] o [[Flechas]] para caminar • [[Espacio / E]] para investigar") substitute False:
                     font gui.interface_text_font
                     size 11
                     color "#94a3b8"
-                text "• Celular: Toca la cruceta táctil o toca directamente cualquier sala en el plano":
+                text _("• Celular: Toca la cruceta táctil o toca directamente cualquier sala en el plano") substitute False:
                     font gui.interface_text_font
                     size 11
                     color "#38bdf8"

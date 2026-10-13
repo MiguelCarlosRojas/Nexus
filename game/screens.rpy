@@ -3301,236 +3301,343 @@ style slider_slider:
 
 
 ## Pantalla de Logros y Nivel (Ranking y Progreso) #############################
+## Pantalla de Logros y Nivel (Ranking y Progreso - Rediseño Premium) ############
 screen achievements():
 
     tag menu
 
     use game_menu(_("Logros y Nivel"), scroll="viewport"):
 
+        $ is_mujer = (persistent.selected_gender == "mujer")
+        $ theme_accent = "#c084fc" if is_mujer else "#fb7185"
+        $ theme_border = persistent.theme_border or ("#a855f7" if is_mujer else "#f43f5e")
+        $ theme_bg = persistent.theme_color or ("#3b0764" if is_mujer else "#4c0519")
+
         vbox:
-            spacing 26
-            xsize 1160
+            spacing 18
+            xfill True
 
             # -----------------------------------------------------------------
-            # CABECERA DE ESTADÍSTICAS Y NIVEL DEL JUGADOR
+            # 1. CABECERA EXPANDIDA: EXPEDIENTE DE LOGROS Y RANGO NEXUS
             # -----------------------------------------------------------------
             frame:
-                style "achieve_hero_card"
+                xfill True
+                background Frame(Solid("#090e1cf5"), 8, 8)
+                padding (22, 12, 22, 12)
+
                 hbox:
                     xfill True
                     yalign 0.5
-                    spacing 20
 
-                    # Stat 1: Logros desbloqueados
-                    vbox:
-                        spacing 2
-                        xalign 0.5
-                        text "[get_unlocked_count()]/[get_total_gender_achievements_count()]":
-                            size 28
-                            bold True
-                            color "#ffffff"
-                            xalign 0.5
-                        text _("logros"):
-                            size 13
-                            color "#8c96a8"
-                            xalign 0.5
-
-                    # Divisor vertical tenue
-                    frame:
-                        ysize 45
-                        xsize 1
-                        background "#262d40"
+                    hbox:
+                        spacing 14
                         yalign 0.5
 
-                    # Stat 2: Experiencia XP
-                    vbox:
-                        spacing 2
-                        xalign 0.5
-                        text "[get_total_player_xp()]":
-                            size 28
-                            bold True
-                            color (persistent.theme_color or "#e63946")
-                            xalign 0.5
-                        text _("XP"):
-                            size 13
-                            bold True
-                            color "#8c96a8"
-                            xalign 0.5
-
-                    # Divisor vertical tenue
-                    frame:
-                        ysize 45
-                        xsize 1
-                        background "#262d40"
-                        yalign 0.5
-
-                    # Stat 3: Porcentaje y Barra de Progreso
-                    vbox:
-                        spacing 4
-                        xsize 420
-                        yalign 0.5
-                        hbox:
-                            xfill True
-                            text "[get_achievements_percent()]%":
-                                size 20
+                        # Insignia de Género / Perspectiva
+                        frame:
+                            background Frame(Solid(theme_bg), 6, 6)
+                            padding (10, 4, 10, 4)
+                            yalign 0.5
+                            text ("♀ LÍNEA AMATISTA" if is_mujer else "♂ LÍNEA CARMESÍ"):
+                                font gui.interface_text_font
+                                size 12
                                 bold True
                                 color "#ffffff"
-                            text _("completo"):
-                                size 13
-                                color "#8c96a8"
-                                xalign 1.0
-                        # Barra de progreso
-                        bar:
-                            value get_achievements_percent()
-                            range 100
-                            ysize 10
-                            xsize 420
-                            left_bar Frame(Solid(persistent.theme_color or "#e63946"), 2, 2)
-                            right_bar Frame(Solid("#1c2233"), 2, 2)
 
-                    # Divisor vertical tenue
-                    frame:
-                        ysize 45
-                        xsize 1
-                        background "#262d40"
+                        vbox:
+                            spacing 2
+                            text ("REGISTRO DE HAZAÑAS • PERSPECTIVA DE AOI KAZAMA" if is_mujer else "REGISTRO DE HAZAÑAS • PERSPECTIVA DE SHINSHU KAZAMA"):
+                                font gui.interface_text_font
+                                size 14
+                                bold True
+                                color "#f8fafc"
+                                kerning 1
+
+                            text ("Sistema de progresión, nivel de sincronicidad y hazañas del Capítulo 1"):
+                                font gui.interface_text_font
+                                size 11
+                                color "#94a3b8"
+
+                    # Rango y Nivel a la derecha
+                    hbox:
+                        spacing 12
                         yalign 0.5
 
-                    # Stat 4: Recorrido
+                        frame:
+                            background Frame(Solid("#0f172a"), 4, 4)
+                            padding (12, 5, 12, 5)
+                            text ("NIVEL " + str(get_player_level())):
+                                font gui.interface_text_font
+                                size 11
+                                bold True
+                                color theme_accent
+
+                        frame:
+                            background Frame(Solid("#0f172a"), 4, 4)
+                            padding (12, 5, 12, 5)
+                            text "RANGO: INVESTIGADOR CAUSAL":
+                                font gui.interface_text_font
+                                size 11
+                                bold True
+                                color "#10b981"
+
+            # -----------------------------------------------------------------
+            # 2. CUADRO DE ESTADÍSTICAS HOLOGRÁFICO (4 TARJETAS INTERACTIVAS)
+            # -----------------------------------------------------------------
+            hbox:
+                xfill True
+                spacing 14
+
+                # Tarjeta 1: Logros Desbloqueados
+                frame:
+                    xsize 270
+                    ysize 95
+                    background Frame(Solid("#080c18f8"), 6, 6)
+                    padding (16, 12, 16, 12)
                     vbox:
                         spacing 2
-                        xalign 0.5
-                        text "[get_recorrido_count()]/[get_total_gender_achievements_count()]":
+                        text "🏆 HAZAÑAS":
+                            font gui.interface_text_font
+                            size 10
+                            bold True
+                            color "#94a3b8"
+                            kerning 1
+                        text (str(get_unlocked_count()) + " / " + str(get_total_gender_achievements_count())):
+                            font gui.interface_text_font
                             size 24
                             bold True
                             color "#ffffff"
-                            xalign 0.5
-                        text _("Recorrido"):
-                            size 13
-                            color "#8c96a8"
-                            xalign 0.5
+                        text "Logros completados":
+                            font gui.interface_text_font
+                            size 10
+                            color "#64748b"
+
+                # Tarjeta 2: Experiencia XP
+                frame:
+                    xsize 270
+                    ysize 95
+                    background Frame(Solid("#080c18f8"), 6, 6)
+                    padding (16, 12, 16, 12)
+                    vbox:
+                        spacing 2
+                        text "⚡ EXPERIENCIA":
+                            font gui.interface_text_font
+                            size 10
+                            bold True
+                            color "#94a3b8"
+                            kerning 1
+                        text (str(get_total_player_xp()) + " XP"):
+                            font gui.interface_text_font
+                            size 24
+                            bold True
+                            color theme_accent
+                        text "Puntos acumulados":
+                            font gui.interface_text_font
+                            size 10
+                            color "#64748b"
+
+                # Tarjeta 3: Porcentaje y Barra de Progreso
+                frame:
+                    xsize 300
+                    ysize 95
+                    background Frame(Solid("#080c18f8"), 6, 6)
+                    padding (16, 12, 16, 12)
+                    vbox:
+                        spacing 3
+                        hbox:
+                            xfill True
+                            text "📊 PROGRESO":
+                                font gui.interface_text_font
+                                size 10
+                                bold True
+                                color "#94a3b8"
+                                kerning 1
+                            text (str(get_achievements_percent()) + "%"):
+                                font gui.interface_text_font
+                                size 13
+                                bold True
+                                color "#38bdf8"
+                                xalign 1.0
+
+                        bar:
+                            value get_achievements_percent()
+                            range 100
+                            ysize 8
+                            xfill True
+                            left_bar Frame(Solid(theme_border), 2, 2)
+                            right_bar Frame(Solid("#1e293b"), 2, 2)
+
+                        text "Sincronización global":
+                            font gui.interface_text_font
+                            size 10
+                            color "#64748b"
+
+                # Tarjeta 4: Recorrido y Destinos
+                frame:
+                    xsize 270
+                    ysize 95
+                    background Frame(Solid("#080c18f8"), 6, 6)
+                    padding (16, 12, 16, 12)
+                    vbox:
+                        spacing 2
+                        text "🧬 RECORRIDO":
+                            font gui.interface_text_font
+                            size 10
+                            bold True
+                            color "#94a3b8"
+                            kerning 1
+                        text (str(get_recorrido_count()) + " / " + str(get_total_gender_achievements_count())):
+                            font gui.interface_text_font
+                            size 24
+                            bold True
+                            color "#10b981"
+                        text "Nodos explorados":
+                            font gui.interface_text_font
+                            size 10
+                            color "#64748b"
 
             # -----------------------------------------------------------------
-            # BARRA DE PESTAÑAS Y BÚSQUEDA
+            # 3. BARRA DE FILTROS ESTILIZADA Y BÚSQUEDA
             # -----------------------------------------------------------------
-            vbox:
-                spacing 14
+            frame:
+                xfill True
+                background Frame(Solid("#070b16f8"), 6, 6)
+                padding (12, 8, 12, 8)
 
                 hbox:
                     xfill True
                     yalign 0.5
 
-                    # Pestañas de filtrado
+                    # Pestañas de filtrado tipo botones estilizados
                     hbox:
                         spacing 10
                         yalign 0.5
 
-                        textbutton _("Todos"):
-                            action Function(set_achieve_filter, "Todos")
-                            selected (persistent.achievement_filter == "Todos")
-                            style "pref_tab_btn"
-
-                        textbutton _("Desbloqueados"):
-                            action Function(set_achieve_filter, "Desbloqueados")
-                            selected (persistent.achievement_filter == "Desbloqueados")
-                            style "pref_tab_btn"
-
-                        textbutton _("Bloqueados"):
-                            action Function(set_achieve_filter, "Bloqueados")
-                            selected (persistent.achievement_filter == "Bloqueados")
-                            style "pref_tab_btn"
-
-                        textbutton _("Recientes"):
-                            action Function(set_achieve_filter, "Recientes")
-                            selected (persistent.achievement_filter == "Recientes")
-                            style "pref_tab_btn"
-
-                        textbutton _("Ranking"):
-                            action Function(set_achieve_filter, "Ranking")
-                            selected (persistent.achievement_filter == "Ranking")
-                            style "pref_tab_btn"
+                        $ tabs = [("Todos", "✦ Todos"), ("Desbloqueados", "🔓 Desbloqueados"), ("Bloqueados", "🔒 Bloqueados"), ("Recientes", "⏱ Recientes"), ("Ranking", "👑 Ranking XP")]
+                        for filter_key, filter_label in tabs:
+                            $ is_tab_sel = (persistent.achievement_filter == filter_key)
+                            button:
+                                action Function(set_achieve_filter, filter_key)
+                                padding (14, 6, 14, 6)
+                                background Frame(Solid(theme_bg if is_tab_sel else "#0f172acc"), 4, 4)
+                                hover_background Frame(Solid("#1e293bcc"), 4, 4)
+                                text filter_label:
+                                    font gui.interface_text_font
+                                    size 11
+                                    bold True
+                                    color ("#ffffff" if is_tab_sel else "#94a3b8")
 
                     # Cuadro interactivo de búsqueda
                     frame:
-                        xsize 250
-                        ysize 42
-                        padding (12, 8, 12, 8)
-                        background Frame(Solid("#141926"), 4, 4)
+                        xsize 260
+                        ysize 36
+                        padding (12, 6, 12, 6)
+                        background Frame(Solid("#0f172a"), 4, 4)
                         yalign 0.5
                         xalign 1.0
                         input:
                             value FieldInputValue(persistent, "achievement_search")
                             default ""
-                            size 13
-                            color "#94a3b8"
+                            size 12
+                            color "#e2e8f0"
                             yalign 0.5
 
             # -----------------------------------------------------------------
-            # VISTA DE CONTENIDO SEGÚN FILTRO
+            # 4. CONTENIDO SEGÚN FILTRO SELECCIONADO
             # -----------------------------------------------------------------
             if persistent.achievement_filter == "Ranking":
 
                 # --- VISTA DE RANKING XP ---
                 frame:
-                    style "achieve_card_panel"
+                    xfill True
+                    background Frame(Solid("#080c18f8"), 8, 8)
+                    padding (24, 20, 24, 20)
+
                     vbox:
-                        spacing 18
+                        spacing 16
                         xfill True
 
                         hbox:
                             xfill True
                             yalign 0.5
-                            text "TOP 20 POR XP" style "achieve_section_header"
+                            text "🏆 TABLA DE LÍDERES CAUSAL • TOP 20 POR XP":
+                                font gui.interface_text_font
+                                size 13
+                                bold True
+                                color theme_accent
+                                kerning 1
+
                             if persistent.player_in_ranking:
-                                text "TEMPORADA 1 • EN VIVO" size 12 color "#4ade80" xalign 1.0
+                                frame:
+                                    background Frame(Solid("#064e3b"), 4, 4)
+                                    padding (8, 3, 8, 3)
+                                    text "TEMPORADA 1 • EN VIVO":
+                                        font gui.interface_text_font
+                                        size 10
+                                        bold True
+                                        color "#34d399"
                             else:
-                                text "TEMPORADA 1" size 12 color "#64748b" xalign 1.0
+                                text "TEMPORADA 1":
+                                    font gui.interface_text_font
+                                    size 11
+                                    color "#64748b"
 
                         if not persistent.player_in_ranking:
-                            # Mensaje de ranking vacío (solicitado textualmente)
                             frame:
                                 xfill True
-                                padding (24, 28, 24, 28)
-                                background Frame(Solid("#0d1017"), 6, 6)
+                                padding (26, 26, 26, 26)
+                                background Frame(Solid("#0c1220ee"), 6, 6)
                                 vbox:
                                     spacing 8
                                     xalign 0.5
-                                    text "Todavía no hay nadie. ¡Sé el primero!":
+                                    text "Todavía no hay nadie en la tabla. ¡Sé el primero!":
+                                        font gui.interface_text_font
                                         size 16
                                         bold True
                                         color "#ffffff"
                                         xalign 0.5
-                                    text "Elegí un apodo. Solo se publica el apodo, tu nivel, tu XP y cuántos logros tenés.":
-                                        size 14
+                                    text "Elige un apodo para publicar tu nivel, XP y cantidad de logros completados:":
+                                        font gui.interface_text_font
+                                        size 13
                                         color "#94a3b8"
                                         xalign 0.5
 
-                            # Botón para unirse al ranking
                             hbox:
                                 xalign 0.5
-                                spacing 15
-                                textbutton _("Sumarme al ranking"):
+                                button:
                                     action Function(join_ranking_action)
-                                    style "achieve_join_btn"
+                                    padding (24, 12, 24, 12)
+                                    background Frame(Solid(theme_bg), 6, 6)
+                                    hover_background Frame(Solid(theme_border), 6, 6)
+                                    text "🚀 Sumarme al ranking global":
+                                        font gui.interface_text_font
+                                        size 13
+                                        bold True
+                                        color "#ffffff"
 
                         else:
-                            # Ranking activo mostrando la posición del jugador
                             vbox:
                                 spacing 10
                                 xfill True
 
                                 frame:
-                                    style "achieve_row_frame"
+                                    xfill True
+                                    background Frame(Solid("#0f172af0"), 6, 6)
+                                    padding (18, 14, 18, 14)
+
                                     hbox:
                                         xfill True
                                         yalign 0.5
-                                        spacing 18
+                                        spacing 16
 
-                                        text "#1":
-                                            size 20
-                                            bold True
-                                            color (persistent.theme_color or "#e63946")
-                                            yalign 0.5
-                                            xsize 40
+                                        # Medalla / Puesto
+                                        frame:
+                                            background Frame(Solid(theme_bg), 4, 4)
+                                            padding (8, 4, 8, 4)
+                                            text "#1":
+                                                size 18
+                                                bold True
+                                                color "#ffffff"
 
                                         vbox:
                                             spacing 3
@@ -3538,170 +3645,174 @@ screen achievements():
                                                 spacing 10
                                                 yalign 0.5
                                                 text "[persistent.player_nickname]":
+                                                    font gui.interface_text_font
                                                     size 16
                                                     bold True
                                                     color "#ffffff"
                                                 frame:
                                                     padding (6, 2, 6, 2)
-                                                    background Frame(Solid(persistent.theme_color or "#e63946"), 3, 3)
-                                                    text _("TÚ"):
-                                                        size 10
+                                                    background Frame(Solid(theme_border), 3, 3)
+                                                    text "TÚ":
+                                                        size 9
                                                         bold True
                                                         color "#ffffff"
-                                            text _("Nivel [get_player_level()] • [get_unlocked_count()] logros completados"):
+
+                                            text ("Nivel " + str(get_player_level()) + " • " + str(get_unlocked_count()) + " logros completados"):
+                                                font gui.interface_text_font
                                                 size 12
                                                 color "#94a3b8"
 
                                         vbox:
                                             xalign 1.0
                                             spacing 2
-                                            text "[get_total_player_xp()] XP":
+                                            text (str(get_total_player_xp()) + " XP"):
+                                                font gui.interface_text_font
                                                 size 16
                                                 bold True
-                                                color (persistent.theme_color or "#e63946")
+                                                color theme_accent
                                                 xalign 1.0
-                                            text _("Rango Shinshu"):
+                                            text "Rango Nexus":
+                                                font gui.interface_text_font
                                                 size 11
                                                 color "#64748b"
                                                 xalign 1.0
 
                                 hbox:
                                     xalign 0.5
-                                    spacing 20
-                                    text _("✓ Publicado en el ranking con el apodo: [persistent.player_nickname]"):
-                                        size 13
-                                        color "#4ade80"
-                                        yalign 0.5
+                                    text ("✓ Publicado en el ranking con el apodo: " + str(persistent.player_nickname)):
+                                        font gui.interface_text_font
+                                        size 12
+                                        color "#10b981"
 
             else:
 
-                # --- VISTA DE LOGROS DINÁMICOS SEGÚN FILTRO ---
+                # --- VISTA DE LISTA DE LOGROS DINÁMICOS SEGÚN FILTRO ---
                 $ current_list = get_filtered_achievements()
 
                 vbox:
-                    spacing 14
+                    spacing 10
                     xfill True
-
-                    hbox:
-                        spacing 10
-                        if persistent.achievement_filter == "Desbloqueados":
-                            text "LOGROS DESBLOQUEADOS" style "achieve_section_header"
-                        elif persistent.achievement_filter == "Bloqueados":
-                            text "PRÓXIMOS A DESBLOQUEAR" style "achieve_section_header"
-                        elif persistent.achievement_filter == "Recientes":
-                            text "LOGROS OBTENIDOS RECIENTEMENTE" style "achieve_section_header"
-                        else:
-                            text "PRÓXIMOS A DESBLOQUEAR" style "achieve_section_header"
 
                     if not current_list:
                         frame:
-                            style "achieve_row_frame"
-                            text _("No se encontraron logros en esta categoría o filtro de búsqueda."):
-                                size 14
+                            xfill True
+                            background Frame(Solid("#080c18f8"), 6, 6)
+                            padding (28, 24, 28, 24)
+                            text "No se encontraron hazañas en esta categoría o filtro de búsqueda.":
+                                font gui.interface_text_font
+                                size 13
                                 color "#94a3b8"
                                 xalign 0.5
                     else:
-                        for ach in current_list[:15]:
+                        for ach in current_list:
                             $ is_unlocked = is_achievement_unlocked(ach["id"])
+
                             frame:
-                                style "achieve_row_frame"
+                                xfill True
+                                background Frame(Solid("#0b1122f0" if is_unlocked else "#070b16cc"), 6, 6)
+                                padding (16, 12, 16, 12)
+
                                 hbox:
-                                    spacing 18
+                                    spacing 16
                                     yalign 0.5
                                     xfill True
-                                    if is_unlocked:
-                                        add "gui/icons/icon_achievements.png" ysize 36 fit "contain" yalign 0.5
-                                    else:
-                                        add "gui/icons/icon_achievements.png" ysize 36 fit "contain" yalign 0.5 alpha 0.45
 
-                                    vbox:
-                                        spacing 2
-                                        hbox:
-                                            spacing 8
-                                            yalign 0.5
-                                            text ach["name"]:
+                                    # Icono con estado de desbloqueo
+                                    frame:
+                                        xsize 44
+                                        ysize 44
+                                        yalign 0.5
+                                        background Frame(Solid("#064e3b" if is_unlocked else "#1e293b"), 4, 4)
+                                        padding (4, 4, 4, 4)
+
+                                        if is_unlocked:
+                                            add "gui/icons/icon_achievements.png":
+                                                xalign 0.5
+                                                yalign 0.5
+                                                fit "contain"
+                                                ysize 28
+                                        else:
+                                            text "🔒":
+                                                xalign 0.5
+                                                yalign 0.5
                                                 size 16
+
+                                    # Información central del logro
+                                    vbox:
+                                        spacing 3
+                                        yalign 0.5
+                                        xsize 780
+
+                                        hbox:
+                                            spacing 10
+                                            yalign 0.5
+
+                                            text ach["name"]:
+                                                font gui.interface_text_font
+                                                size 14
                                                 bold True
-                                                if is_unlocked:
-                                                    color "#ffffff"
-                                                else:
-                                                    color "#cbd5e1"
+                                                color ("#ffffff" if is_unlocked else "#94a3b8")
+
                                             if ach.get("chapter"):
-                                                text ("(" + ach["chapter"] + ")"):
-                                                    size 12
-                                                    color "#64748b"
-                                                    yalign 0.5
+                                                frame:
+                                                    background Frame(Solid("#1e293b"), 3, 3)
+                                                    padding (6, 2, 6, 2)
+                                                    text ach["chapter"]:
+                                                        font gui.interface_text_font
+                                                        size 9
+                                                        bold True
+                                                        color "#38bdf8"
 
                                         if is_unlocked:
                                             text ach["desc"]:
-                                                size 13
-                                                color "#94a3b8"
+                                                font gui.interface_text_font
+                                                size 12
+                                                color "#cbd5e1"
+                                                line_spacing 3
                                         else:
                                             if ach.get("secret", False):
-                                                text _("Logro secreto del destino. Continúa avanzando en la historia para revelarlo."):
-                                                    size 13
+                                                text "Logro secreto del destino. Continúa avanzando en la historia para revelarlo.":
+                                                    font gui.interface_text_font
+                                                    size 12
                                                     color "#64748b"
+                                                    italic True
                                             else:
                                                 text ach["desc"]:
-                                                    size 13
+                                                    font gui.interface_text_font
+                                                    size 12
                                                     color "#64748b"
+                                                    line_spacing 3
 
+                                    # Indicadores de XP y Estado a la derecha
                                     vbox:
                                         xalign 1.0
-                                        spacing 2
-                                        text ("+" + str(ach["xp"]) + " XP"):
-                                            size 14
-                                            bold True
-                                            if is_unlocked:
-                                                color (persistent.theme_color or "#e63946")
-                                            else:
-                                                color "#64748b"
+                                        yalign 0.5
+                                        spacing 3
+
+                                        frame:
+                                            background Frame(Solid(theme_bg if is_unlocked else "#1e293b"), 4, 4)
+                                            padding (8, 3, 8, 3)
                                             xalign 1.0
+                                            text ("+" + str(ach["xp"]) + " XP"):
+                                                font gui.interface_text_font
+                                                size 11
+                                                bold True
+                                                color ("#ffffff" if is_unlocked else "#94a3b8")
 
                                         if is_unlocked:
-                                            text _("Desbloqueado"):
-                                                size 12
-                                                color "#4ade80"
+                                            text "✓ COMPLETADO":
+                                                font gui.interface_text_font
+                                                size 10
+                                                bold True
+                                                color "#10b981"
                                                 xalign 1.0
                                         else:
-                                            text _("Pendiente"):
-                                                size 12
+                                            text "PENDIENTE":
+                                                font gui.interface_text_font
+                                                size 10
+                                                bold True
                                                 color "#f59e0b"
                                                 xalign 1.0
-
-
-style achieve_hero_card:
-    xfill True
-    padding (24, 20, 24, 20)
-    background Frame("gui/custom_btn/btn_idle.png", 8, 8)
-
-style achieve_card_panel:
-    xfill True
-    padding (24, 22, 24, 22)
-    background Frame(Solid("#11131ef0"), 6, 6)
-
-style achieve_row_frame:
-    xfill True
-    padding (18, 14, 18, 14)
-    background Frame("gui/custom_btn/btn_idle.png", 6, 6)
-
-style achieve_section_header:
-    size 15
-    bold True
-    color (persistent.theme_color or "#b82626")
-    kerning 1.8
-
-style achieve_join_btn is gui_button:
-    padding (24, 12, 24, 12)
-    background Frame("gui/custom_btn/btn_selected.png", 6, 6)
-    hover_background Frame("gui/custom_btn/btn_hover.png", 6, 6)
-
-style achieve_join_btn_text is gui_button_text:
-    size 15
-    bold True
-    color "#ffffff"
-    xalign 0.5
-    yalign 0.5
 
 
 
